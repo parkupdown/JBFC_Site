@@ -10,7 +10,10 @@ function Sign() {
     event.preventDefault();
     setUserId(event.currentTarget[0].value);
     setPassword(event.currentTarget[1].value);
-    axios.post(`http://localhost:8080/data`, { todo: "haha" });
+    axios.post(`http://localhost:8080/data`, {
+      useId: userId,
+      usePass: password,
+    });
   };
   return (
     <div>

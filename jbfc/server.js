@@ -1,10 +1,17 @@
+const cors = require(`cors`);
+
 const express = require(`express`);
 const app = express();
-const bodyParser = require(`body-parser`);
 
+app.use(cors());
+//서버연결
+
+const bodyParser = require(`body-parser`);
 const MongoClient = require(`mongodb`).MongoClient;
 // mongodb와 연결
 //서버 구축
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 let db;
 
 MongoClient.connect(
@@ -14,13 +21,39 @@ MongoClient.connect(
     if (error) {
       return console.log(error);
     }
-    db = client.db(`UserInfi`);
+    db = client.db(`JB`);
 
     app.listen(8080, function () {
       console.log(`Hello`);
     });
   }
 );
+
+const todoList = {
+  text: "123",
+  age: 12,
+};
+app.post(`/data`, function (req, res) {
+  console.log(req.body);
+});
+
+app.get(`/api/todo`, function (req, res) {
+  res.json(todoList);
+});
+
+app.get(`/data`, function (req, res) {
+  db.collection(`UserInfo`)
+    .find()
+    .toArray(function (error, result) {
+      res.json(result);
+    });
+});
+
+app.get(`/Hi`, function (req, res) {
+  res.send(`반갑습니다.`);
+});
+
+app.use(bodyParser.urlencoded({ extended: true }));
 
 /*
 app.use(bodyParser.urlencoded({ extended: true }));
