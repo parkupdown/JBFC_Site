@@ -34,7 +34,17 @@ const todoList = {
   age: 12,
 };
 app.post(`/data`, function (req, res) {
-  console.log(req.body);
+  db.collection(`UserInfo`).insertOne(
+    {
+      아이디: req.body.useId,
+      비밀번호: req.body.usePass,
+    },
+    function (error, res) {
+      if (error) {
+        return console.log(error);
+      }
+    }
+  );
 });
 
 app.get(`/api/todo`, function (req, res) {
