@@ -41,8 +41,27 @@ const checkId = async (req, res) => {
   }
 };
 
+const insertData = (req, res) => {
+  db.collection(`UserInfo`).insertOne(
+    {
+      name: "짝발란스",
+      아이디: req.body.useId,
+      비밀번호: req.body.usePass,
+    },
+    function (error, res) {
+      if (error) {
+        return console.log(error);
+      }
+    }
+  );
+};
+
 app.post(`/sign`, (req, res) => {
   checkId(req, res);
+});
+
+app.post(`/sign/insertData`, (req, res) => {
+  insertData(req, res);
 });
 
 //여기에 이제 추가 넣으면됨

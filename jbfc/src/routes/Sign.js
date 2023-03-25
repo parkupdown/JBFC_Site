@@ -21,6 +21,7 @@ function Sign() {
       .post(`http://localhost:8080/sign`, {
         name: "짝발란스",
         useId: userId,
+        usePass: password,
       })
       .then((res) => alert(res.data));
 
@@ -29,7 +30,11 @@ function Sign() {
 
   const onSubmit = (event) => {
     event.preventDefault();
-
+    axios.post(`http://localhost:8080/sign/insertData`, {
+      name: "짝발란스",
+      useId: userId,
+      usePass: password,
+    });
     //이제 여기서 이동 usenavigator로!
   };
 
@@ -41,7 +46,7 @@ function Sign() {
         <input placeholder="Password" />
         <button>체크!</button>
       </form>
-      <form onSubmit={onSubmit} disabled={pass}>
+      <form onSubmit={onSubmit} name="id" disabled={pass}>
         <button>제출</button>
       </form>
     </div>
