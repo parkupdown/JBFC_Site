@@ -1,21 +1,23 @@
-const cors = require(`cors`);
-
 const express = require(`express`);
+const cors = require(`cors`);
 const app = express();
+const MongoClient = require(`mongodb`).MongoClient;
 
+app.use(express.urlencoded({ extended: true }));
 app.use(cors());
+
 //서버연결
 
 const bodyParser = require(`body-parser`);
-const MongoClient = require(`mongodb`).MongoClient;
-// mongodb와 연결
-//서버 구축
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-let db;
 
+let db;
+//mongodb+srv://tkdgk1996:<password>@cluster0.btnfifg.mongodb.net/?retryWrites=true&w=majority
 MongoClient.connect(
   `mongodb+srv://tkdgk1996:FBG9w8AwL8J0p5Zy@cluster0.btnfifg.mongodb.net/?retryWrites=true&w=majority`,
+  { useUnifiedTopology: true },
   //여기에 연결하겠다.
   function (error, client) {
     if (error) {
@@ -29,13 +31,30 @@ MongoClient.connect(
   }
 );
 
-const todoList = {
-  text: "123",
-  age: 12,
+const checkId = async (req, res) => {
+  const { useId } = req.body;
+  const user = await db.collection(`UserInfo`).findOne({ 아이디: useId });
+  if (user === null) {
+    res.send(`사용이 가능합니다.`);
+  } else {
+    res.send(`사용이 불가능합니다.`);
+  }
 };
-app.post(`/data`, function (req, res) {
-  db.collection(`UserInfo`).insertOne(
+
+app.post(`/sign`, (req, res) => {
+  checkId(req, res);
+});
+
+//여기에 이제 추가 넣으면됨
+/* .toArray(function (error, res) {
+      console.log(res); // 가져오기성공
+      console.log(res[0]);
+    });
+    */
+//findOne은 첫번째데이터만가지고옴
+/*db.collection(`UserInfo`).insertOne(
     {
+      name: req.body.name,
       아이디: req.body.useId,
       비밀번호: req.body.usePass,
     },
@@ -51,20 +70,6 @@ app.get(`/api/todo`, function (req, res) {
   res.json(todoList);
 });
 
-app.get(`/data`, function (req, res) {
-  db.collection(`UserInfo`)
-    .find()
-    .toArray(function (error, result) {
-      res.json(result);
-    });
-});
-
-app.get(`/Hi`, function (req, res) {
-  res.send(`반갑습니다.`);
-});
-
-app.use(bodyParser.urlencoded({ extended: true }));
-
 /*
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -74,6 +79,13 @@ app.get(`/`, function (req, res) {
 
 app.get(`/write`, function (요청, 응답) {
   응답.sendFile(__dirname + `/write.html`);
+});
+app.get(`/data`, function (req, res) {
+  db.collection(`UserInfo`)
+    .find()
+    .toArray(function (error, result) {
+      res.json(result);
+    });
 });
 
 app.post(`/add`, function (요청, 응답) {

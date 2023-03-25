@@ -3,22 +3,34 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 
 function Sign() {
-  const [userId, setUserId] = useState();
+  const [userId, setUserId] = useState(``);
   const [password, setPassword] = useState();
   let pass = false;
+
   const onCheck = (event) => {
+    pass = false;
     event.preventDefault();
     setUserId(event.currentTarget[0].value);
     setPassword(event.currentTarget[1].value);
-    pass = true;
+    event.currentTarget[0].value = ``;
+    event.currentTarget[1].value = ``;
   };
+
+  useEffect(() => {
+    axios
+      .post(`http://localhost:8080/sign`, {
+        name: "짝발란스",
+        useId: userId,
+      })
+      .then((res) => alert(res.data));
+
+    pass = true;
+  }, [userId]);
 
   const onSubmit = (event) => {
     event.preventDefault();
-    axios.post(`http://localhost:8080/data`, {
-      useId: userId,
-      usePass: password,
-    });
+
+    //이제 여기서 이동 usenavigator로!
   };
 
   return (
