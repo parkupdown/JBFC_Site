@@ -2,16 +2,29 @@ const express = require(`express`);
 const cors = require(`cors`);
 const app = express();
 const MongoClient = require(`mongodb`).MongoClient;
+//login
+const LocalStrategy = require(`passport-local`).Strategy;
+const session = require(`express-session`);
+const passport = require(`passport`);
+const bodyParser = require(`body-parser`);
 
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
 //서버연결
 
-const bodyParser = require(`body-parser`);
-
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+
+app.use(
+  session({
+    secret: `SecretupdownPark`,
+    resave: true,
+    saveUninitialized: false,
+  })
+);
+app.use(passport.initialize());
+app.use(passport.session());
 
 let db;
 //mongodb+srv://tkdgk1996:<password>@cluster0.btnfifg.mongodb.net/?retryWrites=true&w=majority
@@ -32,8 +45,8 @@ MongoClient.connect(
 );
 
 const checkId = async (req, res) => {
-  const { useId } = req.body;
-  const user = await db.collection(`UserInfo`).findOne({ 아이디: useId });
+  const { userId } = req.body;
+  const user = await db.collection(`UserInfo`).findOne({ 아이디: userId });
   if (user === null) {
     res.send(`사용이 가능합니다.`);
   } else {
@@ -45,8 +58,8 @@ const insertData = (req, res) => {
   db.collection(`UserInfo`).insertOne(
     {
       name: "짝발란스",
-      아이디: req.body.useId,
-      비밀번호: req.body.usePass,
+      아이디: req.body.userId,
+      비밀번호: req.body.userPassword,
     },
     function (error, res) {
       if (error) {
@@ -63,6 +76,63 @@ app.post(`/sign`, (req, res) => {
 app.post(`/sign/insertData`, (req, res) => {
   insertData(req, res);
 });
+
+app.post(
+  `/login`,
+  passport.authenticate(`local`, { failureRedirect: `/fail` }),
+  (req, res, next) => {
+    res.redirect(`/`);
+  }
+);
+app.get(`/fail`, (req, res) => {
+  res.send({ message: `로그인 정보가 일치하지 않습니다!`, pass: false });
+});
+
+app.get(`/`, (req, res) => {
+  res.send({ message: "로그인에 성공하셨습니다!", pass: true });
+});
+
+passport.use(
+  new LocalStrategy(
+    {
+      usernameField: "userId",
+      passwordField: "userPassword",
+      session: true,
+      passReqToCallback: false,
+    },
+    function (입력한아이디, 입력한비번, done) {
+      console.log(입력한아이디, 입력한비번);
+      console.log(입력한아이디);
+      db.collection("UserInfo").findOne(
+        { 아이디: 입력한아이디 },
+        function (에러, 결과) {
+          if (에러) return done(에러);
+
+          if (!결과)
+            return done(null, false, { message: "존재하지않는 아이디요" });
+          if (입력한비번 == 결과.비밀번호) {
+            //결과.pw => db에 저장된 pw
+            return done(null, 결과);
+            //done은 서버에러를넣는곳
+          } else {
+            return done(null, false, { message: "비번틀렸어요" });
+          }
+        }
+      );
+    }
+  )
+);
+
+passport.serializeUser(function (user, done) {
+  console.log(user);
+  console.log(user._id);
+  done(null, user._id);
+});
+//id를 이용해서 세션을 저장시키는 코드 (로그인 성공시 발동)
+passport.deserializeUser(function (user, done) {
+  done(null, {});
+});
+//나중에 쓸거임 (마이페이지 접속시 발동)
 
 //여기에 이제 추가 넣으면됨
 /* .toArray(function (error, res) {
