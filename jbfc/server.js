@@ -9,7 +9,7 @@ const passport = require(`passport`);
 const bodyParser = require(`body-parser`);
 
 app.use(express.urlencoded({ extended: true }));
-app.use(cors());
+app.use(cors({ credentials: true }));
 
 //서버연결
 

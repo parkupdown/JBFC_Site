@@ -22,10 +22,14 @@ function Login() {
   try {
     useEffect(() => {
       axios
-        .post(`http://localhost:8080/login`, {
-          userId: userId,
-          userPassword: userPassword,
-        })
+        .post(
+          `http://localhost:8080/login`,
+          {
+            userId: userId,
+            userPassword: userPassword,
+          },
+          { withCredentials: true }
+        )
         .then((res) => {
           console.log(res);
           if (res.data.pass === true) {
