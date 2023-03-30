@@ -17,11 +17,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 app.use(
-  session({
-    secret: `SecretupdownPark`,
-    resave: true,
-    saveUninitialized: false,
-  })
+  session({ secret: "ParkUpDown", resave: true, saveUninitialized: false })
 );
 app.use(passport.initialize());
 app.use(passport.session());
@@ -88,8 +84,22 @@ app.get(`/fail`, (req, res) => {
   res.send({ message: `로그인 정보가 일치하지 않습니다!`, pass: false });
 });
 
-app.get(`/`, (req, res) => {
-  res.send({ message: "로그인에 성공하셨습니다!", pass: true });
+function LoginCheck(req, res, next) {
+  if (req.user) {
+    next();
+    //통과
+  } else {
+    res.send(`로그인안하셨습니다.`);
+  }
+}
+
+app.get(`/`, LoginCheck, (req, res) => {
+  res.send({
+    message: "로그인에 성공하셨습니다!",
+    pass: true,
+    userInfo: req.user,
+    //deserializeUser에 의해 req.user를 보낼수있음
+  });
 });
 
 passport.use(
@@ -124,13 +134,14 @@ passport.use(
 );
 
 passport.serializeUser(function (user, done) {
-  console.log(user);
-  console.log(user._id);
-  done(null, user._id);
+  done(null, user.아이디);
 });
 //id를 이용해서 세션을 저장시키는 코드 (로그인 성공시 발동)
-passport.deserializeUser(function (user, done) {
-  done(null, {});
+passport.deserializeUser(function (아이디, done) {
+  //디비에서 위에 있는 user.아이디로 유저를 찾은 뒤에 유저 정보를 중괄호에 넣음
+  db.collection(`UserInfo`).findOne({ 아이디: 아이디 }, function (error, res) {
+    done(null, res);
+  });
 });
 //나중에 쓸거임 (마이페이지 접속시 발동)
 

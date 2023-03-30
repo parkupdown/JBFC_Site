@@ -4,9 +4,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import UserId from "../atoms";
 function Login() {
-  const [userId, setUserId] = useRecoilState(UserId);
+  const [userId, setUserId] = useState(``);
   const [userPassword, setUserPass] = useState(``);
-
   const navigate = useNavigate();
 
   const goToHome = () => {
@@ -35,6 +34,7 @@ function Login() {
           if (res.data.pass === true) {
             alert(res.data.message);
             goToHome();
+            localStorage.setItem(`userId`, res.data.userInfo.아이디);
             return;
           }
           alert(res.data.message);
