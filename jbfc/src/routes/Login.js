@@ -1,8 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useRecoilState } from "recoil";
-import UserId from "../atoms";
 function Login() {
   const [userId, setUserId] = useState(``);
   const [userPassword, setUserPass] = useState(``);
@@ -11,6 +9,10 @@ function Login() {
   const goToHome = () => {
     navigate(`/home`);
   };
+
+  if (localStorage.getItem(`userId`) !== null) {
+    goToHome();
+  }
 
   const onSubmit = (event) => {
     event.preventDefault();
