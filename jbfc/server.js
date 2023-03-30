@@ -46,7 +46,7 @@ const checkId = async (req, res) => {
   if (user === null) {
     res.send(`사용이 가능합니다.`);
   } else {
-    res.send(`사용이 불가능합니다.`);
+    res.send(`중복된 아이디가 존재합니다.`);
   }
 };
 
