@@ -3,17 +3,30 @@ import axios from "axios";
 
 import LoginBarrier from "./LoginBarrier";
 
-const getPollution = () => {
-  return axios
-    .get(
-      `http://api.openweathermap.org/data/2.5/air_pollution/forecast?lat=35.2126974&lon=126.8658519&appid=2834387742b25d5393a21e88fee8246a`
-    )
-    .then((res) => res);
-};
-
 function Home() {
   const userId = localStorage.getItem(`userId`);
 
+  const getLocation = () => {
+    return new Promise((resolve, reject) => {
+      navigator.geolocation.getCurrentPosition((position) => {
+        resolve(position);
+      });
+    });
+  };
+  const callApi = (lat, lnd) => {
+    return axios
+      .get(
+        `http://api.openweathermap.org/data/2.5/air_pollution/forecast?lat=${lat}&lon=${lnd}&appid=2834387742b25d5393a21e88fee8246a`
+      )
+      .then((res) => res);
+  };
+
+  const getPollution = async () => {
+    const latlnd = await getLocation();
+    const data = await callApi(latlnd.coords.latitude, latlnd.coords.longitude);
+
+    return data;
+  };
   const { isLoading, data } = useQuery("Pollution", getPollution);
 
   const UnixToDate = (Unix) => {
@@ -22,20 +35,16 @@ function Home() {
     const dayOfWeek = week[time.getDay()];
     return `${
       time.getMonth() + 1
-    }월 ${time.getDate()}일 ${time.getHours()} ${dayOfWeek}요일`;
+    }월 ${time.getDate()}일 ${time.getHours()}시 ${dayOfWeek}요일`;
   };
 
-  let pollutionInfo;
-  let pmInfo;
-  let timeInfo;
-
   const makePollutionInfo = (data) => {
-    pollutionInfo = data.data.list;
+    let pollutionInfo = data.data.list;
     pollutionInfo = pollutionInfo.filter(
       (item, index) => index % 24 === 0 || index === pollutionInfo.length - 1
     );
-    pmInfo = pollutionInfo.map((item) => item.components);
-    timeInfo = pollutionInfo.map((item) => UnixToDate(item.dt));
+    const pmInfo = pollutionInfo.map((item) => item.components);
+    const timeInfo = pollutionInfo.map((item) => UnixToDate(item.dt));
     //이건 나중에 자세한 예보를 보여줄 때 사용하면 좋을 거 같다.
     const pm10 = pmInfo[0].pm10;
     const pm25 = pmInfo[0].pm2_5;
@@ -58,11 +67,14 @@ function Home() {
         {isLoading ? (
           "로딩중"
         ) : (
-          <ul>
-            <li>초미세먼지: {makePollutionInfo(data)[0]}</li>
-            <li>미세먼지: {makePollutionInfo(data)[1]}</li>
-            <li>오늘의 날짜: {makePollutionInfo(data)[2]}</li>
-          </ul>
+          <div>
+            <h3>실시간 미세먼지 정보!</h3>
+            <ul>
+              <li>초미세먼지: {makePollutionInfo(data)[0]}</li>
+              <li>미세먼지: {makePollutionInfo(data)[1]}</li>
+              <li>오늘의 날짜: {makePollutionInfo(data)[2]}</li>
+            </ul>
+          </div>
         )}
       </h2>
     </div>
