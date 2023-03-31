@@ -1,8 +1,5 @@
-import { useRecoilValue } from "recoil";
-import { WeatherInfo } from "../atoms";
-
-function PollutionChart() {
-  console.log(useRecoilValue(WeatherInfo));
+function PollutionChart({ data }) {
+  console.log(data);
   return <div>Pollution</div>;
 }
 export default PollutionChart;

@@ -34,9 +34,8 @@ function Login() {
         .then((res) => {
           console.log(res);
           if (res.data.pass === true) {
-            alert(res.data.message);
-            goToHome();
             localStorage.setItem(`userId`, res.data.userInfo.아이디);
+            goToHome();
             return;
           }
           alert(res.data.message);
