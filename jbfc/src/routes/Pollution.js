@@ -1,5 +1,7 @@
 import { useQuery } from "react-query";
 import axios from "axios";
+import { PollutionInfo } from "../atoms";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 
 function UnixToDate(Unix) {
   const time = new Date(Unix * 1000);
@@ -34,17 +36,16 @@ function Pollution() {
   };
   const { isLoading, data } = useQuery("Pollution", getPollution);
 
+  const setPollution = useSetRecoilState(PollutionInfo);
+  setPollution(data);
+
   const makePollutionInfo = (data) => {
     let pollutionInfo = data.data.list;
-    pollutionInfo = pollutionInfo.filter(
-      (item, index) => index % 24 === 0 || index === pollutionInfo.length - 1
-    );
-    const pmInfo = pollutionInfo.map((item) => item.components);
     const timeInfo = pollutionInfo.map((item) => UnixToDate(item.dt));
     //이건 나중에 자세한 예보를 보여줄 때 사용하면 좋을 거 같다.
-    const pm10 = pmInfo[0].pm10;
-    const pm25 = pmInfo[0].pm2_5;
-    const day = timeInfo[0];
+    const pm10 = pollutionInfo[0].components.pm10;
+    const pm25 = pollutionInfo[0].components.pm2_5;
+    const day = UnixToDate(pollutionInfo[0].dt);
     return [pm10, pm25, day];
   };
 
