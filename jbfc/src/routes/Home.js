@@ -53,7 +53,6 @@ function Home() {
     <LoginBarrier />
   ) : (
     <div>
-      Home입니다.
       <h1>반갑습니다.{userId}님!</h1>
       <hr />
       {isLoading ? (
@@ -72,11 +71,11 @@ function Home() {
             <h3>Home으로가기</h3>
           </Link>
           <Routes>
+            <Route path="weather" element={<WeatherChart data={data[0]} />} />
             <Route
               path="pollution"
-              element={<PollutionChart data={data[0]} />}
+              element={<PollutionChart data={data[1]} />}
             />
-            <Route path="weather" element={<WeatherChart data={data[1]} />} />
           </Routes>
         </>
       )}

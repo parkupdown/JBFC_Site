@@ -1,3 +1,4 @@
+import Home from "./routes/Home";
 import Login from "./routes/Login";
 import Sign from "./routes/Sign";
 
@@ -9,6 +10,7 @@ function Router() {
       <Routes>
         <Route path="/" element={<Login />}></Route>
         <Route path="/sign" element={<Sign />}></Route>
+        <Route path="/home/*" element={<Home />}></Route>
       </Routes>
     </BrowserRouter>
   );
