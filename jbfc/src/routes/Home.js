@@ -1,4 +1,4 @@
-import { Link, Route, Routes } from "react-router-dom";
+import { Link, Route, Routes, useNavigate } from "react-router-dom";
 import LoginBarrier from "./LoginBarrier";
 import { Pollution } from "./Pollution";
 import Weather from "./Weather";
@@ -9,7 +9,7 @@ import axios from "axios";
 
 function Home() {
   const userId = localStorage.getItem(`userId`);
-
+  const navigator = useNavigate();
   const getLocation = () => {
     return new Promise((resolve, reject) => {
       navigator.geolocation.getCurrentPosition((position) => {
@@ -54,6 +54,14 @@ function Home() {
   ) : (
     <div>
       <h1>반갑습니다.{userId}님!</h1>
+      <button
+        onClick={() => {
+          localStorage.removeItem(`userId`);
+          navigator(`/`);
+        }}
+      >
+        로그아웃!
+      </button>
       <hr />
       {isLoading ? (
         "로딩중입니다."
@@ -70,6 +78,9 @@ function Home() {
           <Link to={`/home/`}>
             <h3>Home으로가기</h3>
           </Link>
+          <Link to={`/board`}>
+            <h3>게시판!</h3>
+          </Link>
           <Routes>
             <Route path="weather" element={<WeatherChart data={data[0]} />} />
             <Route
@@ -77,9 +88,6 @@ function Home() {
               element={<PollutionChart data={data[1]} />}
             />
           </Routes>
-          <Link to={`/board`}>
-            <h3>게시판!</h3>
-          </Link>
         </>
       )}
     </div>
