@@ -1,8 +1,20 @@
 import axios from "axios";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import LoginBarrier from "./LoginBarrier";
 
 function Board() {
   const userId = localStorage.getItem(`userId`);
+  const [boardData, setBoardData] = useState(null);
+  const CallBoardApi = () => {
+    axios
+      .get(`http://localhost:8080/board`)
+      .then((res) => setBoardData(res.data));
+  };
+
+  useEffect(() => {
+    CallBoardApi();
+  }, [boardData]);
 
   const onSubmit = (event) => {
     event.preventDefault();
@@ -21,7 +33,7 @@ function Board() {
         contents: contents,
         nowTime: nowTime,
       })
-      .then((res) => console.log(res));
+      .then((res) => setBoardData(res.data));
   };
 
   return userId === null ? (
@@ -35,6 +47,26 @@ function Board() {
           <input placeholder="내용" />
           <button>제출</button>
         </form>
+        {boardData === null ? (
+          <h1>로딩중입니다.</h1>
+        ) : (
+          <ul>
+            {boardData
+              ? boardData.map((data) => (
+                  <Link to={`/board/${data._id}`}>
+                    <div key={data._id}>
+                      <li>
+                        <h2>{data.title}</h2>
+                        <h4>작성자: {data.userId}</h4>
+                        <h3>작성일: {data.nowTime}</h3>
+                        <hr></hr>
+                      </li>
+                    </div>
+                  </Link>
+                ))
+              : null}
+          </ul>
+        )}
       </div>
     </div>
   );

@@ -7,6 +7,7 @@ const LocalStrategy = require(`passport-local`).Strategy;
 const session = require(`express-session`);
 const passport = require(`passport`);
 const bodyParser = require(`body-parser`);
+const ObjectId = require(`mongodb`).ObjectID;
 
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({ credentials: true }));
@@ -146,7 +147,7 @@ passport.deserializeUser(function (아이디, done) {
 
 //나중에 쓸거임 (마이페이지 접속시 발동)
 
-const insertBoardData = (req, res) => {
+const insertBoardData = async (req, res) => {
   db.collection(`Board`).insertOne(
     {
       userId: req.body.userId,
@@ -158,17 +159,35 @@ const insertBoardData = (req, res) => {
       if (error) {
         return console.log(error);
       }
+      db.collection("Board")
+        .find()
+        .toArray(function (error, result) {
+          res.send(result);
+        });
     }
   );
+};
+
+app.post(`/board`, (req, res) => {
+  insertBoardData(req, res);
+});
+
+app.get(`/board`, (req, res) => {
   db.collection("Board")
     .find()
     .toArray(function (error, result) {
       res.send(result);
     });
-};
+});
 
-app.post(`/board`, (req, res) => {
-  insertBoardData(req, res);
+app.post(`/boardDetail`, (req, res) => {
+  db.collection("Board").findOne(
+    { _id: ObjectId(req.body.userId) },
+    //string 타입을 ObjectId타입으로 변환 후 비교함
+    function (error, result) {
+      res.send(result);
+    }
+  );
 });
 
 //여기에 이제 추가 넣으면됨

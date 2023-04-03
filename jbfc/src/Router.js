@@ -1,4 +1,5 @@
 import Board from "./routes/Board";
+import BoardDetail from "./routes/BoardDetail";
 import Home from "./routes/Home";
 import Login from "./routes/Login";
 import Sign from "./routes/Sign";
@@ -13,6 +14,7 @@ function Router() {
         <Route path="/sign" element={<Sign />}></Route>
         <Route path="/home/*" element={<Home />}></Route>
         <Route path="/board" element={<Board />}></Route>
+        <Route path="/board/:userId" element={<BoardDetail />}></Route>
       </Routes>
     </BrowserRouter>
   );
