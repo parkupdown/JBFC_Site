@@ -155,7 +155,7 @@ const insertBoardData = async (req, res) => {
       contents: req.body.contents,
       nowTime: req.body.nowTime,
     },
-    function (error, res) {
+    function (error, Result) {
       if (error) {
         return console.log(error);
       }

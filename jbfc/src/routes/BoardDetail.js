@@ -14,7 +14,7 @@ function BoardDetail() {
 
   useEffect(() => {
     CallBoardDetailApi();
-  }, []);
+  }, [detail]);
 
   return (
     <div>
