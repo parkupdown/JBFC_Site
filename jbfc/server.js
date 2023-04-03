@@ -50,7 +50,7 @@ const checkId = async (req, res) => {
   }
 };
 
-const insertData = (req, res) => {
+const insertUserData = (req, res) => {
   db.collection(`UserInfo`).insertOne(
     {
       name: "짝발란스",
@@ -69,8 +69,8 @@ app.post(`/sign`, (req, res) => {
   checkId(req, res);
 });
 
-app.post(`/sign/insertData`, (req, res) => {
-  insertData(req, res);
+app.post(`/sign/insertUserData`, (req, res) => {
+  insertUserData(req, res);
 });
 
 app.post(
@@ -143,7 +143,33 @@ passport.deserializeUser(function (아이디, done) {
     done(null, res);
   });
 });
+
 //나중에 쓸거임 (마이페이지 접속시 발동)
+
+const insertBoardData = (req, res) => {
+  db.collection(`Board`).insertOne(
+    {
+      userId: req.body.userId,
+      title: req.body.title,
+      contents: req.body.contents,
+      nowTime: req.body.nowTime,
+    },
+    function (error, res) {
+      if (error) {
+        return console.log(error);
+      }
+    }
+  );
+  db.collection("Board")
+    .find()
+    .toArray(function (error, result) {
+      res.send(result);
+    });
+};
+
+app.post(`/board`, (req, res) => {
+  insertBoardData(req, res);
+});
 
 //여기에 이제 추가 넣으면됨
 /* .toArray(function (error, res) {

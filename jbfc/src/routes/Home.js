@@ -77,6 +77,9 @@ function Home() {
               element={<PollutionChart data={data[1]} />}
             />
           </Routes>
+          <Link to={`/board`}>
+            <h3>게시판!</h3>
+          </Link>
         </>
       )}
     </div>
