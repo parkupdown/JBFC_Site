@@ -190,6 +190,26 @@ app.post(`/boardDetail`, (req, res) => {
   );
 });
 
+app.post(`/board/mine`, (req, res) => {
+  db.collection("Board")
+    .find({ userId: req.body.userId })
+    .toArray(function (error, result) {
+      res.send(result);
+    });
+});
+
+app.delete(`/board/mine/delete`, (req, res) => {
+  console.log(req.body.userId);
+  db.collection(`Board`).deleteOne(
+    { _id: ObjectId(req.body.userId) },
+    function (error, result) {
+      console.log(`삭제완료`);
+      console.log(`에러:${error}`);
+      res.status(200).send({ message: `성공했습니다.` });
+    }
+  );
+});
+
 //여기에 이제 추가 넣으면됨
 /* .toArray(function (error, res) {
       console.log(res); // 가져오기성공
