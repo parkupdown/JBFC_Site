@@ -205,9 +205,45 @@ app.delete(`/board/mine/delete`, (req, res) => {
     function (error, result) {
       console.log(`삭제완료`);
       console.log(`에러:${error}`);
-      res.status(200).send({ message: `성공했습니다.` });
+      res.status(200).send({ message: `삭제완료` });
     }
   );
+});
+
+const insertBoardCommentsData = (req, res) => {
+  db.collection(`Comments`).insertOne(
+    {
+      userId: req.body.userId,
+      userName: req.body.userName,
+      comment: req.body.comment,
+    },
+    function (error, Result) {
+      if (error) {
+        return console.log(error);
+      }
+      db.collection("Comments")
+        .find({ userId: req.body.userId })
+        .toArray(function (error, result) {
+          res.send(result);
+        });
+    }
+  );
+};
+
+const findBoardCommentsData = (req, res) => {
+  db.collection(`Comments`)
+    .find({ userId: req.body.userId })
+    .toArray(function (error, result) {
+      res.send(result);
+    });
+};
+
+app.post(`/board/comment`, (req, res) => {
+  insertBoardCommentsData(req, res);
+});
+
+app.post(`/board/comment/get`, (req, res) => {
+  findBoardCommentsData(req, res);
 });
 
 //여기에 이제 추가 넣으면됨
