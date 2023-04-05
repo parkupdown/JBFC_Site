@@ -210,6 +210,18 @@ app.delete(`/board/mine/delete`, (req, res) => {
   );
 });
 
+app.delete(`/board/mine/comment/delete`, (req, res) => {
+  const removeTarget = {
+    _id: ObjectId(req.body._id),
+    userName: req.body.userName,
+  };
+  console.log(req.body);
+
+  db.collection(`Comments`).deleteOne(removeTarget, function (error, result) {
+    res.status(200).send({ message: `삭제완료` });
+  });
+});
+
 const insertBoardCommentsData = (req, res) => {
   db.collection(`Comments`).insertOne(
     {

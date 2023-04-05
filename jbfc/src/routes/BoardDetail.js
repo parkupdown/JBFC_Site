@@ -12,7 +12,8 @@ function BoardDetail() {
       .post(`http://localhost:8080/boardDetail`, {
         userId: userId,
       })
-      .then((res) => setDetail(res.data)); //수정필요
+      .then((res) => setDetail(res.data));
+  //boardDetail Api에 userId를 보내서 useId와 일치하는 배열 데이터를 찾아옴
 
   const CallBoardCommentsApi = (userId, userName, inputValue) => {
     return axios
@@ -22,7 +23,7 @@ function BoardDetail() {
         comment: inputValue,
       })
       .then((res) => setComment(res.data));
-  };
+  }; //submit하면 댓글정보를 보낼 수 있도록함
 
   const GetBoardCommentsApi = () => {
     return axios
@@ -32,6 +33,7 @@ function BoardDetail() {
       })
       .then((res) => setComment(res.data));
   };
+  // 위 페이지에 들어오면 댓글정보를 볼 수 있게 API를 최초에 1회 호출함
 
   useEffect(() => {
     CallBoardDetailApi();
@@ -43,6 +45,25 @@ function BoardDetail() {
     const inputValue = event.currentTarget[0].value;
     CallBoardCommentsApi(userId, userName, inputValue);
     event.currentTarget[0].value = ``;
+    console.log(comment);
+  };
+
+  const commentRemove = (event, userName, commentName, id) => {
+    if (userName !== commentName) {
+      return alert(`본인이 작성한 댓글만 삭제할 수 있습니다.`);
+    }
+
+    axios.delete(`http://localhost:8080/board/mine/comment/delete`, {
+      data: { userName: userName, _id: id },
+    });
+    const listId = event.currentTarget.parentElement.id;
+    setComment((current) => {
+      const newMine = current.filter(
+        (item, index) => index !== parseInt(listId)
+      );
+
+      return newMine;
+    });
   };
 
   return (
@@ -63,8 +84,18 @@ function BoardDetail() {
             <button>💬</button>
           </form>
           <div>
-            {comment.map((item) => (
-              <li key={item._id}>{`${item.userName}: ${item.comment}`}</li>
+            {comment.map((item, index) => (
+              <li id={index} key={item._id}>
+                {`${item.userName}: ${item.comment}`}
+                <button
+                  onClick={(event) =>
+                    commentRemove(event, userName, item.userName, item._id)
+                  }
+                  //실제 userName(로그인 정보상 userName이 들어감)
+                >
+                  댓글삭제
+                </button>
+              </li>
             ))}
           </div>
         </div>
