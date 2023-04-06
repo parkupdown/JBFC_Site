@@ -2,6 +2,14 @@ const express = require(`express`);
 const cors = require(`cors`);
 const app = express();
 const MongoClient = require(`mongodb`).MongoClient;
+const http = require(`http`).createServer(app);
+const { Server } = require(`socket.io`);
+const io = new Server(http, {
+  cors: {
+    origin: "http://localhost:3000",
+  },
+});
+
 //login
 const LocalStrategy = require(`passport-local`).Strategy;
 const session = require(`express-session`);
@@ -35,11 +43,28 @@ MongoClient.connect(
     }
     db = client.db(`JB`);
 
-    app.listen(8080, function () {
-      console.log(`Hello`);
+    http.listen(8080, function () {
+      console.log(`Listening on 8080`);
     });
+    //express를 이용해서 서버를 띄우던 걸 http 라는 node.js 기본 라이브러리 + socket.io를 이용해서 띄운것
+    /*app.listen(8080, function () {
+      console.log(`Hello`);
+    });*/
   }
 );
+
+io.on("connection", (socket) => {
+  socket.on(`send_message_notice`, (data) => {
+    //유저가 메세지를 보내면
+    console.log(data);
+    io.emit(`broadcast_notice`, data);
+    //모든사람에게 뿌려주세요.
+  });
+  socket.on(`send_message_free`, (data) => {
+    console.log(data);
+    io.emit(`broadcast_free`, data);
+  });
+});
 
 const checkId = async (req, res) => {
   const { userId } = req.body;
