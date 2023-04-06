@@ -1,6 +1,9 @@
+import { Avatar, Button, Grid, TextField, Typography } from "@mui/material";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import LockOutlinedIcon from "@mui/icons-material/LockClockOutlined";
+import { Box, Container } from "@mui/system";
 function Login() {
   const [userId, setUserId] = useState(null);
   const [userPassword, setUserPass] = useState(null);
@@ -16,8 +19,9 @@ function Login() {
 
   const onSubmit = (event) => {
     event.preventDefault();
+
     setUserId(event.currentTarget[0].value);
-    setUserPass(event.currentTarget[1].value);
+    setUserPass(event.currentTarget[2].value);
     //이제 여기서 이동 usenavigator로!
   };
   try {
@@ -45,16 +49,55 @@ function Login() {
   }
 
   return (
-    <div>
-      <form onSubmit={onSubmit}>
-        <input placeholder="ID를 입력해주세요 " />
-        <input placeholder="PASSWORD를 입력해주세요" />
-        <button>Login</button>
-      </form>
-      <Link to={`/sign`}>
-        <h3>아이디가 없으신가요?</h3>
-      </Link>
-    </div>
+    <Container component="main" maxWidth="md">
+      <Box
+        sx={{
+          marginTop: 8,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <Avatar sx={{ m: 1, bgcolor: `secondary.main` }}>
+          <LockOutlinedIcon />
+        </Avatar>
+        <Typography component="h1" variant="h5"></Typography>
+        <form onSubmit={onSubmit}>
+          <TextField
+            label="아이디"
+            margin="normal"
+            name="id"
+            required
+            fullWidth
+            autoComplete="email"
+            autoFocus
+          />
+          <TextField
+            label="비밀번호"
+            id="password"
+            name="password"
+            autoComplete="on"
+            type="password"
+            required
+            fullWidth
+          />
+          <Grid container>
+            <Grid item xs>
+              <Button sx={{ mt: 2 }} type="submit">
+                Sign in
+              </Button>
+            </Grid>
+            <Grid item>
+              <Link to={`/sign`} style={{ textDecoration: "none" }}>
+                <Button sx={{ mt: 2 }} type="submit">
+                  Don't have an account?
+                </Button>
+              </Link>
+            </Grid>
+          </Grid>
+        </form>
+      </Box>
+    </Container>
   );
 }
 
