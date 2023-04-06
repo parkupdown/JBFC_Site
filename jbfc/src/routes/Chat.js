@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, Route, Routes } from "react-router-dom";
 import io from "socket.io-client";
 import FreeTalk from "./FreeTalk";
+import LoginBarrier from "./LoginBarrier";
 import NoticeTalk from "./NoticeTalk";
 
 function Chat() {
@@ -20,7 +21,9 @@ function Chat() {
     });
   }, []);
 
-  return (
+  return userId === null ? (
+    <LoginBarrier />
+  ) : (
     <div>
       <h1>짝발란스Talk</h1>
       <Link to={`/chat/Notice`}>

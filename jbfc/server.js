@@ -284,6 +284,36 @@ app.post(`/board/comment/get`, (req, res) => {
   findBoardCommentsData(req, res);
 });
 
+const InsertChatData = (req, res) => {
+  db.collection(`Chat`).insertOne(
+    {
+      userId: req.body.userId,
+      chatData: req.body.chatData,
+      category: req.body.category,
+    },
+    function (error, Result) {
+      if (error) {
+        return console.log(error);
+      }
+      db.collection("Chat")
+        .find({ category: req.body.category })
+        .toArray(function (error, result) {
+          res.send(result);
+        });
+    }
+  );
+};
+app.post(`/chat/insertOne`, (req, res) => {
+  InsertChatData(req, res);
+});
+app.post(`/chat`, (req, res) => {
+  db.collection("Chat")
+    .find({ category: req.body.category })
+    .toArray((error, result) => {
+      res.send(result);
+    });
+});
+
 //여기에 이제 추가 넣으면됨
 /* .toArray(function (error, res) {
       console.log(res); // 가져오기성공
