@@ -228,6 +228,7 @@ const insertBoardCommentsData = (req, res) => {
       userId: req.body.userId,
       userName: req.body.userName,
       comment: req.body.comment,
+      time: req.body.time,
     },
     function (error, Result) {
       if (error) {

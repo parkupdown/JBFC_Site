@@ -7,6 +7,11 @@ function BoardDetail() {
   const userName = localStorage.getItem(`userId`);
   const [detail, setDetail] = useState(null);
   const [comment, setComment] = useState(null);
+  const time = new Date();
+  const nowTime = `${
+    time.getMonth() + 1
+  }/${time.getDate()} ${time.getHours()}:${time.getMinutes()}`;
+
   const CallBoardDetailApi = () =>
     axios
       .post(`http://localhost:8080/boardDetail`, {
@@ -21,6 +26,7 @@ function BoardDetail() {
         userId: userId,
         userName: userName,
         comment: inputValue,
+        time: nowTime,
       })
       .then((res) => setComment(res.data));
   }; //submit하면 댓글정보를 보낼 수 있도록함
@@ -86,7 +92,7 @@ function BoardDetail() {
           <div>
             {comment.map((item, index) => (
               <li id={index} key={item._id}>
-                {`${item.userName}: ${item.comment}`}
+                {`${item.time} ${item.userName}: ${item.comment}`}
                 <button
                   onClick={(event) =>
                     commentRemove(event, userName, item.userName, item._id)
