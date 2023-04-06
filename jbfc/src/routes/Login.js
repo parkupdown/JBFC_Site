@@ -2,8 +2,8 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 function Login() {
-  const [userId, setUserId] = useState(``);
-  const [userPassword, setUserPass] = useState(``);
+  const [userId, setUserId] = useState(null);
+  const [userPassword, setUserPass] = useState(null);
   const navigate = useNavigate();
 
   const goToHome = () => {
@@ -32,13 +32,12 @@ function Login() {
           { withCredentials: true }
         )
         .then((res) => {
-          console.log(res);
           if (res.data.pass === true) {
             localStorage.setItem(`userId`, res.data.userInfo.아이디);
             goToHome();
             return;
           }
-          alert(res.data.message);
+          return userId === null ? null : alert(res.data.message);
         });
     }, [userId, userPassword]);
   } catch (error) {

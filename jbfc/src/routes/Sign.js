@@ -1,11 +1,11 @@
 import axios from "axios";
 
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function Sign() {
-  const [userId, setUserId] = useState(``);
-  const [userPassword, setPassword] = useState(``);
+  const [userId, setUserId] = useState(null);
+  const [userPassword, setPassword] = useState(null);
   const navigate = useNavigate();
 
   const onCheck = (event) => {
@@ -22,28 +22,28 @@ function Sign() {
           userId: userId,
           userPassword: userPassword,
         })
-        .then((res) => alert(res.data));
-    }, [userId]);
+        .then((res) => (userId === null ? null : alert(res.data)));
+    }, [userId, userPassword]);
   } catch (error) {
     throw new error();
   }
+  const goToMain = () => {
+    navigate(`/`);
+  };
 
   const onSubmit = (event) => {
     event.preventDefault();
     axios
-      .post(`http://localhost:8080/sign/insertData`, {
+      .post(`http://localhost:8080/sign/insertUserData`, {
         name: "짝발란스",
         userId: userId,
-        userPass: userPassword,
+        userPassword: userPassword,
       })
       .then(goToMain())
       .then(alert(`회원가입이 완료되었습니다.`));
     //이제 여기서 이동 usenavigator로!
   };
 
-  const goToMain = () => {
-    navigate(`/`);
-  };
   return (
     <div>
       <h1>회원가입 페이지 입니다.</h1>
@@ -55,6 +55,9 @@ function Sign() {
       <form onSubmit={onSubmit}>
         <button>제출</button>
       </form>
+      <Link to={`/`}>
+        <h3>로그인하러가기</h3>
+      </Link>
     </div>
   );
 }
