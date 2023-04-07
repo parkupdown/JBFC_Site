@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import styled, { keyframes } from "styled-components";
 import "animate.css";
+import swal from "sweetalert";
 
 function Login() {
   const [userId, setUserId] = useState(null);
@@ -42,7 +43,13 @@ function Login() {
             goToHome();
             return;
           }
-          return userId === null ? null : alert(res.data.message);
+          return userId === null
+            ? null
+            : swal(
+                "로그인에 실패하셨습니다",
+                "ID와 PW를 확인해주세요",
+                "warning"
+              );
         });
     }, [userId, userPassword]);
   } catch (error) {
@@ -50,6 +57,7 @@ function Login() {
   }
 
   // Define a styled component for the outer container
+
   const Box = styled.div`
     background-color: #f2f2f2;
     height: 100vh;
@@ -113,7 +121,7 @@ function Login() {
         </Title>
         <Form onSubmit={onSubmit}>
           <Input placeholder="ID" />
-          <Input placeholder="PW" />
+          <Input type="password" placeholder="PW" />
           <Button>Login</Button>
         </Form>
         <Link style={{ textDecoration: "none" }} to={`/sign`}>

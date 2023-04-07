@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import "animate.css";
+import swal from "sweetalert";
 
 function Sign() {
   const [userId, setUserId] = useState(null);
@@ -24,7 +25,11 @@ function Sign() {
           userId: userId,
           userPassword: userPassword,
         })
-        .then((res) => (userId === null ? null : alert(res.data)));
+        .then((res) =>
+          userId === null
+            ? null
+            : swal("불가능한 계정입니다.", "중복된 ID가 있습니다.", "warning")
+        );
     }, [userId, userPassword]);
   } catch (error) {
     throw new error();
@@ -74,7 +79,7 @@ function Sign() {
   // Define a styled component for the inputs
   const Input = styled.input`
     height: 40px;
-    padding: 8px 16px;
+    padding: 8px 20px;
     margin-bottom: 16px;
     border-radius: 4px;
     border: none;
@@ -99,6 +104,8 @@ function Sign() {
 
   // Define a styled component for the link
   const Link = styled.a`
+    display: flex;
+    justify-content: center;
     color: #333;
     font-size: 16px;
     cursor: pointer;
@@ -113,9 +120,9 @@ function Sign() {
           Membership Registration
         </Title>
         <Form onSubmit={onCheck}>
-          <Input placeholder="[team name] player name" />
+          <Input placeholder="ID" />
           <Input placeholder="Password" />
-          <Button>Check!</Button>
+          <Button>Check</Button>
         </Form>
         <Form onSubmit={onSubmit}>
           <Button>Submit</Button>
