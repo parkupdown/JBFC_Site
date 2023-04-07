@@ -12,5 +12,9 @@ const WeatherInfo = atom({
   key: "WEATHER",
   default: ``,
 });
+const WeatherPollution = atom({
+  key: "WEATHERPOLLUTION",
+  default: ``,
+});
 
-export { UserId, PollutionInfo, WeatherInfo };
+export { UserId, PollutionInfo, WeatherInfo, WeatherPollution };
