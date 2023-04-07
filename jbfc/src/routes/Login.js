@@ -1,9 +1,10 @@
-import { Avatar, Button, Grid, TextField, Typography } from "@mui/material";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import LockOutlinedIcon from "@mui/icons-material/LockClockOutlined";
-import { Box, Container } from "@mui/system";
+import "bootstrap/dist/css/bootstrap.min.css";
+import styled, { keyframes } from "styled-components";
+import "animate.css";
+
 function Login() {
   const [userId, setUserId] = useState(null);
   const [userPassword, setUserPass] = useState(null);
@@ -21,7 +22,7 @@ function Login() {
     event.preventDefault();
 
     setUserId(event.currentTarget[0].value);
-    setUserPass(event.currentTarget[2].value);
+    setUserPass(event.currentTarget[1].value);
     //이제 여기서 이동 usenavigator로!
   };
   try {
@@ -48,56 +49,78 @@ function Login() {
     throw new Error();
   }
 
+  // Define a styled component for the outer container
+  const Box = styled.div`
+    background-color: #f2f2f2;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  `;
+
+  // Define a styled component for the title
+  const Title = styled.h1`
+    font-size: 48px;
+    color: #333;
+    text-align: center;
+    margin-bottom: 24px;
+  `;
+
+  // Define a styled component for the form
+  const Form = styled.form`
+    display: flex;
+    flex-direction: column;
+  `;
+
+  // Define a styled component for the inputs
+  const Input = styled.input`
+    height: 40px;
+    padding: 8px 16px;
+    margin-bottom: 16px;
+    border-radius: 4px;
+    border: none;
+    font-size: 16px;
+  `;
+
+  // Define a styled component for the button
+  const Button = styled.button`
+    height: 40px;
+    padding: 8px 16px;
+    border-radius: 4px;
+    border: none;
+    background-color: #03a9f4;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: #0288d1;
+    }
+  `;
+
+  const Sign = styled.h4`
+    margin-top: 20px;
+    color: #333;
+    font-size: 16px;
+    cursor: pointer;
+  `;
+
   return (
-    <Container component="main" maxWidth="md">
-      <Box
-        sx={{
-          marginTop: 8,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-        }}
-      >
-        <Avatar sx={{ m: 1, bgcolor: `secondary.main` }}>
-          <LockOutlinedIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5"></Typography>
-        <form onSubmit={onSubmit}>
-          <TextField
-            label="아이디"
-            margin="normal"
-            name="id"
-            required
-            fullWidth
-            autoComplete="email"
-            autoFocus
-          />
-          <TextField
-            label="비밀번호"
-            id="password"
-            name="password"
-            autoComplete="on"
-            type="password"
-            required
-            fullWidth
-          />
-          <Grid container>
-            <Grid item xs>
-              <Button sx={{ mt: 2 }} type="submit">
-                Sign in
-              </Button>
-            </Grid>
-            <Grid item>
-              <Link to={`/sign`} style={{ textDecoration: "none" }}>
-                <Button sx={{ mt: 2 }} type="submit">
-                  Don't have an account?
-                </Button>
-              </Link>
-            </Grid>
-          </Grid>
-        </form>
-      </Box>
-    </Container>
+    <Box>
+      <div>
+        <Title className="animate__animated animate__flipInX animate__slower">
+          JJack balance
+        </Title>
+        <Form onSubmit={onSubmit}>
+          <Input placeholder="ID" />
+          <Input placeholder="PW" />
+          <Button>Login</Button>
+        </Form>
+        <Link style={{ textDecoration: "none" }} to={`/sign`}>
+          <Sign> You Don't Have Any ID?</Sign>
+        </Link>
+      </div>
+    </Box>
   );
 }
 

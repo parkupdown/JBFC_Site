@@ -2,6 +2,8 @@ import axios from "axios";
 
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import styled from "styled-components";
+import "animate.css";
 
 function Sign() {
   const [userId, setUserId] = useState(null);
@@ -44,21 +46,85 @@ function Sign() {
     //이제 여기서 이동 usenavigator로!
   };
 
+  // Define a styled component for the outer container
+  const Box = styled.div`
+    background-color: #f2f2f2;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  `;
+
+  // Define a styled component for the title
+  const Title = styled.h1`
+    font-size: 48px;
+    color: #333;
+    text-align: center;
+    margin-bottom: 24px;
+  `;
+
+  // Define a styled component for the form
+  const Form = styled.form`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 24px;
+  `;
+
+  // Define a styled component for the inputs
+  const Input = styled.input`
+    height: 40px;
+    padding: 8px 16px;
+    margin-bottom: 16px;
+    border-radius: 4px;
+    border: none;
+    font-size: 16px;
+  `;
+
+  // Define a styled component for the button
+  const Button = styled.button`
+    height: 40px;
+    padding: 8px 16px;
+    border-radius: 4px;
+    border: none;
+    background-color: #03a9f4;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: #0288d1;
+    }
+  `;
+
+  // Define a styled component for the link
+  const Link = styled.a`
+    color: #333;
+    font-size: 16px;
+    cursor: pointer;
+  `;
+
+  // Define the membership registration page component
+
   return (
-    <div>
-      <h1>회원가입 페이지 입니다.</h1>
-      <form onSubmit={onCheck}>
-        <input placeholder="[팀이름] 선수이름 " />
-        <input placeholder="Password" />
-        <button>체크!</button>
-      </form>
-      <form onSubmit={onSubmit}>
-        <button>제출</button>
-      </form>
-      <Link to={`/`}>
-        <h3>로그인하러가기</h3>
-      </Link>
-    </div>
+    <Box>
+      <div>
+        <Title className="animate__animated animate__flipInX animate__slower">
+          Membership Registration
+        </Title>
+        <Form onSubmit={onCheck}>
+          <Input placeholder="[team name] player name" />
+          <Input placeholder="Password" />
+          <Button>Check!</Button>
+        </Form>
+        <Form onSubmit={onSubmit}>
+          <Button>Submit</Button>
+        </Form>
+        <Link style={{ textDecoration: "none" }} href={`/`}>
+          Go to login
+        </Link>
+      </div>
+    </Box>
   );
 }
 
