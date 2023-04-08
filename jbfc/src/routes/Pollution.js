@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { Constants } from "../constants";
 
 function UnixToDate(Unix) {
   const time = new Date(Unix * 1000);
@@ -11,11 +12,32 @@ function UnixToDate(Unix) {
 
 function Pollution({ data }) {
   const makePollutionInfo = (data) => {
-    let pollutionInfo = data.data.list;
+    let message;
+    let iconClassName;
+
+    const pollutionInfo = data.data.list;
+
     const pm10 = pollutionInfo[0].components.pm10;
+    //미세먼지
     const pm25 = pollutionInfo[0].components.pm2_5;
+    //초미세먼지
     const day = UnixToDate(pollutionInfo[0].dt);
-    return [pm10, pm25, day];
+
+    if (pm10 <= 30 || pm25 <= 15) {
+      message = Constants.POLLUTION.VERYGOOD;
+      iconClassName = Constants.POLLUTIONICON.VERYGOOD;
+    } else if (pm10 <= 80 || pm25 <= 35) {
+      message = Constants.POLLUTION.GOOD;
+      iconClassName = Constants.POLLUTIONICON.GOOD;
+    } else if (pm10 <= 150 || pm25 <= 75) {
+      message = Constants.POLLUTION.BAD;
+      iconClassName = Constants.POLLUTIONICON.BAD;
+    } else {
+      message = Constants.POLLUTION.VERYBAD;
+      iconClassName = Constants.POLLUTIONICON.VERYBAD;
+    }
+
+    return [pm10, pm25, day, message, iconClassName];
   };
 
   const PollutionWrapper = styled.div`
@@ -49,6 +71,8 @@ function Pollution({ data }) {
     <PollutionWrapper>
       <PollutionHeader>실시간 내 위치 미세먼지</PollutionHeader>
       <PollutionList>
+        <i class={makePollutionInfo(data)[4]}></i>
+        <PollutionListItem>{makePollutionInfo(data)[3]}</PollutionListItem>
         <PollutionListItem>
           미세먼지: {makePollutionInfo(data)[0]} pm
         </PollutionListItem>
