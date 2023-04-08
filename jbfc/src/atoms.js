@@ -1,4 +1,7 @@
 import { atom } from "recoil";
+import { recoilPersist } from "recoil-persist";
+
+const { persistAtom } = recoilPersist();
 
 const UserId = atom({
   key: "USERID",
@@ -15,6 +18,7 @@ const WeatherInfo = atom({
 const WeatherPollution = atom({
   key: "WEATHERPOLLUTION",
   default: ``,
+  effects_UNSTABLE: [persistAtom],
 });
 
 export { UserId, PollutionInfo, WeatherInfo, WeatherPollution };
