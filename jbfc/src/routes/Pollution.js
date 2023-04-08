@@ -9,33 +9,6 @@ function UnixToDate(Unix) {
   }월 ${time.getDate()}일 ${time.getHours()}시 ${dayOfWeek}요일`;
 } //옮겨줘여함
 
-const PollutionWrapper = styled.div`
-  background-color: #f2f2f2;
-  color: #333;
-  padding: 20px;
-`;
-
-const PollutionHeader = styled.h3`
-  color: #0288d1;
-  font-size: 24px;
-  margin-bottom: 10px;
-`;
-
-const PollutionList = styled.ul`
-  list-style: none;
-  padding: 0;
-`;
-
-const PollutionListItem = styled.li`
-  margin: 0.5rem 0;
-
-  &:before {
-    color: #03a9f4;
-    display: inline-block;
-    margin-right: 5px;
-  }
-`;
-
 function Pollution({ data }) {
   const makePollutionInfo = (data) => {
     let pollutionInfo = data.data.list;
@@ -45,18 +18,45 @@ function Pollution({ data }) {
     return [pm10, pm25, day];
   };
 
+  const PollutionWrapper = styled.div`
+    background-color: #f2f2f2;
+    color: #333;
+    padding: 20px;
+  `;
+
+  const PollutionHeader = styled.h3`
+    color: #0288d1;
+    font-size: 24px;
+    margin-bottom: 10px;
+  `;
+
+  const PollutionList = styled.ul`
+    list-style: none;
+    padding: 0;
+  `;
+
+  const PollutionListItem = styled.li`
+    margin: 0.5rem 0;
+
+    &:before {
+      color: #03a9f4;
+      display: inline-block;
+      margin-right: 5px;
+    }
+  `;
+
   return (
     <PollutionWrapper>
       <PollutionHeader>실시간 내 위치 미세먼지</PollutionHeader>
       <PollutionList>
         <PollutionListItem>
-          미세먼지: {makePollutionInfo(data)[0]} pm10
+          미세먼지: {makePollutionInfo(data)[0]} pm
         </PollutionListItem>
         <PollutionListItem>
-          초미세먼지: {makePollutionInfo(data)[1]}
+          초미세먼지: {makePollutionInfo(data)[1]} pm
         </PollutionListItem>
         <PollutionListItem>
-          Reference date: {makePollutionInfo(data)[2]}
+          측정기준: {makePollutionInfo(data)[2]}
         </PollutionListItem>
       </PollutionList>
     </PollutionWrapper>
