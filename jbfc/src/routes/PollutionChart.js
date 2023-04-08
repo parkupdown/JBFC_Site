@@ -1,58 +1,64 @@
+import styled from "styled-components";
 import ApexChart from "react-apexcharts";
-import { UnixToDate } from "./Pollution";
+
+const ChartContainer = styled.div`
+  height: 300px;
+  width: 100%;
+`;
 
 function PollutionChart({ data }) {
-  console.log(data);
   const pollutionData = data.data.list;
   const timeData = pollutionData.map((item) => item.dt);
   const dustData = pollutionData.map((item) => item.components.pm10);
-  console.log(data);
+
   return (
-    <ApexChart
-      type="line"
-      series={[
-        {
-          name: "DUST",
-          data: dustData,
-        },
-      ]}
-      options={{
-        chart: {
-          height: 50,
-          width: 100,
-          toolbar: {
+    <ChartContainer>
+      <ApexChart
+        type="line"
+        series={[{ name: "DUST", data: dustData }]}
+        options={{
+          chart: {
+            height: 100,
+            width: 100,
+            toolbar: {
+              show: false,
+            },
+            background: "transparent",
+          },
+          stroke: {
+            curve: "smooth",
+            width: 3,
+          },
+          grid: {
             show: false,
           },
-          background: "transparent",
-        },
-        stroke: {
-          curve: "smooth",
-          width: 3,
-        },
-        grid: {
-          show: false,
-        },
-        xaxis: {
-          type: "datetime",
-          axisTicks: {
-            show: false,
+          xaxis: {
+            type: "datetime",
+            axisTicks: {
+              show: false,
+            },
+            labels: { show: true },
+            categories: timeData,
           },
-          labels: { show: true },
-          categories: timeData,
-        },
-        yaxis: { show: true },
-        fill: {
-          type: "gradient",
-          gradient: { gradientToColors: ["#0be881"], stops: [0, 100] },
-        },
-        colors: ["#0fbcf9"],
-        tooltip: {
-          y: {
-            formatter: (value) => `$${value.toFixed(3)}`,
+          yaxis: { show: true },
+          fill: {
+            type: "gradient",
+            gradient: {
+              shade: "dark",
+              gradientToColors: ["#0288d1"],
+              stops: [0, 100],
+            },
           },
-        },
-      }}
-    />
+          colors: ["#0288d1"],
+          tooltip: {
+            y: {
+              formatter: (value) => `$${value.toFixed(3)}`,
+            },
+          },
+        }}
+      />
+    </ChartContainer>
   );
 }
+
 export default PollutionChart;
