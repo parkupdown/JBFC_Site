@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import swal from "sweetalert";
 
 function BoardMine() {
   const userId = localStorage.getItem(`userId`);
@@ -18,12 +19,10 @@ function BoardMine() {
   }, []);
 
   const onClick = (event, userId) => {
-    axios
-      .delete(`http://localhost:8080/board/mine/delete`, {
-        data: { userId: userId },
-      })
-      //delete는 데이터를 넣어주는 방법이 다르다!
-      .then((res) => console.log(res));
+    axios.delete(`http://localhost:8080/board/mine/delete`, {
+      data: { userId: userId },
+    });
+    //delete는 데이터를 넣어주는 방법이 다르다!
 
     const listId = event.currentTarget.parentElement.id;
     setMine((current) => {
@@ -32,6 +31,8 @@ function BoardMine() {
       );
       return newMine;
     });
+
+    swal("성공", "게시글 삭제가 완료되었습니다.", "success");
   };
 
   return (
@@ -54,7 +55,7 @@ function BoardMine() {
                 <hr></hr>
               </li>
             </div>
-          ))}{" "}
+          ))}
         </ul>
       )}
     </div>

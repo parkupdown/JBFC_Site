@@ -1,61 +1,49 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import LoginBarrier from "./LoginBarrier";
 
 function Board() {
   const userId = localStorage.getItem(`userId`);
   const [boardData, setBoardData] = useState(null);
-  const CallBoardApi = () => {
+  const [category, setCategory] = useState(`free`);
+  const CallBoardApi = (categoryOfBoard) => {
     axios
-      .get(`http://localhost:8080/board`)
+      .post(`http://localhost:8080/board`, {
+        category: categoryOfBoard,
+      })
       .then((res) => setBoardData(res.data))
       .catch((error) => console.log(error));
   };
 
   useEffect(() => {
-    CallBoardApi();
+    CallBoardApi(category);
   }, []);
 
-  const onSubmit = (event) => {
-    event.preventDefault();
-    const userId = localStorage.getItem(`userId`);
-    const title = event.currentTarget[0].value;
-    const contents = event.currentTarget[1].value;
-    const time = new Date();
-    const nowTime = `${
-      time.getMonth() + 1
-    }월 ${time.getDate()}일 ${time.getHours()}시 ${time.getMinutes()}분`;
-
-    axios
-      .post(`http://localhost:8080/board`, {
-        userId: userId,
-        title: title,
-        contents: contents,
-        nowTime: nowTime,
-      })
-      .then((res) => setBoardData(res.data));
-
-    event.currentTarget[0].value = ``;
-    event.currentTarget[1].value = ``;
-
-    alert("등록이 완료 되었습니당");
+  const selectChange = (event) => {
+    const categoryOfBoard = event.currentTarget.value;
+    setCategory(categoryOfBoard);
+    CallBoardApi(categoryOfBoard);
   };
+  //선택한 카테고리에 따라 해당하는 게시글을 보여주도록함
 
   return userId === null ? (
     <LoginBarrier />
   ) : (
     <div>
-      <h1>게시판입니다.</h1>
+      <h1>모든 글</h1>
       <div>
-        <form onSubmit={onSubmit}>
-          <input placeholder="제목" />
-          <input placeholder="내용" />
-          <button>제출</button>
-          <Link to={`/board/mine`}>
-            <button>내가 쓴 글</button>
-          </Link>
-        </form>
+        <select onChange={selectChange}>
+          <option value="free">자유게시판</option>
+          <option value="sentimental">센치할때..감성글..</option>
+          <option value="match">매칭, 자체 공지</option>
+        </select>
+        <Link to={`/board/write`} state={category}>
+          <h4>글 작성</h4>
+        </Link>
+        <Link to={`/board/mine`}>
+          <button>내가 쓴 글</button>
+        </Link>
         {boardData === null ? (
           <h1>로딩중입니다.</h1>
         ) : (

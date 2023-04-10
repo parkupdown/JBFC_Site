@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import swal from "sweetalert";
 
 function BoardDetail() {
   const { userId } = useParams();
@@ -51,12 +52,15 @@ function BoardDetail() {
     const inputValue = event.currentTarget[0].value;
     CallBoardCommentsApi(userId, userName, inputValue);
     event.currentTarget[0].value = ``;
-    console.log(comment);
   };
 
   const commentRemove = (event, userName, commentName, id) => {
     if (userName !== commentName) {
-      return alert(`본인이 작성한 댓글만 삭제할 수 있습니다.`);
+      return swal(
+        "오류발생",
+        "본인이 작성한 댓글만 삭제할 수 있습니다.",
+        "warning"
+      );
     }
 
     axios.delete(`http://localhost:8080/board/mine/comment/delete`, {
@@ -70,6 +74,7 @@ function BoardDetail() {
 
       return newMine;
     });
+    swal("성공", "댓글 삭제가 완료되었습니다.", "success");
   };
 
   return (
