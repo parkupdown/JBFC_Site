@@ -8,49 +8,57 @@ import swal from "sweetalert";
 
 function Sign() {
   const [teamName, setTeamName] = useState(null);
+  const [nickName, setNickName] = useState(null);
   const [userId, setUserId] = useState(null);
   const [userPassword, setPassword] = useState(null);
+
   const navigate = useNavigate();
 
   let passCheckData = false;
 
-  const passCheck = (teamName, userId, userPassword) => {
+  const passCheck = (teamName, nickName, userId, userPassword) => {
     swal(`성공`, `사용가능한 아이디입니다.`, `success`);
 
     const TeamName = document.getElementById("TeamName");
+    const NickName = document.getElementById("NickName");
     const Id = document.getElementById("ID");
     const Password = document.getElementById("Password");
+
     TeamName.value = teamName;
+    NickName.value = nickName;
     Id.value = userId;
     Password.value = userPassword;
+
     passCheckData = true;
   };
 
-  const failCheck = () => {
-    swal(`실패`, `중복되는 아이디가 존재합니다.`, `warning`);
+  const failCheck = (message) => {
+    swal(`실패`, `${message}`, `warning`);
     passCheckData = false;
   };
 
   const onCheck = (event) => {
     event.preventDefault();
     setTeamName(event.target[0].value);
-    setUserId(event.target[1].value);
-    setPassword(event.target[2].value);
+    setNickName(event.target[1].value);
+    setUserId(event.target[2].value);
+    setPassword(event.target[3].value);
   };
 
   useEffect(() => {
     axios
       .post(`http://localhost:8080/sign`, {
         userId: userId,
+        nickName: nickName,
       })
       .then(function (res) {
         if (userId !== null) {
-          res.data === false
-            ? failCheck()
-            : passCheck(teamName, userId, userPassword);
+          res.data === true
+            ? passCheck(teamName, nickName, userId, userPassword)
+            : failCheck(res.data);
         }
       });
-  }, [userId]);
+  }, [userId, nickName]);
 
   const goToMain = () => {
     navigate(`/`);
@@ -70,6 +78,7 @@ function Sign() {
     axios
       .post(`http://localhost:8080/sign/insertUserData`, {
         teamName: teamName,
+        nickName: nickName,
         userId: userId,
         userPassword: userPassword,
       })
@@ -154,6 +163,7 @@ function Sign() {
             placeholder="TeamName ex) 짝발란스"
             maxLength={13}
           />
+          <Input id="NickName" placeholder="NickName ex) 준맹" maxLength={10} />
           <Input id="ID" placeholder="ID" maxLength={11} />
           <Input id="Password" placeholder="Password" type="password" />
           <Button>Check</Button>
