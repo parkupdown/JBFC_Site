@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import "animate.css";
 import swal from "sweetalert";
+import SignValidation from "./SignValidation";
 
 function Sign() {
   const [teamName, setTeamName] = useState(null);
@@ -16,7 +17,7 @@ function Sign() {
 
   let passCheckData = false;
 
-  const passCheck = (teamName, nickName, userId, userPassword) => {
+  const pass = (teamName, nickName, userId, userPassword) => {
     swal(`성공`, `사용가능한 아이디입니다.`, `success`);
 
     const TeamName = document.getElementById("TeamName");
@@ -32,8 +33,19 @@ function Sign() {
     passCheckData = true;
   };
 
-  const failCheck = (message) => {
+  const fail = (message) => {
     swal(`실패`, `${message}`, `warning`);
+
+    const TeamName = document.getElementById("TeamName");
+    const NickName = document.getElementById("NickName");
+    const Id = document.getElementById("ID");
+    const Password = document.getElementById("Password");
+
+    TeamName.value = teamName;
+    NickName.value = nickName;
+    Id.value = userId;
+    Password.value = userPassword;
+
     passCheckData = false;
   };
 
@@ -45,6 +57,30 @@ function Sign() {
     setPassword(event.target[3].value);
   };
 
+  const checkValid = () => {
+    const signValidation = new SignValidation(
+      teamName,
+      nickName,
+      userId,
+      userPassword
+    );
+    const passNull = signValidation.CheckNull();
+    const passBlank = signValidation.CheckBlank();
+    const passSpecial = signValidation.CheckSpecial();
+
+    if (passNull !== true) {
+      return passNull;
+    }
+    if (passBlank !== true) {
+      return passBlank;
+    }
+
+    if (passSpecial !== true) {
+      return passSpecial;
+    }
+    return true;
+  };
+
   useEffect(() => {
     axios
       .post(`http://localhost:8080/sign`, {
@@ -52,29 +88,38 @@ function Sign() {
         nickName: nickName,
       })
       .then(function (res) {
+        const checkValidData = checkValid();
+        if (userId !== null && checkValidData !== true) {
+          console.log("asd");
+          return fail(checkValidData);
+        } //타당성검사도해야함
+        if (userId !== null && res.data !== true) {
+          return fail(res.data);
+          //중복검사
+        }
         if (userId !== null) {
-          res.data === true
-            ? passCheck(teamName, nickName, userId, userPassword)
-            : failCheck(res.data);
+          return pass(teamName, nickName, userId, userPassword);
         }
       });
-  }, [userId, nickName]);
+  }, [teamName, nickName, userId, nickName]);
 
   const goToMain = () => {
     navigate(`/`);
   };
   const onSubmit = (event) => {
     event.preventDefault();
-    if (userId === null || teamName === null || userPassword === null) {
+    if (
+      userId === null ||
+      nickName === null ||
+      teamName === null ||
+      userPassword === null
+    ) {
       return swal(`실패`, `Check 버튼으로 중복검사 해주세요`, `warning`);
     }
     if (passCheckData === false) {
-      return swal(
-        `실패`,
-        `사용이 불가능한 아이디입니다. 중복검사를 통해 다른 아이디를 찾아주세요`,
-        `warning`
-      );
+      return swal(`실패`, `로그인 타당성 검사 실패`, `warning`);
     }
+
     axios
       .post(`http://localhost:8080/sign/insertUserData`, {
         teamName: teamName,
