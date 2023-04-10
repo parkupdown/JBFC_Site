@@ -7,47 +7,75 @@ import "animate.css";
 import swal from "sweetalert";
 
 function Sign() {
+  const [teamName, setTeamName] = useState(null);
   const [userId, setUserId] = useState(null);
   const [userPassword, setPassword] = useState(null);
   const navigate = useNavigate();
 
-  const onCheck = (event) => {
-    event.preventDefault();
-    setUserId(event.currentTarget[0].value);
-    setPassword(event.currentTarget[1].value);
+  let passCheckData = false;
+
+  const passCheck = (teamName, userId, userPassword) => {
+    swal(`성공`, `사용가능한 아이디입니다.`, `success`);
+
+    const TeamName = document.getElementById("TeamName");
+    const Id = document.getElementById("ID");
+    const Password = document.getElementById("Password");
+    TeamName.value = teamName;
+    Id.value = userId;
+    Password.value = userPassword;
+    passCheckData = true;
   };
 
-  try {
-    useEffect(() => {
-      axios
-        .post(`http://localhost:8080/sign`, {
-          name: "짝발란스",
-          userId: userId,
-          userPassword: userPassword,
-        })
-        .then((res) =>
-          userId === null
-            ? null
-            : swal("불가능한 계정입니다.", "중복된 ID가 있습니다.", "warning")
-        );
-    }, [userId, userPassword]);
-  } catch (error) {
-    throw new error();
-  }
+  const failCheck = () => {
+    swal(`실패`, `중복되는 아이디가 존재합니다.`, `warning`);
+    passCheckData = false;
+  };
+
+  const onCheck = (event) => {
+    event.preventDefault();
+    setTeamName(event.target[0].value);
+    setUserId(event.target[1].value);
+    setPassword(event.target[2].value);
+  };
+
+  useEffect(() => {
+    axios
+      .post(`http://localhost:8080/sign`, {
+        userId: userId,
+      })
+      .then(function (res) {
+        if (userId !== null) {
+          res.data === false
+            ? failCheck()
+            : passCheck(teamName, userId, userPassword);
+        }
+      });
+  }, [userId]);
+
   const goToMain = () => {
     navigate(`/`);
   };
-
   const onSubmit = (event) => {
     event.preventDefault();
+    if (userId === null || teamName === null || userPassword === null) {
+      return swal(`실패`, `Check 버튼으로 중복검사 해주세요`, `warning`);
+    }
+    if (passCheckData === false) {
+      return swal(
+        `실패`,
+        `사용이 불가능한 아이디입니다. 중복검사를 통해 다른 아이디를 찾아주세요`,
+        `warning`
+      );
+    }
     axios
       .post(`http://localhost:8080/sign/insertUserData`, {
-        name: "짝발란스",
+        teamName: teamName,
         userId: userId,
         userPassword: userPassword,
       })
       .then(goToMain())
-      .then(alert(`회원가입이 완료되었습니다.`));
+      .then(swal(`성공`, `회원가입에 성공하셨습니다.`, "success"));
+
     //이제 여기서 이동 usenavigator로!
   };
 
@@ -96,6 +124,7 @@ function Sign() {
     color: white;
     font-size: 16px;
     cursor: pointer;
+    margin-top: 20px;
 
     &:hover {
       background-color: #0288d1;
@@ -120,13 +149,21 @@ function Sign() {
           Membership Registration
         </Title>
         <Form onSubmit={onCheck}>
-          <Input placeholder="ID" />
-          <Input placeholder="Password" />
+          <Input
+            id="TeamName"
+            placeholder="TeamName ex) 짝발란스"
+            maxLength={13}
+          />
+          <Input id="ID" placeholder="ID" maxLength={11} />
+          <Input id="Password" placeholder="Password" type="password" />
           <Button>Check</Button>
         </Form>
-        <Form onSubmit={onSubmit}>
-          <Button>Submit</Button>
+        <Form>
+          <Button onClick={onSubmit} disabled={false}>
+            Submit
+          </Button>
         </Form>
+
         <Link style={{ textDecoration: "none" }} href={`/`}>
           Go to login
         </Link>
