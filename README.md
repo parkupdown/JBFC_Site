@@ -10,7 +10,7 @@ Login!
 - express 라이브러리를 활용한 서버 구축 ⭕️
 - mongodb를 활용해 DB 구축 ⭕️
 - axios 라이브러리를 활용해 HTTP 비통기 서버 통신 ⭕️
-- useForm을 활용한 타당성 검증
+- TeamName,NickName,ID,Password 타당성 검사 ⭕️
 - useNavigator를 활용한 렌더링 ⭕️
 - login 최초 1회시에 localstorage에 정보 저장, ⭕️
 - 로그아웃 기능 ⭕️
@@ -27,6 +27,7 @@ notice board!
 - 게시글을 생성하여 각종 공지사항, 매칭 정보를 공유하는 공간을 만들어보자 ⭕️
 - 작성자의 이름, 작성날짜, 작성내용을 담자 ⭕️
 - 작성 내용 클릭 시 세부 내용을 볼 수 있도록 하자 ⭕️
+- 게시판을 목록화하여 카테고리별로 관리하자 ⭕️
 - 댓글 기능을 추가해보자 ⭕️
 
 chating !
