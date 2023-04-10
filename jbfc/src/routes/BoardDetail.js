@@ -52,6 +52,7 @@ function BoardDetail() {
     const inputValue = event.currentTarget[0].value;
     CallBoardCommentsApi(userId, userName, inputValue);
     event.currentTarget[0].value = ``;
+    swal("성공", "댓글작성이 완료되었습니다.", "success");
   };
 
   const commentRemove = (event, userName, commentName, id) => {
@@ -74,7 +75,7 @@ function BoardDetail() {
 
       return newMine;
     });
-    swal("성공", "댓글 삭제가 완료되었습니다.", "success");
+    swal("성공", "댓글삭제가 완료되었습니다.", "success");
   };
 
   return (

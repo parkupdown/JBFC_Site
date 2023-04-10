@@ -52,6 +52,7 @@ function BoardMine() {
                 </Link>
                 <h4>작성자: {data.userId}</h4>
                 <h3>작성일: {data.nowTime}</h3>
+                <h3>카테고리: {data.category}</h3>
                 <hr></hr>
               </li>
             </div>
