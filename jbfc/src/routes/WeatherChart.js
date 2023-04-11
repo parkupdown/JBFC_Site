@@ -1,109 +1,138 @@
 import ApexChart from "react-apexcharts";
 
 function WeatherChart({ data }) {
-  const weatherData = data.data.list;
-  const timeData = weatherData.map((item) => item.dt_txt);
-  const tempData = weatherData.map(
-    (item) => Math.floor(item.main.temp - 272.15) + "°C"
-  );
+  const makeDayWeather = (weatherData) => {
+    const dayWeatherArr = [];
+    let dayWeather = [];
+    for (let i = 0; i < weatherData.length; i++) {
+      dayWeather = [...dayWeather, weatherData[i]];
+      if (i === 4) {
+        dayWeatherArr.push(dayWeather);
+        dayWeather = [];
+      } else if (i > 4 && i % 8 === 4) {
+        dayWeatherArr.push(dayWeather);
+        dayWeather = [];
+      }
+    }
+    return dayWeatherArr;
+  };
 
+  const UnixToDate = (Unix) => {
+    const time = new Date(Unix * 1000);
+    const week = [`일`, `월`, `화`, `수`, `목`, `금`, `토`];
+    const dayOfWeek = week[time.getDay()];
+    return `${time.getMonth() + 1}월 ${time.getDate()}일 ${dayOfWeek}요일`;
+  }; //옮겨줘여함
+
+  const dayWeatherData = makeDayWeather(data.data.list);
+  const timeData = dayWeatherData.map((arr) => UnixToDate(arr[0].dt));
+
+  const maxTempData = dayWeatherData
+    .map((arr) => arr.map((item) => item.main.temp_max))
+    .map((arr) => Math.floor(Math.max(...arr) - 272.15) + "°C");
+
+  const minTempData = dayWeatherData
+    .map((arr) => arr.map((item) => item.main.temp_min))
+    .map((arr) => Math.floor(Math.min(...arr) - 272.15) + "°C");
+
+  /*
+  const maxTempData = weatherData.map(
+    (item) => Math.floor(item.main.temp_max - 272.15) + "°C"
+  );
+  const minTempData = weatherData.map(
+    (item) => Math.floor(item.main.temp_min - 272.15) + "°C"
+  );
+  
+  console.log(timeData);
+  console.log(maxTempData, minTempData);
+*/
   return (
     <ApexChart
       type="line"
-      series={[{ name: "Temperature", data: tempData }]}
+      series={[
+        { name: "날짜별 최고온도", data: maxTempData },
+        {
+          name: "날짜별 최저온도",
+          data: minTempData,
+        },
+      ]}
       options={{
         chart: {
-          height: 300,
-          width: "100%",
-          background: "transparent",
-          zoom: {
-            enabled: false,
+          height: 350,
+          type: "line",
+          dropShadow: {
+            enabled: true,
+            color: "#000",
+            top: 18,
+            left: 7,
+            blur: 10,
+            opacity: 0.2,
           },
+          toolbar: {
+            show: false,
+          },
+        },
+        colors: ["#77B6EA", "#545454"],
+        dataLabels: {
+          enabled: true,
         },
         stroke: {
           curve: "smooth",
-          width: 3,
+        },
+        title: {
+          align: "left",
         },
         grid: {
-          show: true,
-          borderColor: "#f1f1f1",
-          padding: {
-            top: 0,
-            right: 0,
-            bottom: 0,
-            left: 0,
-          },
-        },
-        xaxis: {
-          type: "datetime",
-          axisTicks: {
-            show: false,
-          },
-          labels: {
-            show: true,
-            style: {
-              colors: "#787878",
-            },
-          },
-          categories: timeData,
-          tooltip: {
-            enabled: false,
-          },
-        },
-        yaxis: {
-          show: true,
-          labels: {
-            formatter: function (value) {
-              return value + "°C";
-            },
-            style: {
-              colors: "#787878",
-            },
+          borderColor: "#e7e7e7",
+          row: {
+            colors: ["#f3f3f3", "transparent"], // takes an array which will be repeated on columns
+            opacity: 0.5,
           },
         },
         markers: {
-          size: 0,
-          style: "hollow",
+          size: 1,
         },
-        fill: {
-          type: "gradient",
-          gradient: {
-            shadeIntensity: 1,
-            opacityFrom: 0.7,
-            opacityTo: 0.9,
-            colorStops: [
-              {
-                offset: 0,
-                color: "#00bfff",
-                opacity: 1,
-              },
-              {
-                offset: 100,
-                color: "#1E90FF",
-                opacity: 1,
-              },
-            ],
-          },
+        xaxis: {
+          categories: timeData,
+          title: {},
         },
-        colors: ["#1E90FF"],
-        tooltip: {
-          enabled: true,
-          x: {
-            format: "dd/MM/yy HH:mm",
-          },
-          y: {
+        yaxis: {
+          title: {},
+          min: 0,
+          max: 35,
+          labels: {
             formatter: function (value) {
               return value + "°C";
             },
-            title: {
-              formatter: (seriesName) => "Temperature",
+            style: {
+              colors: "#787878",
             },
           },
-          theme: "dark",
-          style: {
-            fontSize: "12px",
-            fontFamily: "Helvetica, Arial, sans-serif",
+        },
+        legend: {
+          position: "top",
+          horizontalAlign: "right",
+          floating: true,
+          offsetY: -25,
+          offsetX: -5,
+        },
+        tooltip: {
+          enabled: true,
+          x: {
+            formatter: "Month: %M",
           },
+          y: [
+            {
+              title: {
+                formatter: function (seriesName) {
+                  return "Temperature";
+                },
+              },
+              formatter: function (value) {
+                return value + "°C";
+              },
+            },
+          ],
         },
       }}
     />

@@ -44,12 +44,16 @@ function Pollution({ data }) {
     background-color: #f2f2f2;
     color: #333;
     padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
   `;
 
   const PollutionHeader = styled.h3`
     color: #0288d1;
     font-size: 24px;
-    margin-bottom: 10px;
+    margin-top: 0;
   `;
 
   const PollutionList = styled.ul`
@@ -58,7 +62,7 @@ function Pollution({ data }) {
   `;
 
   const PollutionListItem = styled.li`
-    margin: 0.5rem 0;
+    margin: 0.6rem 0;
 
     &:before {
       color: #03a9f4;
@@ -67,11 +71,16 @@ function Pollution({ data }) {
     }
   `;
 
+  const Icon = styled.i`
+    font-size: 72px;
+    margin-bottom: 20px;
+  `;
+
   return (
     <PollutionWrapper>
       <PollutionHeader>실시간 내 위치 미세먼지</PollutionHeader>
+      <Icon className={makePollutionInfo(data)[4]}></Icon>
       <PollutionList>
-        <i class={makePollutionInfo(data)[4]}></i>
         <PollutionListItem>{makePollutionInfo(data)[3]}</PollutionListItem>
         <PollutionListItem>
           미세먼지: {makePollutionInfo(data)[0]} pm

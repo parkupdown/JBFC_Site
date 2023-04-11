@@ -48,6 +48,10 @@ function Weather({ data }) {
     background-color: #f2f2f2;
     color: #333;
     padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
   `;
 
   const InfoList = styled.ul`
@@ -57,20 +61,42 @@ function Weather({ data }) {
   `;
 
   const InfoItem = styled.li`
-    margin: 0.5rem 0;
+    margin: 0.6rem 0;
   `;
 
   const WeatherHeader = styled.h3`
     color: #0288d1;
     font-size: 24px;
-    margin-bottom: 10px;
+    margin-top: 0;
+  `;
+
+  const Icon = styled.i`
+    font-size: 72px;
+    margin-bottom: 20px;
+  `;
+
+  const CentralizedContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  `;
+
+  const WeatherContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
   `;
 
   return (
     <Container>
-      <WeatherHeader>실시간 내 위치 날씨</WeatherHeader>
+      <WeatherContainer>
+        <WeatherHeader>실시간 내 위치 날씨</WeatherHeader>
+      </WeatherContainer>
+
+      <Icon className={makeWeatherInfo(data)[5]}></Icon>
       <InfoList>
-        <i class={makeWeatherInfo(data)[5]}></i>
         <InfoItem>{makeWeatherInfo(data)[4]}</InfoItem>
         <InfoItem>현재온도: {makeWeatherInfo(data)[0]} ℃</InfoItem>
         <InfoItem>최고 온도: {makeWeatherInfo(data)[1]} ℃</InfoItem>
