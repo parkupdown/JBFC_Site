@@ -5,27 +5,33 @@ import FreeTalk from "./FreeTalk";
 import LoginBarrier from "./LoginBarrier";
 import NoticeTalk from "./NoticeTalk";
 import styled, { createGlobalStyle } from "styled-components";
+import ChatComponents from "./ChatComponents";
 
 function Chat() {
   const socket = io.connect(`http://localhost:8080`);
   const userId = localStorage.getItem(`userId`);
   const [noticeChat, setNoticeChat] = useState(null);
   const [freeChat, setFreeChat] = useState(null);
-
+  const [toggle, setToggle] = useState(true);
   const navigator = useNavigate();
+
+  const clickToggle = () => {
+    setToggle((current) => !current);
+  };
 
   useEffect(() => {
     socket.on(`broadcast_notice`, (data) => {
       setNoticeChat(data);
     });
-
     socket.on(`broadcast_free`, (data) => {
       setFreeChat(data);
     });
+
+    navigator(`/chat/Notice`);
   }, []);
 
   const goBack = () => {
-    navigator(-1);
+    navigator("/home");
   };
 
   const Title = styled.h1`
@@ -62,6 +68,8 @@ function Chat() {
     box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.15);
   `;
 
+  const chatComponents = ChatComponents();
+
   return (
     <>
       <ButtonContainer>
@@ -69,10 +77,14 @@ function Chat() {
         <div>
           <Button onClick={goBack}>뒤로가기</Button>
           <Link to={`/chat/Notice`}>
-            <Button>NoticeTalk</Button>
+            <Button onClick={clickToggle} disabled={toggle}>
+              NoticeTalk
+            </Button>
           </Link>
           <Link to={`/chat/Free`}>
-            <Button>FreeTalk</Button>
+            <Button onClick={clickToggle} disabled={!toggle}>
+              FreeTalk
+            </Button>
           </Link>
         </div>
       </ButtonContainer>
@@ -81,12 +93,24 @@ function Chat() {
         <Route
           path="Notice"
           element={
-            <NoticeTalk userId={userId} socket={socket} data={noticeChat} />
+            <NoticeTalk
+              userId={userId}
+              socket={socket}
+              data={noticeChat}
+              ChatComponents={chatComponents}
+            />
           }
         />
         <Route
           path="Free"
-          element={<FreeTalk userId={userId} socket={socket} data={freeChat} />}
+          element={
+            <FreeTalk
+              userId={userId}
+              socket={socket}
+              data={freeChat}
+              ChatComponents={chatComponents}
+            />
+          }
         />
       </Routes>
     </>
