@@ -38,9 +38,10 @@ function FreeTalk({ userId, socket, data }) {
 
   if (data !== null) {
     const Ul = document.querySelector("ul");
+    console.log(Ul);
     const li = document.createElement("li");
     Ul.appendChild(li);
-    li.innerHTML = `${userId}: ${data.message}`;
+    li.innerHTML = `${data.userId}: ${data.message}`;
   }
 
   return (

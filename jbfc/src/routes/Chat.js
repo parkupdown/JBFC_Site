@@ -4,13 +4,14 @@ import io from "socket.io-client";
 import FreeTalk from "./FreeTalk";
 import LoginBarrier from "./LoginBarrier";
 import NoticeTalk from "./NoticeTalk";
-import styled from "styled-components";
+import styled, { createGlobalStyle } from "styled-components";
 
 function Chat() {
   const socket = io.connect(`http://localhost:8080`);
   const userId = localStorage.getItem(`userId`);
   const [noticeChat, setNoticeChat] = useState(null);
   const [freeChat, setFreeChat] = useState(null);
+
   const navigator = useNavigate();
 
   useEffect(() => {
@@ -27,42 +28,55 @@ function Chat() {
     navigator(-1);
   };
 
-  const BackButton = styled.button`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #fff;
-    border: 1px solid #ccc;
+  const Title = styled.h1`
+    font-size: 4rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    color: #0288d1;
+  `;
+
+  const Button = styled.button`
+    padding: 1rem 2rem;
+    background-color: #03a9f4;
+    color: #fff;
     border-radius: 5px;
-    padding: 5px;
     cursor: pointer;
-    font-size: 14px;
-    color: #333;
-    transition: all 0.2s ease;
+    font-size: 1.2rem;
+    margin: 1rem;
+    border: none;
 
     &:hover {
-      background-color: #eee;
-      border-color: #bbb;
-    }
-
-    &:active {
-      background-color: #ddd;
-      border-color: #999;
+      background-color: #01579b;
     }
   `;
 
-  return userId === null ? (
-    <LoginBarrier />
-  ) : (
-    <div>
-      <h1>짝발란스Talk</h1>
-      <BackButton onClick={goBack}>뒤로가기</BackButton>
-      <Link to={`/chat/Notice`}>
-        <button>NoticeTalk</button>
-      </Link>
-      <Link to={`/chat/Free`}>
-        <button>FreeTalk</button>
-      </Link>
+  const ButtonContainer = styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    top: 0;
+    background-color: #f2f2f2;
+    padding: 1rem;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.15);
+  `;
+
+  return (
+    <>
+      <ButtonContainer>
+        <Title>JJACK Talk</Title>
+        <div>
+          <Button onClick={goBack}>뒤로가기</Button>
+          <Link to={`/chat/Notice`}>
+            <Button>NoticeTalk</Button>
+          </Link>
+          <Link to={`/chat/Free`}>
+            <Button>FreeTalk</Button>
+          </Link>
+        </div>
+      </ButtonContainer>
+
       <Routes>
         <Route
           path="Notice"
@@ -75,7 +89,7 @@ function Chat() {
           element={<FreeTalk userId={userId} socket={socket} data={freeChat} />}
         />
       </Routes>
-    </div>
+    </>
   );
 }
 
