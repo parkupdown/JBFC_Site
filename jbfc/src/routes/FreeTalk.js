@@ -17,30 +17,6 @@ const ChatContainer = styled.div`
   display: flex;
 `;
 
-const ScrollBar = styled.div`
-  width: 20px;
-  background-color: #f2f2f2;
-  border-radius: 10px;
-  margin: 5px;
-`;
-
-const Thumb = styled.div`
-  width: 10px;
-  background-color: #555;
-  border-radius: 10px;
-  cursor: pointer;
-`;
-
-const Track = styled.div`
-  width: 10px;
-  background-color: #f2f2f2;
-  border-radius: 10px;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
 const InputContainer = styled.form`
   display: flex;
   align-items: center;
@@ -71,13 +47,22 @@ const InputContainer = styled.form`
 
 const ChatList = styled.ul`
   list-style: none;
-  margin: 0;
+  margin: 20px 40px;
   padding: 0;
 
   li {
+    margin-top: 35px;
+  }
+
+  span {
+    margin-right: 1rem;
     margin-left: 1rem;
-    margin-bottom: 0.5rem;
+    margin-bottom: 1rem;
     align-items: end;
+    border-radius: 16px;
+    padding: 10px 16px;
+    background-color: #03a9f4;
+    color: #fff;
   }
 `;
 
@@ -87,6 +72,14 @@ const Ment = styled.h1`
   font-weight: bold;
   margin-bottom: 1rem;
   color: #0288d1;
+  text-align: center;
+`;
+
+const ChatComponentsTitle = styled.h2`
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  color: #333;
   text-align: center;
 `;
 
@@ -124,6 +117,18 @@ function FreeTalk({ userId, socket, data }) {
     //이때 입력한 것들은 보내짐
     event.currentTarget[0].value = ``;
   };
+  useEffect(() => {
+    if (data !== null) {
+      const Ul = document.querySelector("ul");
+      const li = document.createElement("li");
+      data.userId === userId
+        ? (li.style.textAlign = "right")
+        : (li.style.textAlign = "left");
+      li.className = "animate__animated animate__bounceIn animate__faster";
+      Ul.appendChild(li);
+      li.innerHTML = `<span>${data.userId}: ${data.message}</span>`;
+    }
+  }, [data]);
 
   // 이게 아니라 setState에 들어갔던 것이 나오도록해야할듯
   //이부분이 잘못됨
@@ -137,6 +142,7 @@ function FreeTalk({ userId, socket, data }) {
         </div>
       ) : (
         <ChatContainer>
+          <ChatComponentsTitle>Free Talk</ChatComponentsTitle>
           <InputContainer onSubmit={sendMessage}>
             <input placeholder="채팅" />
             <button>보내기</button>
@@ -145,9 +151,17 @@ function FreeTalk({ userId, socket, data }) {
           <ChatList>
             {chatData === null
               ? null
-              : chatData.map((data, index) => (
-                  <li key={index}>{`${data.userId}: ${data.chatData}`}</li>
-                ))}
+              : chatData.map((data, index) =>
+                  data.userId === userId ? (
+                    <li style={{ textAlign: "right" }} key={index}>
+                      <span>{`${data.userId}: ${data.chatData}`}</span>
+                    </li>
+                  ) : (
+                    <li key={index}>
+                      <span>{`${data.userId}: ${data.chatData}`}</span>
+                    </li>
+                  )
+                )}
           </ChatList>
         </ChatContainer>
       )}
