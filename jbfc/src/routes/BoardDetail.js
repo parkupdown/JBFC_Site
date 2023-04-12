@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import swal from "sweetalert";
 
 function BoardDetail() {
@@ -8,6 +8,7 @@ function BoardDetail() {
   const userName = localStorage.getItem(`userId`);
   const [detail, setDetail] = useState(null);
   const [comment, setComment] = useState(null);
+  const navigator = useNavigate();
   const time = new Date();
   const nowTime = `${
     time.getMonth() + 1

@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
+import styled from "styled-components";
 import swal from "sweetalert";
 
 function BoardWrite() {
@@ -35,8 +36,37 @@ function BoardWrite() {
     event.currentTarget[1].value = ``;
   };
 
+  const goBack = () => {
+    navigator(-1);
+  };
+
+  const BackButton = styled.button`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #333;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background-color: #eee;
+      border-color: #bbb;
+    }
+
+    &:active {
+      background-color: #ddd;
+      border-color: #999;
+    }
+  `;
+
   return (
     <div>
+      <BackButton onClick={goBack}>뒤로가기</BackButton>
       <form onSubmit={onSubmit}>
         <input placeholder="제목" />
         <input placeholder="내용" />

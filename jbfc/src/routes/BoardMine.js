@@ -1,11 +1,14 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import styled from "styled-components";
 import swal from "sweetalert";
 
 function BoardMine() {
   const userId = localStorage.getItem(`userId`);
   const [mine, setMine] = useState(null);
+  const navigator = useNavigate();
+
   const CallBoardMineApi = () => {
     return axios
       .post(`http://localhost:8080/board/mine`, {
@@ -35,8 +38,37 @@ function BoardMine() {
     swal("성공", "게시글 삭제가 완료되었습니다.", "success");
   };
 
+  const goBack = () => {
+    navigator(-1);
+  };
+
+  const BackButton = styled.button`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #333;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background-color: #eee;
+      border-color: #bbb;
+    }
+
+    &:active {
+      background-color: #ddd;
+      border-color: #999;
+    }
+  `;
+
   return (
     <div>
+      <BackButton onClick={goBack}>뒤로가기</BackButton>
       {mine === null ? (
         <h2>로딩중입니당</h2>
       ) : (
