@@ -8,15 +8,13 @@ const io = new Server(http, {
   cors: {
     origin: "http://localhost:3000",
   },
-});
-
-//login
+}); //login
 const LocalStrategy = require(`passport-local`).Strategy;
 const session = require(`express-session`);
 const passport = require(`passport`);
 const bodyParser = require(`body-parser`);
 const ObjectId = require(`mongodb`).ObjectID;
-
+require(`dotenv`).config();
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({ credentials: true }));
 
@@ -24,9 +22,16 @@ app.use(cors({ credentials: true }));
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-
+PORT = 8080;
+DB_URL =
+  "mongodb+srv://tkdgk1996:FBG9w8AwL8J0p5Zy@cluster0.btnfifg.mongodb.net/?retryWrites=true&w=majority";
+SESSION_SECERET = "ParkUpDown";
 app.use(
-  session({ secret: "ParkUpDown", resave: true, saveUninitialized: false })
+  session({
+    secret: process.env.SESSION_SECERET,
+    resave: true,
+    saveUninitialized: false,
+  })
 );
 app.use(passport.initialize());
 app.use(passport.session());
@@ -34,7 +39,7 @@ app.use(passport.session());
 let db;
 //mongodb+srv://tkdgk1996:<password>@cluster0.btnfifg.mongodb.net/?retryWrites=true&w=majority
 MongoClient.connect(
-  `mongodb+srv://tkdgk1996:FBG9w8AwL8J0p5Zy@cluster0.btnfifg.mongodb.net/?retryWrites=true&w=majority`,
+  process.env.DB_URL,
   { useUnifiedTopology: true },
   //여기에 연결하겠다.
   function (error, client) {
@@ -43,7 +48,7 @@ MongoClient.connect(
     }
     db = client.db(`JB`);
 
-    http.listen(8080, function () {
+    http.listen(process.env.PORT, function () {
       console.log(`Listening on 8080`);
     });
     //express를 이용해서 서버를 띄우던 걸 http 라는 node.js 기본 라이브러리 + socket.io를 이용해서 띄운것
@@ -56,32 +61,37 @@ MongoClient.connect(
 io.on("connection", (socket) => {
   socket.on(`send_message_notice`, (data) => {
     //유저가 메세지를 보내면
-    console.log(data);
     io.emit(`broadcast_notice`, data);
     //모든사람에게 뿌려주세요.
   });
   socket.on(`send_message_free`, (data) => {
-    console.log(data);
     io.emit(`broadcast_free`, data);
   });
 });
 
 const checkId = async (req, res) => {
-  const { userId } = req.body;
-  const user = await db.collection(`UserInfo`).findOne({ 아이디: userId });
-  if (user === null) {
-    res.send(`사용이 가능합니다.`);
+  const user = await db
+    .collection(`UserInfo`)
+    .findOne({ userId: req.body.userId });
+  const nick = await db
+    .collection(`UserInfo`)
+    .findOne({ nickName: req.body.nickName });
+  if (user === null && nick === null) {
+    res.send(true);
+  } else if (nick !== null) {
+    res.send(`중복 닉네임이 존재합니다.`);
   } else {
-    res.send(`중복된 아이디가 존재합니다.`);
+    res.send(`중복 ID가 존재합니다.`);
   }
 };
 
 const insertUserData = (req, res) => {
   db.collection(`UserInfo`).insertOne(
     {
-      name: "짝발란스",
-      아이디: req.body.userId,
-      비밀번호: req.body.userPassword,
+      teamName: req.body.teamName,
+      nickName: req.body.nickName,
+      userId: req.body.userId,
+      userPassword: req.body.userPassword,
     },
     function (error, res) {
       if (error) {
@@ -131,27 +141,26 @@ app.get(`/`, LoginCheck, (req, res) => {
 passport.use(
   new LocalStrategy(
     {
+      teamNameField: "teamName",
       usernameField: "userId",
       passwordField: "userPassword",
       session: true,
       passReqToCallback: false,
     },
-    function (입력한아이디, 입력한비번, done) {
-      console.log(입력한아이디, 입력한비번);
-      console.log(입력한아이디);
+    function (userId, userPassword, done) {
       db.collection("UserInfo").findOne(
-        { 아이디: 입력한아이디 },
-        function (에러, 결과) {
-          if (에러) return done(에러);
+        { userId: userId },
+        function (error, result) {
+          if (error) return done(error);
 
-          if (!결과)
-            return done(null, false, { message: "존재하지않는 아이디요" });
-          if (입력한비번 == 결과.비밀번호) {
-            //결과.pw => db에 저장된 pw
-            return done(null, 결과);
+          if (!result)
+            return done(null, false, { message: "존재하지않습니다." });
+          if (userPassword == result.userPassword) {
+            //result.pw => db에 저장된 pw
+            return done(null, result);
             //done은 서버에러를넣는곳
           } else {
-            return done(null, false, { message: "비번틀렸어요" });
+            return done(null, false, { message: "비번틀렸습니다." });
           }
         }
       );
@@ -160,12 +169,12 @@ passport.use(
 );
 
 passport.serializeUser(function (user, done) {
-  done(null, user.아이디);
+  done(null, user.userId);
 });
 //id를 이용해서 세션을 저장시키는 코드 (로그인 성공시 발동)
-passport.deserializeUser(function (아이디, done) {
-  //디비에서 위에 있는 user.아이디로 유저를 찾은 뒤에 유저 정보를 중괄호에 넣음
-  db.collection(`UserInfo`).findOne({ 아이디: 아이디 }, function (error, res) {
+passport.deserializeUser(function (userId, done) {
+  //디비에서 위에 있는 use 유저를 찾은 뒤에 유저 정보를 중괄호에 넣음
+  db.collection(`UserInfo`).findOne({ userId: userId }, function (error, res) {
     done(null, res);
   });
 });
@@ -179,27 +188,29 @@ const insertBoardData = async (req, res) => {
       title: req.body.title,
       contents: req.body.contents,
       nowTime: req.body.nowTime,
+      category: req.body.category,
     },
     function (error, Result) {
       if (error) {
         return console.log(error);
       }
-      db.collection("Board")
-        .find()
-        .toArray(function (error, result) {
-          res.send(result);
-        });
     }
   );
 };
 
-app.post(`/board`, (req, res) => {
+/* db.collection("Board")
+        .find()
+        .toArray(function (error, result) {
+          res.send(result);
+        }); */
+
+app.post(`/board/write`, (req, res) => {
   insertBoardData(req, res);
 });
 
-app.get(`/board`, (req, res) => {
+app.post(`/board/`, (req, res) => {
   db.collection("Board")
-    .find()
+    .find({ category: req.body.category })
     .toArray(function (error, result) {
       res.send(result);
     });
@@ -224,12 +235,9 @@ app.post(`/board/mine`, (req, res) => {
 });
 
 app.delete(`/board/mine/delete`, (req, res) => {
-  console.log(req.body.userId);
   db.collection(`Board`).deleteOne(
     { _id: ObjectId(req.body.userId) },
     function (error, result) {
-      console.log(`삭제완료`);
-      console.log(`에러:${error}`);
       res.status(200).send({ message: `삭제완료` });
     }
   );
@@ -324,8 +332,8 @@ app.post(`/chat`, (req, res) => {
 /*db.collection(`UserInfo`).insertOne(
     {
       name: req.body.name,
-      아이디: req.body.useId,
-      비밀번호: req.body.usePass,
+   req.body.useId,
+      userPassword: req.body.usePass,
     },
     function (error, res) {
       if (error) {
