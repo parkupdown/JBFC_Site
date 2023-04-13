@@ -22,10 +22,7 @@ app.use(cors({ credentials: true }));
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-PORT = 8080;
-DB_URL =
-  "mongodb+srv://tkdgk1996:FBG9w8AwL8J0p5Zy@cluster0.btnfifg.mongodb.net/?retryWrites=true&w=majority";
-SESSION_SECERET = "ParkUpDown";
+
 app.use(
   session({
     secret: process.env.SESSION_SECERET,
@@ -48,7 +45,7 @@ MongoClient.connect(
     }
     db = client.db(`JB`);
 
-    http.listen(process.env.PORT, function () {
+    http.listen(process.env.SERVER_PORT, function () {
       console.log(`Listening on 8080`);
     });
     //express를 이용해서 서버를 띄우던 걸 http 라는 node.js 기본 라이브러리 + socket.io를 이용해서 띄운것
