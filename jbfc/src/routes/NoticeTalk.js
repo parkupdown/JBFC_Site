@@ -4,6 +4,8 @@ import "animate.css";
 
 function NoticeTalk({ userId, socket, data, ChatComponents }) {
   const [chatData, setChatData] = useState(null);
+  const [chatNewData, setChatNewData] = useState([]);
+
   const [
     Container,
     ChatContainer,
@@ -12,38 +14,26 @@ function NoticeTalk({ userId, socket, data, ChatComponents }) {
     Ment,
     ChatComponentsTitle,
   ] = ChatComponents;
+
   const GetChatApi = () => {
     axios
       .post(`http://localhost:8080/chat`, {
         category: "Notice",
       })
       .then((res) => setChatData(res.data));
-  };
+  }; //여기서 최초 정보를 가져옴
 
   useEffect(() => {
     GetChatApi();
   }, []);
 
-  useEffect(() => {
-    if (data !== null) {
-      const Ul = document.querySelector("ul");
-      const li = document.createElement("li");
-      data.userId === userId
-        ? (li.style.textAlign = "right")
-        : (li.style.textAlign = "left");
-      li.className = "animate__animated animate__bounceIn animate__faster";
-      Ul.appendChild(li);
-      li.innerHTML = `<span>${data.userId}: ${data.message}</span>`;
-    }
-  }, [data]); // 이게 둘다
-
   const CallChatApi = (ChatValue) => {
     axios.post(`http://localhost:8080/chat/insertOne`, {
       userId: userId,
-      chatData: ChatValue,
+      message: ChatValue,
       category: "Notice",
     });
-  };
+  }; //여기서 데이터를 DB에 넣어준다.
 
   const emitMessage = (ChatValue) => {
     return new Promise((resolve, reject) => {
@@ -52,48 +42,67 @@ function NoticeTalk({ userId, socket, data, ChatComponents }) {
         message: ChatValue,
       });
     });
-  };
+  }; //여기서 socket에 보내면
 
   const sendMessage = async (event) => {
     event.preventDefault();
     const ChatValue = event.currentTarget[0].value;
     emitMessage(ChatValue).then(CallChatApi(ChatValue));
-    //이때 입력한 것들은 보내짐
+
+    //이때 입력한 것들은 보내짐 이때 ChatApi를 통해 저장이됨 그럼 그 값을 가져온 다음 그 값을 바로 넣어주면 되자나
     event.currentTarget[0].value = ``;
   };
 
-  if (chatData === null) {
-    return (
-      <Container>
-        <Ment>"로딩중"</Ment>
-      </Container>
-    );
-  }
+  useEffect(() => {
+    if (data !== null) {
+      setChatNewData((current) => [...current, data]);
+    }
+  }, [data]);
+  // 이게 둘다
+
+  //chat data가 처음엔 null이잖아 그럼 data는? data는 user가 입력했을 때의 값이야
+  //즉 user가 입력은 했는데 chat data는 null이면 ?
 
   return (
     <>
-      <Container>
-        <ChatContainer>
-          <ChatComponentsTitle>NOTICE TALK</ChatComponentsTitle>
-          <InputContainer onSubmit={sendMessage}>
-            <input placeholder="JJACK BALANCE" />
-            <button>보내기</button>
-          </InputContainer>
+      {chatData === null ? (
+        <Container>
+          <Ment>"로딩중"</Ment>
+        </Container>
+      ) : (
+        <Container>
+          <ChatContainer>
+            <ChatComponentsTitle>NOTICE TALK</ChatComponentsTitle>
+            <InputContainer onSubmit={sendMessage}>
+              <input autoFocus placeholder="JJACK BALANCE" />
+              <button>보내기</button>
+            </InputContainer>
 
-          <ChatList>
-            {chatData.map((data, index) => (
-              <li
-                key={index}
-                style={{
-                  textAlign: data.userId === userId ? "right" : "left",
-                }}
-              >
-                <span>{`${data.userId}: ${data.chatData}`}</span>
-              </li>
-            ))}
-          </ChatList>
-        </ChatContainer>
-      </Container>
+            <ChatList>
+              {chatData.map((data, index) => (
+                <li
+                  key={index}
+                  style={{
+                    textAlign: data.userId === userId ? "right" : "left",
+                  }}
+                >
+                  <span>{`${data.userId}: ${data.message}`}</span>
+                </li>
+              ))}
+              {chatNewData.map((data, index) => (
+                <li
+                  key={index}
+                  style={{
+                    textAlign: data.userId === userId ? "right" : "left",
+                  }}
+                >
+                  <span>{`${data.userId}: ${data.message}`}</span>
+                </li>
+              ))}
+            </ChatList>
+          </ChatContainer>
+        </Container>
+      )}
     </>
   );
 }

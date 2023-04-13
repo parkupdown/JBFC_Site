@@ -1,9 +1,10 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import styled from "styled-components";
+import "animate.css";
 
 function FreeTalk({ userId, socket, data, ChatComponents }) {
   const [chatData, setChatData] = useState(null);
+  const [chatNewData, setChatNewData] = useState([]);
   const [
     Container,
     ChatContainer,
@@ -28,7 +29,7 @@ function FreeTalk({ userId, socket, data, ChatComponents }) {
   const CallChatApi = (ChatValue) => {
     axios.post(`http://localhost:8080/chat/insertOne`, {
       userId: userId,
-      chatData: ChatValue,
+      message: ChatValue,
       category: "Free",
     });
   };
@@ -45,16 +46,10 @@ function FreeTalk({ userId, socket, data, ChatComponents }) {
     //이때 입력한 것들은 보내짐
     event.currentTarget[0].value = ``;
   };
+
   useEffect(() => {
     if (data !== null) {
-      const Ul = document.querySelector("ul");
-      const li = document.createElement("li");
-      data.userId === userId
-        ? (li.style.textAlign = "right")
-        : (li.style.textAlign = "left");
-      li.className = "animate__animated animate__bounceIn animate__faster";
-      Ul.appendChild(li);
-      li.innerHTML = `<span>${data.userId}: ${data.message}</span>`;
+      setChatNewData((current) => [...current, data]);
     }
   }, [data]);
 
@@ -75,7 +70,7 @@ function FreeTalk({ userId, socket, data, ChatComponents }) {
         <ChatContainer>
           <ChatComponentsTitle>FREE TALK</ChatComponentsTitle>
           <InputContainer onSubmit={sendMessage}>
-            <input placeholder="JJACK BALANCE" />
+            <input autoFocus placeholder="JJACK BALANCE" />
             <button>보내기</button>
           </InputContainer>
 
@@ -87,7 +82,17 @@ function FreeTalk({ userId, socket, data, ChatComponents }) {
                   textAlign: data.userId === userId ? "right" : "left",
                 }}
               >
-                <span>{`${data.userId}: ${data.chatData}`}</span>
+                <span>{`${data.userId}: ${data.message}`}</span>
+              </li>
+            ))}
+            {chatNewData.map((data, index) => (
+              <li
+                key={index}
+                style={{
+                  textAlign: data.userId === userId ? "right" : "left",
+                }}
+              >
+                <span>{`${data.userId}: ${data.message}`}</span>
               </li>
             ))}
           </ChatList>
