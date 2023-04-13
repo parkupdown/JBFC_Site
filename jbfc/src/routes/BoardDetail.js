@@ -2,6 +2,143 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import swal from "sweetalert";
+import Loading from "./Loading";
+import styled from "styled-components";
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 50px;
+  height: 100vh;
+  overflow-y: scroll;
+`;
+
+const Title = styled.h2`
+  font-size: 42px;
+  margin: 20px 0;
+  font-weight: 560;
+`;
+
+const Author = styled.span`
+  font-size: 16px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  color: #3b5998;
+  padding: 8px;
+  opacity: 0.5;
+`;
+
+const Content = styled.h3`
+  font-size: 24px;
+  margin-bottom: 30px;
+`;
+
+const Form = styled.form`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 20px;
+  margin-top: 200px;
+`;
+
+const Input = styled.input`
+  font-size: 16px;
+  padding: 10px;
+  margin-right: 10px;
+  border-radius: 4px;
+  border: none;
+  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.1);
+  width: 90vw;
+`;
+
+const Button = styled.button`
+  font-size: 20px;
+  padding: 10px;
+  border-radius: 4px;
+  border: none;
+  background-color: #1877f2;
+  color: white;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #3b5998;
+  }
+`;
+
+const CommentList = styled.ul`
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+`;
+
+const Comment = styled.li`
+  font-size: 16px;
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 4px;
+  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  &:hover {
+    background-color: #f0f2f5;
+  }
+`;
+
+const CommentText = styled.span`
+  margin-right: 10px;
+`;
+
+const DeleteButton = styled.button`
+  font-size: 14px;
+  padding: 5px;
+  border-radius: 4px;
+  border: none;
+  background-color: #f02849;
+  color: white;
+  cursor: pointer;
+  margin-right: 30px;
+
+  &:hover {
+    background-color: #d32f2f;
+  }
+`;
+
+const BackButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #1877f2;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 3px 10px;
+  margin-top: 0px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-left: 30px;
+
+  &:hover {
+    background-color: #166fe5;
+  }
+
+  &:active {
+    background-color: #146fd1;
+  }
+`;
+
+const JJACKTitle = styled.h3`
+  text-align: center;
+  font-size: 36px;
+  color: #3b5998;
+  font-weight: 400;
+  margin-top: 10px;
+  margin-right: 30px;
+`;
 
 function BoardDetail() {
   const { userId } = useParams();
@@ -80,40 +217,54 @@ function BoardDetail() {
   };
 
   return (
-    <div>
+    <Container>
       {detail === null || comment === null ? (
-        <h1>로딩중입니당!</h1>
+        <Loading></Loading>
       ) : (
-        <div>
-          <ul>
-            <li>
-              <h2>{detail.title}</h2>
-              <span>작성자: {detail.userId}</span>
-              <h3>{detail.contents}</h3>
-            </li>
-          </ul>
-          <form onSubmit={onSubmit}>
-            <input placeholder="올바른 댓글 문화" />
-            <button>💬</button>
-          </form>
-          <div>
-            {comment.map((item, index) => (
-              <li id={index} key={item._id}>
-                {`${item.time} ${item.userName}: ${item.comment}`}
-                <button
-                  onClick={(event) =>
-                    commentRemove(event, userName, item.userName, item._id)
-                  }
-                  //실제 userName(로그인 정보상 userName이 들어감)
-                >
-                  댓글삭제
-                </button>
-              </li>
-            ))}
+        <>
+          <div
+            style={{
+              height: "5vh",
+              width: "100vw",
+              display: "flex",
+              justifyContent: "space-between",
+            }}
+          >
+            <BackButton onClick={() => navigator(`/board`)}>
+              뒤로가기
+            </BackButton>
+            <JJACKTitle>JJACK BALANCE</JJACKTitle>
           </div>
-        </div>
+          <Title>{detail.title}</Title>
+          <div
+            style={{ display: "flex", justifyContent: "left", width: "100vw" }}
+          >
+            <Author>작성자: {detail.userId}</Author>
+          </div>
+          <Content>{detail.contents}</Content>
+          <Form onSubmit={onSubmit}>
+            <Input placeholder="올바른 댓글 문화" />
+            <Button>💬</Button>
+          </Form>
+          <CommentList>
+            {comment.map((item, index) => (
+              <Comment id={index} key={item._id}>
+                <CommentText>{`${item.time} ${item.userName}: ${item.comment}`}</CommentText>
+                {userName === item.userName && (
+                  <DeleteButton
+                    onClick={(event) =>
+                      commentRemove(event, userName, item.userName, item._id)
+                    }
+                  >
+                    댓글삭제
+                  </DeleteButton>
+                )}
+              </Comment>
+            ))}
+          </CommentList>
+        </>
       )}
-    </div>
+    </Container>
   );
 }
 
