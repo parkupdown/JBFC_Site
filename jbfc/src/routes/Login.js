@@ -6,6 +6,61 @@ import styled, { keyframes } from "styled-components";
 import "animate.css";
 import swal from "sweetalert";
 
+const Box = styled.div`
+  background-color: #f2f2f2;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+// Define a styled component for the title
+const Title = styled.h1`
+  font-size: 48px;
+  color: #333;
+  text-align: center;
+  margin-bottom: 24px;
+`;
+
+// Define a styled component for the form
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+`;
+
+// Define a styled component for the inputs
+const Input = styled.input`
+  height: 40px;
+  padding: 8px 16px;
+  margin-bottom: 16px;
+  border-radius: 4px;
+  border: none;
+  font-size: 16px;
+`;
+
+// Define a styled component for the button
+const Button = styled.button`
+  height: 40px;
+  padding: 8px 16px;
+  border-radius: 4px;
+  border: none;
+  background-color: #03a9f4;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #0288d1;
+  }
+`;
+
+const Sign = styled.h4`
+  margin-top: 20px;
+  color: #333;
+  font-size: 16px;
+  cursor: pointer;
+`;
+
 function Login() {
   const [userId, setUserId] = useState(null);
   const [userPassword, setUserPass] = useState(null);
@@ -14,10 +69,6 @@ function Login() {
   const goToHome = () => {
     navigate(`/home`);
   };
-
-  if (localStorage.getItem(`userId`) !== null) {
-    goToHome();
-  }
 
   const onSubmit = (event) => {
     event.preventDefault();
@@ -28,6 +79,9 @@ function Login() {
   };
   try {
     useEffect(() => {
+      if (localStorage.getItem(`userId`) !== null) {
+        navigate(`/home`);
+      } //최초 1회 로그인시 다시 로그인 받지않음
       axios
         .post(
           `http://localhost:8080/login`,
@@ -39,7 +93,10 @@ function Login() {
         )
         .then((res) => {
           if (res.data.pass === true) {
-            localStorage.setItem(`userId`, res.data.userInfo.아이디);
+            localStorage.setItem(
+              `userId`,
+              `[${res.data.userInfo.teamName}] ${res.data.userInfo.nickName}`
+            );
             goToHome();
             return;
           }
@@ -57,61 +114,6 @@ function Login() {
   }
 
   // Define a styled component for the outer container
-
-  const Box = styled.div`
-    background-color: #f2f2f2;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  `;
-
-  // Define a styled component for the title
-  const Title = styled.h1`
-    font-size: 48px;
-    color: #333;
-    text-align: center;
-    margin-bottom: 24px;
-  `;
-
-  // Define a styled component for the form
-  const Form = styled.form`
-    display: flex;
-    flex-direction: column;
-  `;
-
-  // Define a styled component for the inputs
-  const Input = styled.input`
-    height: 40px;
-    padding: 8px 16px;
-    margin-bottom: 16px;
-    border-radius: 4px;
-    border: none;
-    font-size: 16px;
-  `;
-
-  // Define a styled component for the button
-  const Button = styled.button`
-    height: 40px;
-    padding: 8px 16px;
-    border-radius: 4px;
-    border: none;
-    background-color: #03a9f4;
-    color: white;
-    font-size: 16px;
-    cursor: pointer;
-
-    &:hover {
-      background-color: #0288d1;
-    }
-  `;
-
-  const Sign = styled.h4`
-    margin-top: 20px;
-    color: #333;
-    font-size: 16px;
-    cursor: pointer;
-  `;
 
   return (
     <Box>
