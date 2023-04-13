@@ -1,6 +1,67 @@
 import { UnixToDate } from "./Pollution";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { Constants } from "../constants";
+import "animate.css";
+
+const Container = styled.div`
+  color: #333;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
+
+const InfoList = styled.ul`
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+`;
+
+const InfoItem = styled.li`
+  margin: 0.6rem 0;
+`;
+const InfoTitleItem = styled.li`
+  margin: 0.6rem 0;
+  font-size: 20px;
+  font-weight: 600;
+  animation: pulse;
+  animation-iteration-count: 5;
+  animation-duration: 1s;
+  animation-delay: 3s;
+`;
+
+const WeatherHeader = styled.h3`
+  color: #3b5998;
+  font-size: 24px;
+  margin-top: 0;
+  font-weight: bold;
+`;
+
+const SubHeader = styled.p`
+  color: #3b5998;
+  font-size: 14px;
+  margin-top: 0;
+  font-weight: bold;
+  margin-bottom: 20px;
+`;
+
+const Icon = styled.i`
+  margin-top: 20px;
+  font-size: 72px;
+  margin-bottom: 20px;
+  animation: bounceInDown;
+  animation-iteration-count: 1;
+  animation-duration: 1s;
+`;
+
+const WeatherContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
 
 function Weather({ data }) {
   const makeWeatherInfo = (data) => {
@@ -44,64 +105,19 @@ function Weather({ data }) {
 
   // send data
 
-  const Container = styled.div`
-    background-color: #f2f2f2;
-    color: #333;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  `;
-
-  const InfoList = styled.ul`
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  `;
-
-  const InfoItem = styled.li`
-    margin: 0.6rem 0;
-  `;
-
-  const WeatherHeader = styled.h3`
-    color: #0288d1;
-    font-size: 24px;
-    margin-top: 0;
-  `;
-
-  const Icon = styled.i`
-    font-size: 72px;
-    margin-bottom: 20px;
-  `;
-
-  const CentralizedContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  `;
-
-  const WeatherContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  `;
-
   return (
     <Container>
       <WeatherContainer>
+        <SubHeader>현재위치</SubHeader>
         <WeatherHeader>실시간 내 위치 날씨</WeatherHeader>
       </WeatherContainer>
 
       <Icon className={makeWeatherInfo(data)[5]}></Icon>
       <InfoList>
-        <InfoItem>{makeWeatherInfo(data)[4]}</InfoItem>
+        <InfoTitleItem>{makeWeatherInfo(data)[4]}</InfoTitleItem>
         <InfoItem>현재온도: {makeWeatherInfo(data)[0]} ℃</InfoItem>
         <InfoItem>최고 온도: {makeWeatherInfo(data)[1]} ℃</InfoItem>
         <InfoItem>최저 온도: {makeWeatherInfo(data)[2]} ℃</InfoItem>
-        <InfoItem>측정 기준: {makeWeatherInfo(data)[3]} </InfoItem>
       </InfoList>
     </Container>
   );

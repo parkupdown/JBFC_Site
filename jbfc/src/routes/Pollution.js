@@ -1,6 +1,66 @@
 import styled from "styled-components";
 import { Constants } from "../constants";
 
+const Container = styled.div`
+  color: #333;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 23px;
+`;
+
+const InfoList = styled.ul`
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+`;
+
+const InfoItem = styled.li`
+  margin: 0.6rem 0;
+`;
+const InfoTitleItem = styled.li`
+  margin: 0.6rem 0;
+  font-size: 20px;
+  font-weight: 600;
+  animation: pulse;
+  animation-iteration-count: 5;
+  animation-duration: 1s;
+  animation-delay: 3s;
+`;
+
+const WeatherHeader = styled.h3`
+  color: #3b5998;
+  font-size: 24px;
+  margin-top: 0;
+  font-weight: bold;
+`;
+const SubHeader = styled.p`
+  color: #3b5998;
+  font-size: 14px;
+  margin-top: 0;
+  margin-bottom: 20px;
+  font-weight: bold;
+`;
+
+const Icon = styled.i`
+  margin-top: 20px;
+  font-size: 72px;
+  margin-bottom: 20px;
+  animation: bounceInDown;
+  animation-iteration-count: 1;
+  animation-duration: 1s;
+`;
+
+const WeatherContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
+
 function UnixToDate(Unix) {
   const time = new Date(Unix * 1000);
   const week = [`일`, `월`, `화`, `수`, `목`, `금`, `토`];
@@ -11,8 +71,6 @@ function UnixToDate(Unix) {
 } //옮겨줘여함
 
 function Pollution({ data }) {
-  console.log(data);
-
   const pollutionInfo = data.data.response.body.items[7];
 
   const pm10 = parseInt(pollutionInfo.pm10Value);
@@ -44,52 +102,19 @@ function Pollution({ data }) {
     return [message, iconClassName];
   };
 
-  const PollutionWrapper = styled.div`
-    background-color: #f2f2f2;
-    color: #333;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  `;
-
-  const PollutionHeader = styled.h3`
-    color: #0288d1;
-    font-size: 24px;
-    margin-top: 0;
-  `;
-
-  const PollutionList = styled.ul`
-    list-style: none;
-    padding: 0;
-  `;
-
-  const PollutionListItem = styled.li`
-    margin: 0.6rem 0;
-
-    &:before {
-      color: #03a9f4;
-      display: inline-block;
-      margin-right: 5px;
-    }
-  `;
-
-  const Icon = styled.i`
-    font-size: 72px;
-    margin-bottom: 20px;
-  `;
-
   return (
-    <PollutionWrapper>
-      <PollutionHeader>실시간 광주 북구 미세먼지</PollutionHeader>
+    <Container>
+      <WeatherContainer>
+        <SubHeader>건국동 기준</SubHeader>
+        <WeatherHeader>실시간 미세먼지</WeatherHeader>
+      </WeatherContainer>
       <Icon className={checkPollutionCondition()[1]}></Icon>
-      <PollutionList>
-        <PollutionListItem>{checkPollutionCondition()[0]}</PollutionListItem>
-        <PollutionListItem>미세먼지: {pm10} ㎍/㎥</PollutionListItem>
-        <PollutionListItem>초미세먼지: {pm25} ㎍/㎥</PollutionListItem>
-      </PollutionList>
-    </PollutionWrapper>
+      <InfoList>
+        <InfoTitleItem>{checkPollutionCondition()[0]}</InfoTitleItem>
+        <InfoItem>미세먼지: {pm10} ㎍/㎥</InfoItem>
+        <InfoItem>초미세먼지: {pm25} ㎍/㎥</InfoItem>
+      </InfoList>
+    </Container>
   );
 }
 
