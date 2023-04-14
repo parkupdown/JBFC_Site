@@ -70,18 +70,29 @@ function Login() {
     navigate(`/home`);
   };
 
+  const CheckLoggedIn = () => {
+    if (localStorage.getItem(`userId`) !== null) {
+      navigate(`/home`);
+    }
+  };
+
   const onSubmit = (event) => {
     event.preventDefault();
-
-    setUserId(event.currentTarget[0].value);
-    setUserPass(event.currentTarget[1].value);
+    const userId = event.currentTarget[0].value;
+    const userPass = event.currentTarget[1].value;
+    setUserId(userId);
+    setUserPass(userPass);
     //이제 여기서 이동 usenavigator로!
   };
+
+  const SetLocalStorage = (userInfomation) => {
+    localStorage.setItem(`userId`, userInfomation);
+    goToHome();
+  };
+
   try {
     useEffect(() => {
-      if (localStorage.getItem(`userId`) !== null) {
-        navigate(`/home`);
-      } //최초 1회 로그인시 다시 로그인 받지않음
+      CheckLoggedIn(); //최초 1회 로그인시 다시 로그인 받지않음
       axios
         .post(
           `http://localhost:8080/login`,
@@ -93,20 +104,19 @@ function Login() {
         )
         .then((res) => {
           if (res.data.pass === true) {
-            localStorage.setItem(
-              `userId`,
-              `[${res.data.userInfo.teamName}] ${res.data.userInfo.nickName}`
-            );
-            goToHome();
+            const userInfomation = `[${res.data.userInfo.teamName}] ${res.data.userInfo.nickName}`;
+            SetLocalStorage(userInfomation);
             return;
+            //로그인 성공
           }
-          return userId === null
-            ? null
-            : swal(
-                "로그인에 실패하셨습니다",
-                "ID와 PW를 확인해주세요",
-                "warning"
-              );
+          if (res.data.pass !== true && userId !== null) {
+            swal(
+              "로그인에 실패하셨습니다",
+              "ID와 PW를 확인해주세요",
+              "warning"
+            );
+            //로그인실패
+          }
         });
     }, [userId, userPassword]);
   } catch (error) {
