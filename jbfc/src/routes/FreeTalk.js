@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import "animate.css";
+import Loading from "./Loading";
 
 function FreeTalk({ userId, socket, data, ChatComponents }) {
   const [chatData, setChatData] = useState(null);
@@ -56,48 +57,49 @@ function FreeTalk({ userId, socket, data, ChatComponents }) {
   // 이게 아니라 setState에 들어갔던 것이 나오도록해야할듯
   //이부분이 잘못됨
 
-  if (chatData === null) {
-    return (
-      <Container>
-        <Ment>"로딩중"</Ment>
-      </Container>
-    );
-  }
-
   return (
     <>
-      <Container>
-        <ChatContainer>
-          <ChatComponentsTitle>FREE TALK</ChatComponentsTitle>
-          <InputContainer onSubmit={sendMessage}>
-            <input autoFocus placeholder="JJACK BALANCE" />
-            <button>보내기</button>
-          </InputContainer>
+      {chatData === null ? (
+        <Loading></Loading>
+      ) : (
+        <Container>
+          <ChatContainer>
+            <ChatComponentsTitle>FREE TALK</ChatComponentsTitle>
+            <InputContainer onSubmit={sendMessage}>
+              <input autoFocus placeholder="JJACK BALANCE" />
+              <button>보내기</button>
+            </InputContainer>
 
-          <ChatList>
-            {chatData.map((data, index) => (
-              <li
-                key={index}
-                style={{
-                  textAlign: data.userId === userId ? "right" : "left",
-                }}
-              >
-                <span>{`${data.userId}: ${data.message}`}</span>
-              </li>
-            ))}
-            {chatNewData.map((data, index) => (
-              <li
-                key={index}
-                style={{
-                  textAlign: data.userId === userId ? "right" : "left",
-                }}
-              >
-                <span>{`${data.userId}: ${data.message}`}</span>
-              </li>
-            ))}
-          </ChatList>
-        </ChatContainer>
-      </Container>
+            <ChatList>
+              {chatData.map((data, index) => (
+                <li
+                  key={index}
+                  style={{
+                    textAlign: data.userId === userId ? "right" : "left",
+                  }}
+                >
+                  <span>{`${data.userId}: ${data.message}`}</span>
+                </li>
+              ))}
+              {chatNewData.map((data, index) => (
+                <li
+                  className={
+                    index === chatNewData.length - 1
+                      ? "animate__animated animate__bounceIn animate__faster"
+                      : null
+                  }
+                  key={index}
+                  style={{
+                    textAlign: data.userId === userId ? "right" : "left",
+                  }}
+                >
+                  <span>{`${data.userId}: ${data.message}`}</span>
+                </li>
+              ))}
+            </ChatList>
+          </ChatContainer>
+        </Container>
+      )}
     </>
   );
 }

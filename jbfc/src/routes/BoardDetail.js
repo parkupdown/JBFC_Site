@@ -193,7 +193,7 @@ function BoardDetail() {
     swal("성공", "댓글작성이 완료되었습니다.", "success");
   };
 
-  const commentRemove = (event, userName, commentName, id) => {
+  const CheckCommentHost = (userName, commentName) => {
     if (userName !== commentName) {
       return swal(
         "오류발생",
@@ -201,19 +201,31 @@ function BoardDetail() {
         "warning"
       );
     }
+  };
 
+  const DeleteBoardMentApi = (userName, id) => {
     axios.delete(`http://localhost:8080/board/mine/comment/delete`, {
       data: { userName: userName, _id: id },
     });
-    const listId = event.currentTarget.parentElement.id;
+  };
+
+  const DeleteUI = (ListId) => {
     setComment((current) => {
       const newMine = current.filter(
-        (item, index) => index !== parseInt(listId)
+        (item, index) => index !== parseInt(ListId)
       );
 
       return newMine;
     });
     swal("성공", "댓글삭제가 완료되었습니다.", "success");
+  };
+
+  const commentRemove = (event, userName, commentName, id) => {
+    CheckCommentHost(userName, commentName);
+    DeleteBoardMentApi(userName, id);
+
+    const listId = event.currentTarget.parentElement.id;
+    DeleteUI(listId);
   };
 
   return (

@@ -1,7 +1,7 @@
-import { UnixToDate } from "./Pollution";
 import styled, { keyframes } from "styled-components";
 import { Constants } from "../constants";
 import "animate.css";
+import Common from "../commonfun";
 
 const Container = styled.div`
   color: #333;
@@ -21,15 +21,23 @@ const InfoList = styled.ul`
 
 const InfoItem = styled.li`
   margin: 0.6rem 0;
+  font-weight: 500;
+  background-color: aliceblue;
+  padding: 5px;
+  border-radius: 10px;
 `;
 const InfoTitleItem = styled.li`
-  margin: 0.6rem 0;
+  padding: 20px;
+  background-color: #3b5998;
+  border-radius: 30px;
+  margin: 0.6rem 0 1rem 0;
   font-size: 20px;
   font-weight: 600;
   animation: pulse;
   animation-iteration-count: 5;
   animation-duration: 1s;
   animation-delay: 3s;
+  color: white;
 `;
 
 const WeatherHeader = styled.h3`
@@ -73,7 +81,7 @@ function Weather({ data }) {
     //최저온도
     const averageTemp = Math.floor(weatherInfo.main.temp - 272.15);
     //평균온도
-    const time = UnixToDate(weatherInfo.dt);
+    const time = Common.UnixToDate(weatherInfo.dt);
 
     let message;
     let iconClassName;

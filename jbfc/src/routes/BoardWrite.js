@@ -8,6 +8,8 @@ const BoardWriteWrapper = styled.div`
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
+  width: 100%;
+  height: 100%;
 
   form {
     margin-top: 20px;
@@ -35,7 +37,7 @@ const BoardWriteWrapper = styled.div`
 
 const TextArea = styled.textarea`
   width: 100%;
-  height: 500px;
+  height: 350px;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
@@ -144,6 +146,23 @@ function BoardWrite() {
     setCategory(categoryOfBoard);
   };
 
+  const PostBoardWriteApi = (userId, title, contents, nowTime) => {
+    axios
+      .post(`http://localhost:8080/board/write`, {
+        userId: userId,
+        title: title,
+        contents: contents,
+        nowTime: nowTime,
+        category: category,
+      })
+      .then(afterSubmit());
+  };
+
+  const ResetInput = (event) => {
+    event.currentTarget[0].value = ``;
+    event.currentTarget[1].value = ``;
+  };
+
   const onSubmit = (event) => {
     event.preventDefault();
     const userId = localStorage.getItem(`userId`);
@@ -154,18 +173,8 @@ function BoardWrite() {
       time.getMonth() + 1
     }월 ${time.getDate()}일 ${time.getHours()}시 ${time.getMinutes()}분`;
 
-    axios
-      .post(`http://localhost:8080/board/write`, {
-        userId: userId,
-        title: title,
-        contents: contents,
-        nowTime: nowTime,
-        category: category,
-      })
-      .then(afterSubmit());
-
-    event.currentTarget[0].value = ``;
-    event.currentTarget[1].value = ``;
+    PostBoardWriteApi(userId, title, contents, nowTime);
+    ResetInput(event);
   };
 
   const goBack = () => {

@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import LoginBarrier from "./LoginBarrier";
 import styled from "styled-components";
 import Loading from "./Loading";
+import Common from "../commonfun";
 
 const Title = styled.h3`
   text-align: center;
@@ -182,7 +183,6 @@ function Board() {
   const userId = localStorage.getItem(`userId`);
   const [boardData, setBoardData] = useState(null);
   const [category, setCategory] = useState(`free`);
-  const navigator = useNavigate();
 
   const CallBoardApi = (categoryOfBoard) => {
     axios
@@ -190,7 +190,7 @@ function Board() {
         category: categoryOfBoard,
       })
       .then((res) => setBoardData(res.data))
-      .catch((error) => console.log(error));
+      .catch((error) => alert(error));
   };
 
   useEffect(() => {
@@ -203,10 +203,6 @@ function Board() {
     CallBoardApi(categoryOfBoard);
   };
   //선택한 카테고리에 따라 해당하는 게시글을 보여주도록함
-
-  const goBack = () => {
-    navigator("/home");
-  };
 
   return userId === null ? (
     <LoginBarrier />
@@ -227,7 +223,9 @@ function Board() {
           <Link to={`/board/write`} state={category}>
             <button>글 작성</button>
           </Link>
-          <BackButton onClick={goBack}>뒤로가기</BackButton>
+          <Link to={`/home`}>
+            <BackButton>뒤로가기</BackButton>
+          </Link>
         </div>
         <div>
           <BoardWrapper>

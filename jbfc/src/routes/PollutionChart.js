@@ -1,42 +1,44 @@
 import styled from "styled-components";
 import ApexChart from "react-apexcharts";
-import { useResizeDetector } from "react-resize-detector";
 
-const ChartContainer = styled.div`
-  height: 100%;
-  width: 100%;
-  max-height: 650px;
+const Container = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+  margin-left: 30px;
 `;
 
-function PollutionChart({ data }) {
+function PollutionChart({ data, width, height }) {
   const pollutionData = data.data.response.body.items[7];
 
-  const { ref, width, height } = useResizeDetector();
   return (
-    <ChartContainer ref={ref}>
+    <Container>
       <ApexChart
         type="treemap"
+        width={width}
+        height={height}
         series={[
           {
             data: [
               {
-                x: `실시간 미세먼지: ${pollutionData.pm10Value}`,
+                x: `실시간 미세먼지: ${pollutionData.pm10Value} ㎍/㎥`,
                 y: 218,
               },
               {
-                x: `실시간 초미세먼지: ${pollutionData.pm25Value}`,
+                x: `실시간 초미세먼지: ${pollutionData.pm25Value} ㎍/㎥`,
                 y: 149,
               },
               {
-                x: `오늘 하루 평균 미세먼지: ${pollutionData.pm10Value24}`,
+                x: `오늘 하루 평균 미세먼지: ${pollutionData.pm10Value24} ㎍/㎥`,
                 y: 184,
               },
               {
-                x: `오늘 하루 평균 초미세먼지: ${pollutionData.pm25Value24}`,
+                x: `오늘 하루 평균 초미세먼지: ${pollutionData.pm25Value24} ㎍/㎥`,
                 y: 155,
               },
               {
-                x: `오늘의 미세먼지 등급: ${pollutionData.pm10Grade}`,
+                x: `오늘의 미세먼지 등급: ${pollutionData.pm10Grade} `,
                 y: 200,
               },
               {
@@ -52,7 +54,6 @@ function PollutionChart({ data }) {
         ]}
         options={{
           chart: {
-            height: height,
             type: "treemap",
           },
           title: {
@@ -62,13 +63,16 @@ function PollutionChart({ data }) {
           subtitle: {
             text: "미세먼지 1등급: 매우좋음 2등급: 좋음 3등급: 나쁨 4등급: 매우나쁨",
           },
+          tooltip: {
+            enabled: false,
+          },
 
           legend: {
             show: false,
           },
         }}
       />
-    </ChartContainer>
+    </Container>
   );
 }
 

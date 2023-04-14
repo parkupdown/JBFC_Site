@@ -8,7 +8,7 @@ const Container = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin-bottom: 23px;
+  margin-bottom: 13px;
 `;
 
 const InfoList = styled.ul`
@@ -19,16 +19,24 @@ const InfoList = styled.ul`
 `;
 
 const InfoItem = styled.li`
-  margin: 0.6rem 0;
+  margin: 0.6rem 0 1rem 0;
+  font-weight: 500;
+  background-color: aliceblue;
+  padding: 5px;
+  border-radius: 10px;
 `;
 const InfoTitleItem = styled.li`
-  margin: 0.6rem 0;
+  padding: 20px;
+  background-color: #3b5998;
+  border-radius: 30px;
+  margin: 0.6rem 0 1rem 0;
   font-size: 20px;
   font-weight: 600;
   animation: pulse;
   animation-iteration-count: 5;
   animation-duration: 1s;
   animation-delay: 3s;
+  color: white;
 `;
 
 const WeatherHeader = styled.h3`
@@ -61,18 +69,8 @@ const WeatherContainer = styled.div`
   align-items: center;
 `;
 
-function UnixToDate(Unix) {
-  const time = new Date(Unix * 1000);
-  const week = [`일`, `월`, `화`, `수`, `목`, `금`, `토`];
-  const dayOfWeek = week[time.getDay()];
-  return `${
-    time.getMonth() + 1
-  }월 ${time.getDate()}일 ${time.getHours()}시 ${dayOfWeek}요일`;
-} //옮겨줘여함
-
 function Pollution({ data }) {
   const pollutionInfo = data.data.response.body.items[7];
-
   const pm10 = parseInt(pollutionInfo.pm10Value);
   //미세먼지
   const pm25 = parseInt(pollutionInfo.pm25Value);
@@ -118,7 +116,7 @@ function Pollution({ data }) {
   );
 }
 
-export { Pollution, UnixToDate };
+export { Pollution };
 
 /*<li>초미세먼지: {makePollutionInfo(data)[0]}</li>
         <li>미세먼지: {makePollutionInfo(data)[1]}</li>

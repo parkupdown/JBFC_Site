@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import "animate.css";
+import Loading from "./Loading";
 
 function NoticeTalk({ userId, socket, data, ChatComponents }) {
   const [chatData, setChatData] = useState(null);
@@ -66,9 +67,7 @@ function NoticeTalk({ userId, socket, data, ChatComponents }) {
   return (
     <>
       {chatData === null ? (
-        <Container>
-          <Ment>"로딩중"</Ment>
-        </Container>
+        <Loading></Loading>
       ) : (
         <Container>
           <ChatContainer>
@@ -91,6 +90,11 @@ function NoticeTalk({ userId, socket, data, ChatComponents }) {
               ))}
               {chatNewData.map((data, index) => (
                 <li
+                  className={
+                    index === chatNewData.length - 1
+                      ? "animate__animated animate__bounceIn animate__faster"
+                      : null
+                  }
                   key={index}
                   style={{
                     textAlign: data.userId === userId ? "right" : "left",
