@@ -1,18 +1,37 @@
 export const Constants = {
+  APIURL: {
+    WEATHER: (lat, lnd) =>
+      `http://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lnd}&appid=2834387742b25d5393a21e88fee8246a`,
+    POLLUTION: `https://apis.data.go.kr/B552584/ArpltnInforInqireSvc/getCtprvnRltmMesureDnsty?serviceKey=ZHRtNHeVdq3RstoihtljiyUq1bREx70chuG19hWrdBrZr8cs%2Bzcc1KtztI15NVWUwNWX7qTJQFG8gcgdTEILUA%3D%3D&returnType=json&numOfRows=100&pageNo=1&sidoName=%EA%B4%91%EC%A3%BC&ver=1.1`,
+  },
   WEATHER: {
-    COLD: "추운 날씨! 그래도 열정은 식지 않죠",
-    CHILLY: "쌀쌀한 날씨! 그래도 열정은 식지 않죠",
-    GOOD: "날씨 죽인다! 유니폼 챙기고 드가자",
-    WARM: "조금 더울 수 있어요! 옷차림을 가볍게!",
-    HOT: "더운 날씨! 차가운 심장으로 풋살 고고",
+    THUNDERSTORM: "많은 비",
+    DRIZZLE: "이슬비",
+    RAIN: "보통비",
+    SNOW: "눈이와",
+    ATMOSPHERE: "황사",
+    CLEAR: "맑은날",
+    CLOUDS: "먹구름",
   },
   WEATHERICON: {
-    COLD: "fa-regular fa-face-grin-squint-tears fa-2xl",
-    CHILLY: "fa-regular fa-face-grin-beam fa-2xl",
-    GOOD: "fa-regular fa-face-grin-hearts fa-2xl",
-    WARM: "fa-regular fa-face-smile-wink fa-2xl",
-    HOT: "fa-regular fa-face-grin-beam-sweat fa-2xl",
+    THUNDERSTORM: "fa-solid fa-cloud-showers-heavy",
+    DRIZZLE: "fa-solid fa-cloud-rain",
+    RAIN: "fa-solid fa-umbrella",
+    SNOW: "fa-regular fa-snowflake",
+    ATMOSPHERE: "fa-solid fa-tornado",
+    CLEAR: "fa-regular fa-sun",
+    CLOUDS: "fa-solid fa-cloud",
   },
+  WEATHERURL: {
+    THUNDERSTORM: " https://openweathermap.org/img/wn/11d@2x.png",
+    DRIZZLE: " https://openweathermap.org/img/wn/10d@2x.png",
+    RAIN: " https://openweathermap.org/img/wn/09d@2x.png",
+    SNOW: " https://openweathermap.org/img/wn/13d@2x.png",
+    ATMOSPHERE: " https://openweathermap.org/img/wn/50d@2x.png",
+    CLEAR: " https://openweathermap.org/img/wn/01d@2x.png",
+    CLOUDS: " https://openweathermap.org/img/wn/03d@2x.png",
+  },
+
   POLLUTION: {
     VERYGOOD: "매우좋음",
     GOOD: "좋음",
@@ -20,9 +39,15 @@ export const Constants = {
     VERYBAD: "매우나쁨",
   },
   POLLUTIONICON: {
-    VERYGOOD: "fa-regular fa-face-grin-hearts fa-2xl",
-    GOOD: "fa-regular fa-face-grin-beam fa-2xl",
-    BAD: "fa-regular fa-face-meh-blank fa-2xl",
-    VERYBAD: "fa-regular fa-poo fa-2xl",
+    VERYGOOD: "fa-regular fa-face-grin-hearts ",
+    GOOD: "fa-regular fa-face-grin-beam ",
+    BAD: "fa-regular fa-face-meh-blank ",
+    VERYBAD: "fa-regular fa-face-angry ",
+  },
+  POLLUTIONCLOLOR: {
+    VERYGOOD: "#3b5998",
+    GOOD: "#3b5998",
+    BAD: "#c94742",
+    VERYBAD: "#1b1b1b",
   },
 };
