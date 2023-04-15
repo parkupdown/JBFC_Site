@@ -1,7 +1,6 @@
 import styled, { keyframes } from "styled-components";
 import { Constants } from "../constants";
 import "animate.css";
-import Common from "../commonfun";
 
 const Container = styled.div`
   color: #333;
@@ -73,42 +72,72 @@ const WeatherContainer = styled.div`
 `;
 
 function Weather({ data }) {
+  const findDataIndex = () => {
+    const nowHour = new Date().getHours();
+
+    let dataIndex = 0;
+    if (nowHour < 14) {
+      dataIndex = 0;
+      return dataIndex;
+    }
+    if (nowHour < 17) {
+      dataIndex = 1;
+      return dataIndex;
+    }
+    if (nowHour < 20) {
+      dataIndex = 2;
+      return dataIndex;
+    }
+    dataIndex = 3;
+    return dataIndex;
+  };
+
   const makeWeatherInfo = (data) => {
-    let weatherInfo = data.data.list;
-    weatherInfo = weatherInfo[0];
+    const dataIndex = findDataIndex(data);
+    let weatherInfo = data.data.list[dataIndex];
     const maxTemp = Math.floor(weatherInfo.main.temp_max - 272.15);
     //최고온도
     const minTemp = Math.floor(weatherInfo.main.temp_min - 272.15);
     //최저온도
     const averageTemp = Math.floor(weatherInfo.main.temp - 272.15);
     //평균온도
-    const time = Common.UnixToDate(weatherInfo.dt);
+    console.log(data);
+    const weatherConditionId = weatherInfo.weather[0].id;
     let message;
     let iconClassName;
+
     // 온도에 따라 메세지 다르게 출력
-    if (averageTemp < 0) {
-      message = Constants.WEATHER.COLD;
-      iconClassName = Constants.WEATHERICON.COLD;
+    if (weatherConditionId < 300) {
+      message = Constants.WEATHER.THUNDERSTORM;
+      iconClassName = Constants.WEATHERICON.THUNDERSTORM;
     }
-    if (averageTemp >= 0 && averageTemp < 12) {
-      message = Constants.WEATHER.CHILLY;
-      iconClassName = Constants.WEATHERICON.CHILLY;
+    if (weatherConditionId < 500) {
+      message = Constants.WEATHER.DRIZZLE;
+      iconClassName = Constants.WEATHERICON.DRIZZLE;
     }
-    if (averageTemp >= 12 && averageTemp < 20) {
-      message = Constants.WEATHER.GOOD;
-      iconClassName = Constants.WEATHERICON.GOOD;
+    if (weatherConditionId < 600) {
+      message = Constants.WEATHER.RAIN;
+      iconClassName = Constants.WEATHERICON.RAIN;
     }
-    if (averageTemp >= 20 && averageTemp < 30) {
-      message = Constants.WEATHER.WARM;
-      iconClassName = Constants.WEATHERICON.WARM;
+    if (weatherConditionId < 700) {
+      message = Constants.WEATHER.SNOW;
+      iconClassName = Constants.WEATHERICON.SNOW;
     }
-    if (averageTemp >= 30) {
-      message = Constants.WEATHER.HOT;
-      iconClassName = Constants.WEATHERICON.HOT;
+    if (weatherConditionId < 800) {
+      message = Constants.WEATHER.ATMOSPHERE;
+      iconClassName = Constants.WEATHERICON.ATMOSPHERE;
+    }
+    if (weatherConditionId === 800) {
+      message = Constants.WEATHER.CLEAR;
+      iconClassName = Constants.WEATHERICON.CLEAR;
+    }
+    if (weatherConditionId > 800) {
+      message = Constants.WEATHER.CLOUDS;
+      iconClassName = Constants.WEATHERICON.CLOUDS;
     }
     //상수 처리 해주어야함
 
-    return [averageTemp, maxTemp, minTemp, time, message, iconClassName];
+    return [averageTemp, maxTemp, minTemp, message, iconClassName];
   };
 
   const weatherInfo = makeWeatherInfo(data);
@@ -121,9 +150,9 @@ function Weather({ data }) {
         <WeatherHeader>실시간 내 위치 날씨</WeatherHeader>
       </WeatherContainer>
 
-      <Icon className={weatherInfo[5]}></Icon>
+      <Icon className={weatherInfo[4]} style={{ color: "#3b5998" }}></Icon>
       <InfoList>
-        <InfoTitleItem>{weatherInfo[4]}</InfoTitleItem>
+        <InfoTitleItem>{weatherInfo[3]}</InfoTitleItem>
         <InfoItem>현재온도: {weatherInfo[0]} ℃</InfoItem>
         <InfoItem>최고 온도: {weatherInfo[1]} ℃</InfoItem>
         <InfoItem>최저 온도: {weatherInfo[2]} ℃</InfoItem>
