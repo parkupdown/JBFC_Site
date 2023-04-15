@@ -62,27 +62,15 @@ const Sign = styled.h4`
 `;
 
 function Login() {
-  const [userId, setUserId] = useState(null);
-  const [userPassword, setUserPass] = useState(null);
   const navigate = useNavigate();
-
-  const goToHome = () => {
-    navigate(`/home`);
-  };
-
   const CheckLoggedIn = () => {
     if (localStorage.getItem(`userId`) !== null) {
       navigate(`/home`);
     }
   };
-
-  const onSubmit = (event) => {
-    event.preventDefault();
-    const userId = event.currentTarget[0].value;
-    const userPass = event.currentTarget[1].value;
-    setUserId(userId);
-    setUserPass(userPass);
-    //이제 여기서 이동 usenavigator로!
+  CheckLoggedIn();
+  const goToHome = () => {
+    navigate(`/home`);
   };
 
   const SetLocalStorage = (userInfomation) => {
@@ -90,38 +78,41 @@ function Login() {
     goToHome();
   };
 
-  try {
-    useEffect(() => {
-      CheckLoggedIn(); //최초 1회 로그인시 다시 로그인 받지않음
-      axios
-        .post(
-          `http://localhost:8080/login`,
-          {
-            userId: userId,
-            userPassword: userPassword,
-          },
-          { withCredentials: true }
-        )
-        .then((res) => {
-          if (res.data.pass === true) {
-            const userInfomation = `[${res.data.userInfo.teamName}] ${res.data.userInfo.nickName}`;
-            SetLocalStorage(userInfomation);
-            return;
-            //로그인 성공
-          }
-          if (res.data.pass !== true && userId !== null) {
-            swal(
-              "로그인에 실패하셨습니다",
-              "ID와 PW를 확인해주세요",
-              "warning"
-            );
-            //로그인실패
-          }
-        });
-    }, [userId, userPassword]);
-  } catch (error) {
-    throw new Error();
-  }
+  const CheckIDPASS = (userId, userPassword) => {
+    axios
+      .post(
+        `http://localhost:8080/login`,
+        {
+          userId: userId,
+          userPassword: userPassword,
+        },
+        { withCredentials: true }
+      )
+      .then((res) => {
+        if (res.data.pass === true) {
+          const userInfomation = `[${res.data.userInfo.teamName}] ${res.data.userInfo.nickName}`;
+          SetLocalStorage(userInfomation);
+        } else if (userId !== "") {
+          swal("로그인에 실패하셨습니다", "ID와 PW를 확인해주세요", "warning");
+        }
+      })
+      .catch((err) => {
+        swal(
+          "서버와의 연결이 끊어졌습니다",
+          "잠시 후 다시 시도해주세요",
+          "warning"
+        );
+      });
+  };
+
+  const onSubmit = (event) => {
+    event.preventDefault();
+    const userId = event.currentTarget[0].value;
+    const userPass = event.currentTarget[1].value;
+    CheckIDPASS(userId, userPass);
+  };
+
+  //set안됐는데
 
   // Define a styled component for the outer container
 

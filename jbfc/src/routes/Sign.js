@@ -15,7 +15,6 @@ const Box = styled.div`
   align-items: center;
 `;
 
-// Define a styled component for the title
 const Title = styled.h1`
   font-size: 48px;
   color: #333;
@@ -31,7 +30,6 @@ const Form = styled.form`
   margin-bottom: 24px;
 `;
 
-// Define a styled component for the inputs
 const Input = styled.input`
   height: 40px;
   padding: 8px 20px;
@@ -41,7 +39,6 @@ const Input = styled.input`
   font-size: 16px;
 `;
 
-// Define a styled component for the button
 const Button = styled.button`
   height: 40px;
   padding: 8px 16px;
@@ -58,10 +55,6 @@ const Button = styled.button`
   }
 `;
 
-// Define a styled component for the link
-
-// Define the membership registration page component
-
 const InputDescription = styled.p`
   font-size: 11px;
   color: #666;
@@ -69,11 +62,9 @@ const InputDescription = styled.p`
 `;
 
 function Sign() {
-  const [teamName, setTeamName] = useState(null);
-  const [nickName, setNickName] = useState(null);
-  const [userId, setUserId] = useState(null);
-  const [userPassword, setPassword] = useState(null);
   const navigate = useNavigate();
+  const [savedUserId, setSavedUserId] = useState("");
+  const [checkPass, setCheckPass] = useState(false);
   const goToMain = () => {
     navigate(`/`);
   };
@@ -92,35 +83,13 @@ function Sign() {
     Id.value = userId;
     Password.value = userPassword;
 
-    passCheckData = true;
+    setCheckPass(true);
   };
 
   const Fail = (message) => {
     swal(`실패`, `${message}`, `warning`);
 
-    const TeamName = document.getElementById("TeamName");
-    const NickName = document.getElementById("NickName");
-    const Id = document.getElementById("ID");
-    const Password = document.getElementById("Password");
-
-    TeamName.value = teamName;
-    NickName.value = nickName;
-    Id.value = userId;
-    Password.value = userPassword;
-
-    passCheckData = false;
-  };
-
-  const SetUserInput = (event) => {
-    event.preventDefault();
-    const teamName = event.target[0].value;
-    const nickName = event.target[1].value;
-    const userId = event.target[2].value;
-    const password = event.target[3].value;
-    setTeamName(teamName);
-    setNickName(nickName);
-    setUserId(userId);
-    setPassword(password);
+    passCheckData(false);
   };
 
   const CheckInputNullBlankSpecial = (passNull, passBlank, passSpecial) => {
@@ -137,7 +106,7 @@ function Sign() {
     return true;
   };
 
-  const CheckValid = () => {
+  const CheckValid = (teamName, nickName, userId, userPassword) => {
     const signValidation = new SignValidation(
       teamName,
       nickName,
@@ -151,44 +120,41 @@ function Sign() {
     return CheckInputNullBlankSpecial(passNull, passBlank, passSpecial);
   };
 
-  const CheckPassValid = () => {
-    if (
-      userId === null ||
-      nickName === null ||
-      teamName === null ||
-      userPassword === null
-    ) {
-      return swal(`실패`, `Check 버튼으로 중복검사 해주세요`, `warning`);
-    }
-    if (passCheckData === false) {
-      return swal(`실패`, `로그인 타당성 검사 실패`, `warning`);
-    }
-  };
-
-  useEffect(() => {
+  const Validation = (teamName, nickName, userId, password) => {
     axios
       .post(`http://localhost:8080/sign`, {
         userId: userId,
+        userPassword: password,
         nickName: nickName,
       })
       .then(function (res) {
-        if (userId !== null) {
-          const checkValidData = CheckValid();
-          if (checkValidData !== true) {
-            return Fail(checkValidData);
-          } //타당성검사
-          if (res.data !== true) {
-            return Fail(res.data);
-          } //중복검사
-          return Pass(teamName, nickName, userId, userPassword);
-        }
+        const checkValidData = CheckValid(teamName, nickName, userId, password);
+        if (checkValidData !== true) {
+          return Fail(checkValidData);
+        } //타당성검사
+        if (res.data !== true) {
+          return Fail(res.data);
+        } //중복검사
+        setCheckPass(true);
+        setSavedUserId(userId);
+
+        return Pass(teamName, nickName, userId, password);
       });
-  }, [teamName, nickName, userId, userPassword]);
+  };
 
-  const onSubmit = (event) => {
+  const SetUserInput = (event) => {
     event.preventDefault();
-    CheckPassValid();
 
+    const teamName = event.target.parentElement[0].value;
+    const nickName = event.target.parentElement[1].value;
+    const userId = event.target.parentElement[2].value;
+    const password = event.target.parentElement[3].value;
+    console.log(userId);
+    Validation(teamName, nickName, userId, password);
+    //   Validation(teamName, nickName, userId, password);
+  };
+
+  const InsertUserData = (teamName, nickName, userId, userPassword) => {
     axios
       .post(`http://localhost:8080/sign/insertUserData`, {
         teamName: teamName,
@@ -198,6 +164,37 @@ function Sign() {
       })
       .then(goToMain())
       .then(swal(`성공`, `회원가입에 성공하셨습니다.`, "success"));
+  };
+
+  const CheckPassValid = (teamName, nickName, userId, userPassword) => {
+    if (
+      userId === null ||
+      nickName === null ||
+      teamName === null ||
+      userPassword === null
+    ) {
+      setCheckPass(false);
+      return swal(`실패`, `Check 버튼으로 중복검사 해주세요`, `warning`);
+    }
+    if (passCheckData === false) {
+      setCheckPass(false);
+      return swal(`실패`, `로그인 타당성 검사 실패`, `warning`);
+    }
+  };
+
+  const onSubmit = (event) => {
+    event.preventDefault();
+    const teamName = event.target.parentElement[0].value;
+    const nickName = event.target.parentElement[1].value;
+    const userId = event.target.parentElement[2].value;
+    const password = event.target.parentElement[3].value;
+    CheckPassValid(teamName, nickName, userId, password);
+
+    if (savedUserId === userId && checkPass === true) {
+      InsertUserData(teamName, nickName, userId, password);
+      return;
+    }
+    return swal(`실패`, `로그인 중복 검사를 통과해주세요.`, "warning");
 
     //이제 여기서 이동 usenavigator로!
   };
@@ -210,7 +207,7 @@ function Sign() {
         <Title className="animate__animated animate__flipInX animate__slower">
           Membership Registration
         </Title>
-        <Form onSubmit={SetUserInput}>
+        <Form>
           <Input
             id="TeamName"
             placeholder="팀네임 ex) 짝발란스"
@@ -224,15 +221,13 @@ function Sign() {
           <InputDescription>
             특수문자, 공백 없이 작성해주세용용
           </InputDescription>
-
           <Input id="Password" placeholder="Password" type="password" />
-          <Button>Check</Button>
-        </Form>
-        <Form>
+          <Button onClick={SetUserInput}>Check</Button>
           <Button onClick={onSubmit} disabled={false}>
             Submit
           </Button>
         </Form>
+
         <Link
           style={{
             display: "flex",
