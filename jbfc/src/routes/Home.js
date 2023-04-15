@@ -129,14 +129,20 @@ function Home() {
     return [weatherData, pollutionData];
   };
 
-  const { isLoading, data } = useQuery("Weather", getWeather);
+  const { isLoading, data, error, refetch } = useQuery("Weather", getWeather);
   const setWeatherPollution = useSetRecoilState(WeatherPollution);
 
   useEffect(() => {
+    const interval = setInterval(() => {
+      refetch();
+    }, 15 * 60 * 1000);
+
     if (!isLoading) {
       setWeatherPollution(data);
     }
-  }, [isLoading, data, setWeatherPollution]);
+
+    return () => clearInterval(interval);
+  }, [data]);
   //이부분수정해야할듯
 
   return userId === null ? (

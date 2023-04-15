@@ -8,7 +8,7 @@ const Container = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin-bottom: 13px;
+  margin-bottom: 0px;
 `;
 
 const InfoList = styled.ul`
@@ -111,6 +111,9 @@ function Pollution({ data }) {
         <InfoTitleItem>{checkPollutionCondition()[0]}</InfoTitleItem>
         <InfoItem>미세먼지: {pm10} ㎍/㎥</InfoItem>
         <InfoItem>초미세먼지: {pm25} ㎍/㎥</InfoItem>
+        <InfoItem style={{ fontSize: "12px" }}>
+          데이터는 15분마다 자동갱신됩니다.
+        </InfoItem>
       </InfoList>
     </Container>
   );

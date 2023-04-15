@@ -10,6 +10,7 @@ const Container = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  margin-bottom: 13px;
 `;
 
 const InfoList = styled.ul`
@@ -82,7 +83,6 @@ function Weather({ data }) {
     const averageTemp = Math.floor(weatherInfo.main.temp - 272.15);
     //평균온도
     const time = Common.UnixToDate(weatherInfo.dt);
-
     let message;
     let iconClassName;
     // 온도에 따라 메세지 다르게 출력
@@ -111,6 +111,7 @@ function Weather({ data }) {
     return [averageTemp, maxTemp, minTemp, time, message, iconClassName];
   };
 
+  const weatherInfo = makeWeatherInfo(data);
   // send data
 
   return (
@@ -120,12 +121,12 @@ function Weather({ data }) {
         <WeatherHeader>실시간 내 위치 날씨</WeatherHeader>
       </WeatherContainer>
 
-      <Icon className={makeWeatherInfo(data)[5]}></Icon>
+      <Icon className={weatherInfo[5]}></Icon>
       <InfoList>
-        <InfoTitleItem>{makeWeatherInfo(data)[4]}</InfoTitleItem>
-        <InfoItem>현재온도: {makeWeatherInfo(data)[0]} ℃</InfoItem>
-        <InfoItem>최고 온도: {makeWeatherInfo(data)[1]} ℃</InfoItem>
-        <InfoItem>최저 온도: {makeWeatherInfo(data)[2]} ℃</InfoItem>
+        <InfoTitleItem>{weatherInfo[4]}</InfoTitleItem>
+        <InfoItem>현재온도: {weatherInfo[0]} ℃</InfoItem>
+        <InfoItem>최고 온도: {weatherInfo[1]} ℃</InfoItem>
+        <InfoItem>최저 온도: {weatherInfo[2]} ℃</InfoItem>
       </InfoList>
     </Container>
   );
