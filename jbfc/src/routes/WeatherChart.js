@@ -2,12 +2,45 @@ import { useEffect, useState } from "react";
 import ApexChart from "react-apexcharts";
 import styled from "styled-components";
 import Common from "../commonfun";
+import { Constants } from "../constants";
 
 const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
   height: 80vh;
+`;
+const WeatherInfo = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  margin-left: 50px;
+  font-size: 16px;
+  width: 30%;
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    li {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      list-style: none;
+      height: 80px;
+      margin-bottom: 10px;
+      font-size: 14px;
+      opacity: 0.85;
+      span {
+        margin-top: 0px;
+      }
+    }
+  }
 `;
 
 function WeatherChart({ data, width, height }) {
@@ -27,6 +60,34 @@ function WeatherChart({ data, width, height }) {
     return dayWeatherArr;
   };
 
+  const getWeatherIcon = (weatherConditionIdData) => {
+    let weatherIconArr = [];
+    weatherConditionIdData.forEach((item) => {
+      if (item < 300) {
+        return weatherIconArr.push(Constants.WEATHERICON.THUNDERSTORM);
+      }
+      if (item < 500) {
+        return weatherIconArr.push(Constants.WEATHERICON.DRIZZLE);
+      }
+      if (item < 600) {
+        return weatherIconArr.push(Constants.WEATHERICON.RAIN);
+      }
+      if (item < 700) {
+        return weatherIconArr.push(Constants.WEATHERICON.SNOW);
+      }
+      if (item < 800) {
+        return weatherIconArr.push(Constants.WEATHERICON.ATMOSPHERE);
+      }
+      if (item === 800) {
+        return weatherIconArr.push(Constants.WEATHERICON.CLEAR);
+      }
+      if (item > 800) {
+        return weatherIconArr.push(Constants.WEATHERICON.CLOUDS);
+      }
+    });
+    return weatherIconArr;
+  };
+
   const dayWeatherData = makeDayWeather(data.data.list);
   const timeData = dayWeatherData.map((arr) => Common.UnixToDate(arr[0].dt));
   const maxTempData = dayWeatherData
@@ -35,6 +96,11 @@ function WeatherChart({ data, width, height }) {
   const minTempData = dayWeatherData
     .map((arr) => arr.map((item) => item.main.temp_min))
     .map((arr) => Math.floor(Math.min(...arr) - 272.15) + "°C");
+  const weatherConditionIdData = dayWeatherData
+    .map((item) => item[0])
+    .map((item) => item.weather[0].id);
+
+  const weatherIconArr = getWeatherIcon(weatherConditionIdData);
 
   // ... 그 외 차트 데이터 처리 로직
 
@@ -68,6 +134,7 @@ function WeatherChart({ data, width, height }) {
               show: false,
             },
           },
+
           colors: ["#77B6EA", "#545454"],
           dataLabels: {
             enabled: true,
@@ -76,6 +143,7 @@ function WeatherChart({ data, width, height }) {
             curve: "smooth",
           },
           title: {
+            text: "오후 3시 기준",
             align: "left",
           },
           grid: {
@@ -86,11 +154,18 @@ function WeatherChart({ data, width, height }) {
             },
           },
           markers: {
-            size: 1,
+            size: 2,
           },
           xaxis: {
             categories: timeData,
-            title: {},
+            labels: {
+              formatter: function (value, index) {
+                return value;
+              },
+              style: {
+                colors: "#787878",
+              },
+            },
           },
           yaxis: {
             title: {},
@@ -121,7 +196,7 @@ function WeatherChart({ data, width, height }) {
               {
                 title: {
                   formatter: function (seriesName) {
-                    return "Temperature";
+                    return "날짜별 최고온도";
                   },
                 },
                 formatter: function (value) {
@@ -132,6 +207,36 @@ function WeatherChart({ data, width, height }) {
           },
         }}
       />
+      (
+      <WeatherInfo>
+        <div>
+          <ul>
+            {weatherIconArr.map((item, index) => (
+              <li key={index}>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    height: "100%",
+                    backgroundColor: "#fff",
+                    borderRadius: "30px",
+                    padding: "15px",
+                  }}
+                >
+                  <i className={item}></i>
+                  <span>
+                    {maxTempData[index]}/{minTempData[index]}
+                  </span>
+                  <span style={{ marginTop: "10px" }}>{timeData[index]}</span>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </WeatherInfo>
+      )
     </Container>
   );
 }

@@ -77,11 +77,11 @@ const BackButton = styled.button`
 function DetailWeatherPollution() {
   const data = useRecoilValue(WeatherPollution);
 
-  const [chartWidth, setChartWidth] = useState(window.innerWidth * 0.8);
+  const [chartWidth, setChartWidth] = useState(window.innerWidth * 0.6);
   const [chartHeight, setChartHeight] = useState(window.innerHeight * 0.8);
 
   const handleResize = () => {
-    setChartWidth(window.innerWidth * 1);
+    setChartWidth(window.innerWidth * 0.8);
     setChartHeight(window.innerHeight * 0.6);
   };
 
