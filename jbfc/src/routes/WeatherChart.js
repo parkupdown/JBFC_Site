@@ -6,7 +6,7 @@ import { Constants } from "../constants";
 
 const Container = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   height: 80vh;
 `;
@@ -14,6 +14,7 @@ const WeatherInfo = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+
   height: 100%;
   margin-left: 50px;
   font-size: 16px;
@@ -21,11 +22,15 @@ const WeatherInfo = styled.div`
   ul {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
+    flex-direction: column;
     padding: 0;
     margin: 0;
     height: 100%;
+    i {
+      font-size: 20px;
+    }
     li {
       display: flex;
       flex-direction: column;
@@ -35,9 +40,9 @@ const WeatherInfo = styled.div`
       height: 80px;
       margin-bottom: 10px;
       font-size: 14px;
-      opacity: 0.85;
+      opacity: 0.8;
       span {
-        margin-top: 0px;
+        margin-top: 5px;
       }
     }
   }
@@ -89,7 +94,9 @@ function WeatherChart({ data, width, height }) {
   };
 
   const dayWeatherData = makeDayWeather(data.data.list);
-  const timeData = dayWeatherData.map((arr) => Common.UnixToDate(arr[0].dt));
+  const timeData = dayWeatherData.map((arr, index) =>
+    index === 0 ? "오늘" : Common.UnixToDate(arr[0].dt)
+  );
   const maxTempData = dayWeatherData
     .map((arr) => arr.map((item) => item.main.temp_max))
     .map((arr) => Math.floor(Math.max(...arr) - 272.15) + "°C");
@@ -207,7 +214,7 @@ function WeatherChart({ data, width, height }) {
           },
         }}
       />
-      (
+
       <WeatherInfo>
         <div>
           <ul>
@@ -218,11 +225,11 @@ function WeatherChart({ data, width, height }) {
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
-                    justifyContent: "space-between",
-                    height: "100%",
+                    justifyContent: "center",
+
                     backgroundColor: "#fff",
                     borderRadius: "30px",
-                    padding: "15px",
+                    padding: "10px",
                   }}
                 >
                   <i className={item}></i>
@@ -236,7 +243,6 @@ function WeatherChart({ data, width, height }) {
           </ul>
         </div>
       </WeatherInfo>
-      )
     </Container>
   );
 }

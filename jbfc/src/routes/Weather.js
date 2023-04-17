@@ -101,7 +101,7 @@ function Weather({ data }) {
     //최저온도
     const averageTemp = Math.floor(weatherInfo.main.temp - 272.15);
     //평균온도
-    console.log(data);
+
     const weatherConditionId = weatherInfo.weather[0].id;
     let message;
     let iconClassName;

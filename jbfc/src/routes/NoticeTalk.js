@@ -18,7 +18,7 @@ function NoticeTalk({ userId, socket, data, ChatComponents }) {
 
   const GetChatApi = () => {
     axios
-      .post(`http://localhost:8080/chat`, {
+      .post(`http://15.165.158.35:8080/chat`, {
         category: "Notice",
       })
       .then((res) => setChatData(res.data));
@@ -29,7 +29,7 @@ function NoticeTalk({ userId, socket, data, ChatComponents }) {
   }, []);
 
   const CallChatApi = (ChatValue) => {
-    axios.post(`http://localhost:8080/chat/insertOne`, {
+    axios.post(`http://15.165.158.35:8080/chat/insertOne`, {
       userId: userId,
       message: ChatValue,
       category: "Notice",

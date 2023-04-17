@@ -1,5 +1,4 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import styled, { keyframes } from "styled-components";
@@ -81,7 +80,7 @@ function Login() {
   const CheckIDPASS = (userId, userPassword) => {
     axios
       .post(
-        `http://localhost:8080/login`,
+        `http:/localhost:8080/login`,
         {
           userId: userId,
           userPassword: userPassword,
@@ -89,19 +88,16 @@ function Login() {
         { withCredentials: true }
       )
       .then((res) => {
-        if (res.data.pass === true) {
-          const userInfomation = `[${res.data.userInfo.teamName}] ${res.data.userInfo.nickName}`;
-          SetLocalStorage(userInfomation);
-        } else if (userId !== "") {
-          swal("로그인에 실패하셨습니다", "ID와 PW를 확인해주세요", "warning");
+        console.log(res.data);
+        if (res.data === ``) {
+          return swal(
+            "로그인에 실패하셨습니다",
+            "ID와 PW를 확인해주세요",
+            "warning"
+          );
         }
-      })
-      .catch((err) => {
-        swal(
-          "서버와의 연결이 끊어졌습니다",
-          "잠시 후 다시 시도해주세요",
-          "warning"
-        );
+        const userInfomation = `[${res.data.teamName}] ${res.data.nickName}`;
+        SetLocalStorage(userInfomation);
       });
   };
 

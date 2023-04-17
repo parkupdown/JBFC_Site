@@ -4,7 +4,6 @@ import { Link, useNavigate } from "react-router-dom";
 import LoginBarrier from "./LoginBarrier";
 import styled from "styled-components";
 import Loading from "./Loading";
-import Common from "../commonfun";
 
 const Title = styled.h3`
   text-align: center;
@@ -195,7 +194,7 @@ function Board() {
 
   useEffect(() => {
     CallBoardApi(category);
-  }, []);
+  }, [category]);
 
   const selectChange = (event) => {
     const categoryOfBoard = event.currentTarget.value;
@@ -217,14 +216,14 @@ function Board() {
             marginBottom: "20px",
           }}
         >
-          <Link to={`/board/mine`}>
-            <button>내가 쓴 글</button>
+          <Link to={`/home`}>
+            <BackButton>뒤로가기</BackButton>
           </Link>
           <Link to={`/board/write`} state={category}>
             <button>글 작성</button>
           </Link>
-          <Link to={`/home`}>
-            <BackButton>뒤로가기</BackButton>
+          <Link to={`/board/mine`}>
+            <button>내가 쓴 글</button>
           </Link>
         </div>
         <div>

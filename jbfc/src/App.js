@@ -51,9 +51,11 @@ table {
 }
 body{
   font-family: 'Sorce Sans Pro',sans-serif;
-  background-color:#A6B1E1
- 
-  
+  background-color:#f2f2f2;
+ height: 100%;
+ width: 100%;
+ position: fixed;
+  overflow: hidden;
 }
 a{
 text-decoration:none;

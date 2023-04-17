@@ -155,25 +155,28 @@ function BoardMine() {
     CallBoardMineApi();
   }, []);
 
-  const onClick = (event, userId) => {
-    axios.delete(`http://localhost:8080/board/mine/delete`, {
-      data: { userId: userId },
-    });
-    //delete는 데이터를 넣어주는 방법이 다르다!
+  const goBack = () => {
+    navigator(-1);
+  };
 
-    const listId = event.currentTarget.parentElement.id;
+  const DeleteMine = (listId) => {
     setMine((current) => {
       const newMine = current.filter(
         (item, index) => index !== parseInt(listId)
       );
       return newMine;
     });
-
-    swal("성공", "게시글 삭제가 완료되었습니다.", "success");
   };
 
-  const goBack = () => {
-    navigator(-1);
+  const onClick = (event, userId) => {
+    axios.delete(`http://localhost:8080/board/mine/delete`, {
+      data: { userId: userId },
+    });
+    //delete는 데이터를 넣어주는 방법이 다르다!
+
+    const listId = event.currentTarget.parentElement.parentElement.id;
+    DeleteMine(listId);
+    swal("성공", "게시글 삭제가 완료되었습니다.", "success");
   };
 
   return (

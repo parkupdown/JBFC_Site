@@ -83,22 +83,28 @@ function Pollution({ data }) {
   const checkPollutionCondition = () => {
     let message;
     let iconClassName;
-
+    let color;
     if (pm10Grade === "4" || pm25Grade === "4") {
       message = Constants.POLLUTION.VERYBAD;
       iconClassName = Constants.POLLUTIONICON.VERYBAD;
+      color = Constants.POLLUTIONCLOLOR.VERYBAD;
     } else if (pm10Grade === "3" || pm25Grade === "3") {
       message = Constants.POLLUTION.BAD;
       iconClassName = Constants.POLLUTIONICON.BAD;
+      color = Constants.POLLUTIONCLOLOR.BAD;
     } else if (pm10Grade === "2" || pm25Grade === "2") {
       message = Constants.POLLUTION.GOOD;
       iconClassName = Constants.POLLUTIONICON.GOOD;
+      color = Constants.POLLUTIONCLOLOR.GOOD;
     } else if (pm10Grade === "1" || pm25Grade === "1") {
       message = Constants.POLLUTION.VERYGOOD;
       iconClassName = Constants.POLLUTIONICON.VERYGOOD;
+      color = Constants.POLLUTIONCLOLOR.VERYGOOD;
     }
-    return [message, iconClassName];
+    return [message, iconClassName, color];
   };
+
+  const pollutionCondition = checkPollutionCondition();
 
   return (
     <Container>
@@ -106,9 +112,12 @@ function Pollution({ data }) {
         <SubHeader>건국동 기준</SubHeader>
         <WeatherHeader>실시간 미세먼지</WeatherHeader>
       </WeatherContainer>
-      <Icon className={checkPollutionCondition()[1]}></Icon>
+      <Icon
+        style={{ color: `${pollutionCondition[2]}` }}
+        className={pollutionCondition[1]}
+      ></Icon>
       <InfoList>
-        <InfoTitleItem>{checkPollutionCondition()[0]}</InfoTitleItem>
+        <InfoTitleItem>{pollutionCondition[0]}</InfoTitleItem>
         <InfoItem>미세먼지: {pm10} ㎍/㎥</InfoItem>
         <InfoItem>초미세먼지: {pm25} ㎍/㎥</InfoItem>
         <InfoItem style={{ fontSize: "12px" }}>

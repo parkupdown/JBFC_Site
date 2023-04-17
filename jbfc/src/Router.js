@@ -1,6 +1,8 @@
 import Board from "./routes/Board";
 import BoardDetail from "./routes/BoardDetail";
 import BoardMine from "./routes/BoardMine";
+import BoardWrite from "./routes/BoardWrite";
+import BoardShow from "./routes/BoardWrite";
 import Chat from "./routes/Chat";
 import DetailWeatherPollution from "./routes/DetailWeatherPollution";
 import Home from "./routes/Home";
@@ -17,6 +19,7 @@ function Router() {
         <Route path="/sign" element={<Sign />}></Route>
         <Route path="/home/" element={<Home />}></Route>
         <Route path="/board" element={<Board />}></Route>
+        <Route path="/board/write" element={<BoardWrite />}></Route>
         <Route path="/board/:userId" element={<BoardDetail />}></Route>
         <Route path="/board/mine" element={<BoardMine />}></Route>
         <Route path="/chat/*" element={<Chat />}></Route>

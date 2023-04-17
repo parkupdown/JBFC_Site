@@ -6,7 +6,6 @@ import LoginBarrier from "./LoginBarrier";
 import NoticeTalk from "./NoticeTalk";
 import styled, { createGlobalStyle } from "styled-components";
 import ChatComponents from "./ChatComponents";
-import Common from "../commonfun";
 
 const Title = styled.h1`
   font-size: 4rem;
@@ -67,53 +66,57 @@ function Chat() {
 
   const chatComponents = ChatComponents();
   // chatComponens를 불러옴
-  return (
-    <>
-      <ButtonContainer>
-        <Title>JJACK Talk</Title>
-        <div>
-          <Link to={`/home`}>
-            <Button>뒤로가기</Button>
-          </Link>
-          <Link to={`/chat/Notice`}>
-            <Button onClick={clickToggle} disabled={toggle}>
-              NoticeTalk
-            </Button>
-          </Link>
-          <Link to={`/chat/Free`}>
-            <Button onClick={clickToggle} disabled={!toggle}>
-              FreeTalk
-            </Button>
-          </Link>
-        </div>
-      </ButtonContainer>
+  {
+    return userId === null ? (
+      <LoginBarrier></LoginBarrier>
+    ) : (
+      <>
+        <ButtonContainer>
+          <Title>JJACK Talk</Title>
+          <div>
+            <Link to={`/home`}>
+              <Button>뒤로가기</Button>
+            </Link>
+            <Link to={`/chat/Notice`}>
+              <Button onClick={clickToggle} disabled={toggle}>
+                NoticeTalk
+              </Button>
+            </Link>
+            <Link to={`/chat/Free`}>
+              <Button onClick={clickToggle} disabled={!toggle}>
+                FreeTalk
+              </Button>
+            </Link>
+          </div>
+        </ButtonContainer>
 
-      <Routes>
-        <Route
-          path="Notice"
-          element={
-            <NoticeTalk
-              userId={userId}
-              socket={socket}
-              data={noticeChat}
-              ChatComponents={chatComponents}
-            />
-          }
-        />
-        <Route
-          path="Free"
-          element={
-            <FreeTalk
-              userId={userId}
-              socket={socket}
-              data={freeChat}
-              ChatComponents={chatComponents}
-            />
-          }
-        />
-      </Routes>
-    </>
-  );
+        <Routes>
+          <Route
+            path="Notice"
+            element={
+              <NoticeTalk
+                userId={userId}
+                socket={socket}
+                data={noticeChat}
+                ChatComponents={chatComponents}
+              />
+            }
+          />
+          <Route
+            path="Free"
+            element={
+              <FreeTalk
+                userId={userId}
+                socket={socket}
+                data={freeChat}
+                ChatComponents={chatComponents}
+              />
+            }
+          />
+        </Routes>
+      </>
+    );
+  }
 }
 
 export default Chat;
