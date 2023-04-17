@@ -6,54 +6,56 @@ const http = require(`http`).createServer(app);
 const { Server } = require(`socket.io`);
 const io = new Server(http, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: "*",
   },
 }); //login
 const LocalStrategy = require(`passport-local`).Strategy;
 const session = require(`express-session`);
-const passport = require(`passport`);
 const bodyParser = require(`body-parser`);
 const ObjectId = require(`mongodb`).ObjectID;
 require(`dotenv`).config();
 app.use(express.urlencoded({ extended: true }));
-app.use(cors({ credentials: true }));
+app.use(cors({ origin: "*", credentials: true }));
 
 //서버연결
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+app.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  res.header("Cross-Origin-Embedder-Policy", "credentialless");
+  res.header("Cross-Origin-Opener-Policy", "same-origin");
+  next();
+});
 app.use(
   session({
-    secret: process.env.SESSION_SECERET,
+    secret: "ParkUpDown",
     resave: true,
     saveUninitialized: false,
   })
 );
-app.use(passport.initialize());
-app.use(passport.session());
 
 let db;
 //mongodb+srv://tkdgk1996:<password>@cluster0.btnfifg.mongodb.net/?retryWrites=true&w=majority
 MongoClient.connect(
-  process.env.DB_URL,
-  { useUnifiedTopology: true },
-  //여기에 연결하겠다.
-  function (error, client) {
-    if (error) {
-      return console.log(error);
-    }
+  "mongodb+srv://tkdgk1996:FBG9w8AwL8J0p5Zy@cluster0.btnfifg.mongodb.net/?retryWrites=true&w=majority",
+  { useUnifiedTopology: true }
+)
+  .then((client) => {
     db = client.db(`JB`);
 
-    http.listen(process.env.SERVER_PORT, function () {
+    http.listen(8080, function () {
       console.log(`Listening on 8080`);
     });
-    //express를 이용해서 서버를 띄우던 걸 http 라는 node.js 기본 라이브러리 + socket.io를 이용해서 띄운것
-    /*app.listen(8080, function () {
-      console.log(`Hello`);
-    });*/
-  }
-);
+  })
+  .catch((error) => {
+    console.log(error);
+  });
 
 io.on("connection", (socket) => {
   socket.on(`send_message_notice`, (data) => {
@@ -105,14 +107,26 @@ app.post(`/sign`, (req, res) => {
 app.post(`/sign/insertUserData`, (req, res) => {
   insertUserData(req, res);
 });
+app.post(`/boardDetail`, (req, res) => {
+  db.collection("Board").findOne(
+    { _id: ObjectId(req.body.userId) },
+    //string 타입을 ObjectId타입으로 변환 후 비교함
+    function (error, result) {
+      res.send(result);
+    }
+  );
+});
 
-app.post(
-  `/login`,
-  passport.authenticate(`local`, { failureRedirect: `/fail` }),
-  (req, res, next) => {
-    res.redirect(`/`);
-  }
-);
+app.post(`/login`, async (req, res, next) => {
+  const checkLogin = await db
+    .collection("UserInfo")
+    .findOne(
+      { userId: req.body.userId, userPassword: req.body.userPassword },
+      (error, result) => {
+        res.send(result);
+      }
+    );
+});
 app.get(`/fail`, (req, res) => {
   res.send({ message: `로그인 정보가 일치하지 않습니다!`, pass: false });
 });
@@ -135,49 +149,6 @@ app.get(`/`, LoginCheck, (req, res) => {
   });
 });
 
-passport.use(
-  new LocalStrategy(
-    {
-      teamNameField: "teamName",
-      usernameField: "userId",
-      passwordField: "userPassword",
-      session: true,
-      passReqToCallback: false,
-    },
-    function (userId, userPassword, done) {
-      db.collection("UserInfo").findOne(
-        { userId: userId },
-        function (error, result) {
-          if (error) return done(error);
-
-          if (!result)
-            return done(null, false, { message: "존재하지않습니다." });
-          if (userPassword == result.userPassword) {
-            //result.pw => db에 저장된 pw
-            return done(null, result);
-            //done은 서버에러를넣는곳
-          } else {
-            return done(null, false, { message: "비번틀렸습니다." });
-          }
-        }
-      );
-    }
-  )
-);
-
-passport.serializeUser(function (user, done) {
-  done(null, user.userId);
-});
-//id를 이용해서 세션을 저장시키는 코드 (로그인 성공시 발동)
-passport.deserializeUser(function (userId, done) {
-  //디비에서 위에 있는 use 유저를 찾은 뒤에 유저 정보를 중괄호에 넣음
-  db.collection(`UserInfo`).findOne({ userId: userId }, function (error, res) {
-    done(null, res);
-  });
-});
-
-//나중에 쓸거임 (마이페이지 접속시 발동)
-
 const insertBoardData = async (req, res) => {
   db.collection(`Board`).insertOne(
     {
@@ -194,12 +165,6 @@ const insertBoardData = async (req, res) => {
     }
   );
 };
-
-/* db.collection("Board")
-        .find()
-        .toArray(function (error, result) {
-          res.send(result);
-        }); */
 
 app.post(`/board/write`, (req, res) => {
   insertBoardData(req, res);
@@ -245,7 +210,6 @@ app.delete(`/board/mine/comment/delete`, (req, res) => {
     _id: ObjectId(req.body._id),
     userName: req.body.userName,
   };
-  console.log(req.body);
 
   db.collection(`Comments`).deleteOne(removeTarget, function (error, result) {
     res.status(200).send({ message: `삭제완료` });
@@ -293,7 +257,7 @@ const InsertChatData = (req, res) => {
   db.collection(`Chat`).insertOne(
     {
       userId: req.body.userId,
-      chatData: req.body.chatData,
+      message: req.body.message,
       category: req.body.category,
     },
     function (error, Result) {
