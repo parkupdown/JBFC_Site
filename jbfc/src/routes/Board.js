@@ -185,7 +185,7 @@ function Board() {
 
   const CallBoardApi = (categoryOfBoard) => {
     axios
-      .post(`https://jjb.jjackbalance.info/board`, {
+      .post(`https://jjackbalance.info/board`, {
         category: categoryOfBoard,
       })
       .then((res) => setBoardData(res.data))

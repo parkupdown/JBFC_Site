@@ -148,7 +148,7 @@ function BoardWrite() {
 
   const PostBoardWriteApi = (userId, title, contents, nowTime) => {
     axios
-      .post(`https://jjb.jjackbalance.info/board/write`, {
+      .post(`https://jjackbalance.info/board/write`, {
         userId: userId,
         title: title,
         contents: contents,

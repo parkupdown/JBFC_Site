@@ -153,7 +153,7 @@ function BoardDetail() {
 
   const CallBoardDetailApi = () =>
     axios
-      .post(`https://jjb.jjackbalance.info/boardDetail`, {
+      .post(`https://jjackbalance.info/boardDetail`, {
         userId: userId,
       })
       .then((res) => setDetail(res.data));
@@ -161,7 +161,7 @@ function BoardDetail() {
 
   const CallBoardCommentsApi = (userId, userName, inputValue) => {
     return axios
-      .post(`https://jjb.jjackbalance.info/board/comment`, {
+      .post(`https://jjackbalance.info/board/comment`, {
         userId: userId,
         userName: userName,
         comment: inputValue,
@@ -172,7 +172,7 @@ function BoardDetail() {
 
   const GetBoardCommentsApi = () => {
     return axios
-      .post(`https://jjb.jjackbalance.info/board/comment/get`, {
+      .post(`https://jjackbalance.info/board/comment/get`, {
         userId: userId,
         userName: userName,
       })
@@ -204,7 +204,7 @@ function BoardDetail() {
   };
 
   const DeleteBoardMentApi = (userName, id) => {
-    axios.delete(`https://jjb.jjackbalance.info/board/mine/comment/delete`, {
+    axios.delete(`https://jjackbalance.info/board/mine/comment/delete`, {
       data: { userName: userName, _id: id },
     });
   };
