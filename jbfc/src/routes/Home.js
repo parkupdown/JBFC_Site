@@ -18,11 +18,11 @@ const MainContainer = styled.div`
 `;
 
 const Title = styled.h1`
-  font-size: 5vw; /* viewport 단위 사용 */
+  font-size: 30px;
   color: #1877f2;
   text-align: center;
-  margin-top: 5vw; /* viewport 단위 사용 */
-  margin-bottom: 6vw; /* viewport 단위 사용 */
+  margin-top: 21px;
+  margin-bottom: 24px;
   font-weight: 500;
 `;
 
@@ -30,10 +30,10 @@ const LogoutButton = styled.button`
   background-color: #1877f2;
   color: #fff;
   border: none;
-  padding: 3vw; /* viewport 단위 사용 */
+  padding: 10px;
   border-radius: 5px;
-  font-size: 3vw; /* viewport 단위 사용 */
-  margin-right: 0px;
+  font-size: 12px;
+  margin-right: 0px; /* 변경된 부분 */
   text-align: right;
   cursor: pointer;
 
@@ -44,17 +44,16 @@ const LogoutButton = styled.button`
 
 const Nav = styled.nav`
   background-color: #fff;
-  height: 10vw; /* viewport 단위 사용 */
+  height: 60px;
   display: flex;
   justify-content: space-evenly;
   align-items: center;
-  border-radius: 15vw; /* viewport 단위 사용 */
+  border-radius: 30px;
   position: fixed;
-  bottom: 5vw; /* viewport 단위 사용 */
+  bottom: 20px;
   width: 100%;
   max-width: 500px;
-  box-shadow: 0px 0px 4vw rgba(0, 0, 0, 0.1); /* viewport 단위 사용 */
-  overflow-x: hidden; /* 모바일에서 가로 스크롤이 생기지 않도록 */
+  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
 `;
 
 const NavLinks = styled.ul`
@@ -63,11 +62,11 @@ const NavLinks = styled.ul`
 `;
 
 const NavItem = styled.li`
-  margin: 0 5vw; /* viewport 단위 사용 */
+  margin: 0 20px;
 `;
 
 const NavLink = styled(Link)`
-  font-size: 5vw; /* viewport 단위 사용 */
+  font-size: 20px;
   color: #65676b;
   text-decoration: none;
 
@@ -86,11 +85,10 @@ const WeatherPollutionContainer = styled.div`
   justify-content: space-around;
   align-items: center;
   width: 70vw;
-  height: calc(100vh - 30vw); /* viewport 단위 사용 */
-  margin-top: 2vw; /* viewport 단위 사용 */
+  height: calc(100vh - 350px);
+  margin-top: 10px;
   background-color: #fff;
-  border-radius: 38vw; /* viewport 단위 사용 */
-  overflow-x: hidden; /* 모바일에서 가로 스크롤이 생기지 않도록 */
+  border-radius: 76px;
 `;
 
 function Home() {
