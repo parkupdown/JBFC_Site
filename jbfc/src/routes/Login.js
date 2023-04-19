@@ -79,14 +79,10 @@ function Login() {
 
   const CheckIDPASS = (userId, userPassword) => {
     axios
-      .post(
-        `https://jjb.jjackbalance.info/login`,
-        {
-          userId: userId,
-          userPassword: userPassword,
-        },
-        { withCredentials: true }
-      )
+      .post(`https://jjb.jjackbalance.info/login`, {
+        userId: userId,
+        userPassword: userPassword,
+      })
       .then((res) => {
         console.log(res.data);
         if (res.data === ``) {

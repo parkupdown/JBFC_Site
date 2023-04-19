@@ -15,7 +15,7 @@ const bodyParser = require(`body-parser`);
 const ObjectId = require(`mongodb`).ObjectID;
 require(`dotenv`).config();
 app.use(express.urlencoded({ extended: true }));
-app.use(cors({ origin: "*", credentials: true }));
+app.use(cors({ origin: "*" }));
 
 //서버연결
 
