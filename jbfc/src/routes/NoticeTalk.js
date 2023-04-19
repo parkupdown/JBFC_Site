@@ -18,7 +18,7 @@ function NoticeTalk({ userId, socket, data, ChatComponents }) {
 
   const GetChatApi = () => {
     axios
-      .post(`https://jjb.jjackbalance.info/chat`, {
+      .post(`jjb.jjackbalance.info/chat`, {
         category: "Notice",
       })
       .then((res) => setChatData(res.data));
@@ -29,7 +29,7 @@ function NoticeTalk({ userId, socket, data, ChatComponents }) {
   }, []);
 
   const CallChatApi = (ChatValue) => {
-    axios.post(`https://jjb.jjackbalance.info/chat/insertOne`, {
+    axios.post(`jjb.jjackbalance.info/chat/insertOne`, {
       userId: userId,
       message: ChatValue,
       category: "Notice",
