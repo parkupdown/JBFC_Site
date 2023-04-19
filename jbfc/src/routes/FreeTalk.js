@@ -17,7 +17,7 @@ function FreeTalk({ userId, socket, data, ChatComponents }) {
 
   const GetChatApi = () => {
     axios
-      .post(`jjb.jjackbalance.info/chat`, {
+      .post(`https://jjb.jjackbalance.info/chat`, {
         category: "Free",
       })
       .then((res) => setChatData(res.data));
@@ -28,7 +28,7 @@ function FreeTalk({ userId, socket, data, ChatComponents }) {
   }, []);
 
   const CallChatApi = (ChatValue) => {
-    axios.post(`jjb.jjackbalance.info/chat/insertOne`, {
+    axios.post(`https://jjb.jjackbalance.info/chat/insertOne`, {
       userId: userId,
       message: ChatValue,
       category: "Free",

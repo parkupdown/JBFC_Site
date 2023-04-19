@@ -145,7 +145,7 @@ function BoardMine() {
 
   const CallBoardMineApi = () => {
     return axios
-      .post(`jjb.jjackbalance.info/board/mine`, {
+      .post(`https://jjb.jjackbalance.info/board/mine`, {
         userId: userId,
       })
       .then((res) => setMine(res.data));
@@ -169,7 +169,7 @@ function BoardMine() {
   };
 
   const onClick = (event, userId) => {
-    axios.delete(`jjb.jjackbalance.info/board/mine/delete`, {
+    axios.delete(`https://jjb.jjackbalance.info/board/mine/delete`, {
       data: { userId: userId },
     });
     //delete는 데이터를 넣어주는 방법이 다르다!

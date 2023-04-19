@@ -42,7 +42,7 @@ const ButtonContainer = styled.div`
 `;
 
 function Chat() {
-  const socket = io.connect(`jjb.jjackbalance.info`);
+  const socket = io.connect(`https://jjb.jjackbalance.info`);
   const userId = localStorage.getItem(`userId`);
   const [noticeChat, setNoticeChat] = useState(null);
   const [freeChat, setFreeChat] = useState(null);

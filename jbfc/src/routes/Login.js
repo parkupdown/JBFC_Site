@@ -79,7 +79,7 @@ function Login() {
 
   const CheckIDPASS = (userId, userPassword) => {
     axios
-      .post(`jjb.jjackbalance.info/login`, {
+      .post(`https://jjb.jjackbalance.info/login`, {
         userId: userId,
         userPassword: userPassword,
       })
