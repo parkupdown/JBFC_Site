@@ -15,7 +15,12 @@ const bodyParser = require(`body-parser`);
 const ObjectId = require(`mongodb`).ObjectID;
 require(`dotenv`).config();
 app.use(express.urlencoded({ extended: true }));
-app.use(cors({ origin: "*", credentials: true }));
+app.use(
+  cors({
+    origin: "jbfc-site-8igury6m1-updownpark2.vercel.app",
+    credentials: true,
+  })
+);
 
 //서버연결
 
