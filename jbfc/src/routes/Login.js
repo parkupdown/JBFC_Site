@@ -80,7 +80,7 @@ function Login() {
   const CheckIDPASS = (userId, userPassword) => {
     axios
       .post(
-        `http:/localhost:8080/login`,
+        `https://jjb.jjackbalance.info/login`,
         {
           userId: userId,
           userPassword: userPassword,

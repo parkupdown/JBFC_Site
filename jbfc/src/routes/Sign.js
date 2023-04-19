@@ -122,7 +122,7 @@ function Sign() {
 
   const Validation = (teamName, nickName, userId, password) => {
     axios
-      .post(`http://localhost:8080/sign`, {
+      .post(`https://jjb.jjackbalance.info/sign`, {
         userId: userId,
         userPassword: password,
         nickName: nickName,
@@ -156,7 +156,7 @@ function Sign() {
 
   const InsertUserData = (teamName, nickName, userId, userPassword) => {
     axios
-      .post(`http://localhost:8080/sign/insertUserData`, {
+      .post(`https://jjb.jjackbalance.info/sign/insertUserData`, {
         teamName: teamName,
         nickName: nickName,
         userId: userId,
