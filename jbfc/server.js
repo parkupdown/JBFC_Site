@@ -29,7 +29,7 @@ app.use(function (req, res, next) {
     "Origin, X-Requested-With, Content-Type, Accept"
   );
   res.header("Cross-Origin-Embedder-Policy", "credentialless");
-  res.header("Cross-Origin-Opener-Policy", "same-origin");
+
   next();
 });
 app.use(
