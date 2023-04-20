@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import LoginBarrier from "./LoginBarrier";
 import styled from "styled-components";
 import Loading from "./Loading";
+import api from "../api";
 
 const Title = styled.h3`
   text-align: center;
@@ -185,7 +186,7 @@ function Board() {
 
   const CallBoardApi = (categoryOfBoard) => {
     axios
-      .post(`https://jjackbalance.info/board`, {
+      .post(`${api.BASE_URL}/board`, {
         category: categoryOfBoard,
       })
       .then((res) => setBoardData(res.data))

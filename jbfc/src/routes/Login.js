@@ -4,6 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import styled, { keyframes } from "styled-components";
 import "animate.css";
 import swal from "sweetalert";
+import api from "../api";
 
 const Box = styled.div`
   background-color: #f2f2f2;
@@ -74,17 +75,15 @@ function Login() {
 
   const SetLocalStorage = (userInfomation) => {
     localStorage.setItem(`userId`, userInfomation);
-    goToHome();
   };
 
   const CheckIDPASS = (userId, userPassword) => {
     axios
-      .post(`https://jjackbalance.info/login`, {
+      .post(`${api.BASE_URL}/login`, {
         userId: userId,
         userPassword: userPassword,
       })
       .then((res) => {
-        console.log(res.data);
         if (res.data === ``) {
           return swal(
             "로그인에 실패하셨습니다",
@@ -94,6 +93,15 @@ function Login() {
         }
         const userInfomation = `[${res.data.teamName}] ${res.data.nickName}`;
         SetLocalStorage(userInfomation);
+        goToHome();
+      })
+      .catch((error) => {
+        console.log(error);
+        return swal(
+          `로그인에 실패하셨습니다.`,
+          `서버에 오류가 발생했습니다.`,
+          `error`
+        );
       });
   };
 

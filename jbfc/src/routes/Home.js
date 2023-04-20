@@ -10,6 +10,7 @@ import { WeatherPollution } from "../atoms";
 import { useEffect } from "react";
 import Loading from "./Loading";
 import { Constants } from "../constants";
+import api from "../api";
 
 const MainContainer = styled.div`
   display: flex;
@@ -96,54 +97,67 @@ function Home() {
   const navigate = useNavigate();
 
   const getLocation = () => {
-    return new Promise((resolve, reject) => {
-      navigator.geolocation.getCurrentPosition((position) => {
-        resolve(position);
-        reject(`위치사용에 동의해주세요.`);
-      });
+    return new Promise(async (resolve, reject) => {
+      try {
+        navigator.geolocation.getCurrentPosition((position) =>
+          resolve(position)
+        );
+      } catch (error) {
+        reject("위치사용에 동의해주세요.");
+      }
     });
   };
 
   const callWeatherApi = (lat, lnd) => {
     return axios
-      .get(Constants.APIURL.WEATHER(lat, lnd))
+      .get(api.WEATHER(lat, lnd))
       .then((res) => res)
-      .catch((res) => alert(res));
+      .catch((res) => {
+        throw new Error(`날씨 정보를 불러오는 중 오류가 발생했습니다.`);
+      });
   };
 
-  const callRealPollutionApi = () => {
+  const callPollutionApi = () => {
     return axios
-      .get(Constants.APIURL.POLLUTION)
+      .get(api.POLLUTION)
       .then((res) => res)
-      .catch((res) => alert(res));
+      .catch((res) => {
+        throw new Error(`대기 오염 정보를 불러오는 중 오류가 발생했습니다.`);
+      });
   };
 
-  const getWeather = async () => {
+  const fetchWeatherData = async () => {
     const latlnd = await getLocation();
     const weatherData = await callWeatherApi(
       latlnd.coords.latitude,
       latlnd.coords.longitude
     );
-    const pollutionData = await callRealPollutionApi();
+    const pollutionData = await callPollutionApi();
 
     return [weatherData, pollutionData];
   };
 
-  const { isLoading, data, error, refetch } = useQuery("Weather", getWeather);
   const setWeatherPollution = useSetRecoilState(WeatherPollution);
+  //Recoil로 전역으로 관리
+
+  const { isLoading, data, error, refetch } = useQuery(
+    "Weather",
+    fetchWeatherData
+  );
 
   useEffect(() => {
     const interval = setInterval(() => {
       refetch();
     }, 15 * 60 * 1000);
 
+    return () => clearInterval(interval);
+  }, [refetch]);
+
+  useEffect(() => {
     if (!isLoading) {
       setWeatherPollution(data);
     }
-
-    return () => clearInterval(interval);
   }, [data]);
-  //이부분수정해야할듯
 
   return userId === null ? (
     <LoginBarrier />

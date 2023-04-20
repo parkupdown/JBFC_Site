@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import swal from "sweetalert";
+import api from "../api";
 
 const BoardWriteWrapper = styled.div`
   max-width: 800px;
@@ -133,22 +134,23 @@ function BoardWrite() {
   const navigator = useNavigate();
   const [category, setCategory] = useState("free");
 
-  const afterSubmit = () => {
-    swal(
-      "작성이 완료되었습니다.",
-      "게시글 삭제는 내가 쓴 글에서 삭제 가능합니다. 게시글로 돌아갑니다.",
-      "success"
-    );
-    navigator(`/board`);
-  };
   const selectChange = (event) => {
     const categoryOfBoard = event.currentTarget.value;
     setCategory(categoryOfBoard);
   };
 
-  const PostBoardWriteApi = (userId, title, contents, nowTime) => {
+  const afterSubmit = () => {
+    swal(
+      "작성이 완료되었습니다.",
+      "게시글 삭제는 내가 쓴 글에서 삭제 가능합니다. 2초 뒤 자동 게시글로 돌아갑니다.",
+      "success"
+    );
+    setTimeout(() => navigator(`/board`), 2000);
+  };
+
+  const postBoardWriteApi = (userId, title, contents, nowTime) => {
     axios
-      .post(`https://jjackbalance.info/board/write`, {
+      .post(`${api.BASE_URL}/board/write`, {
         userId: userId,
         title: title,
         contents: contents,
@@ -158,13 +160,14 @@ function BoardWrite() {
       .then(afterSubmit());
   };
 
-  const ResetInput = (event) => {
+  const resetInput = (event) => {
     event.currentTarget[0].value = ``;
     event.currentTarget[1].value = ``;
   };
 
   const onSubmit = (event) => {
     event.preventDefault();
+
     const userId = localStorage.getItem(`userId`);
     const title = event.currentTarget[0].value;
     const contents = event.currentTarget[1].value;
@@ -173,8 +176,8 @@ function BoardWrite() {
       time.getMonth() + 1
     }월 ${time.getDate()}일 ${time.getHours()}시 ${time.getMinutes()}분`;
 
-    PostBoardWriteApi(userId, title, contents, nowTime);
-    ResetInput(event);
+    postBoardWriteApi(userId, title, contents, nowTime);
+    resetInput(event);
   };
 
   const goBack = () => {

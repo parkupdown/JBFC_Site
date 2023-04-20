@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import "animate.css";
 import Loading from "./Loading";
+import api from "../api";
 
 function FreeTalk({ userId, socket, data, ChatComponents }) {
   const [chatData, setChatData] = useState(null);
@@ -15,20 +16,20 @@ function FreeTalk({ userId, socket, data, ChatComponents }) {
     ChatComponentsTitle,
   ] = ChatComponents;
 
-  const GetChatApi = () => {
+  const getChatApi = () => {
     axios
-      .post(`https://jjackbalance.info/chat`, {
+      .post(`${api.BASE_URL}/chat`, {
         category: "Free",
       })
       .then((res) => setChatData(res.data));
   };
 
   useEffect(() => {
-    GetChatApi();
+    getChatApi();
   }, []);
 
-  const CallChatApi = (ChatValue) => {
-    axios.post(`https://jjackbalance.info/chat/insertOne`, {
+  const callChatApi = (ChatValue) => {
+    axios.post(`${api.BASE_URL}/chat/insertOne`, {
       userId: userId,
       message: ChatValue,
       category: "Free",
@@ -43,7 +44,7 @@ function FreeTalk({ userId, socket, data, ChatComponents }) {
   const sendMessage = async (event) => {
     event.preventDefault();
     const ChatValue = event.currentTarget[0].value;
-    emitMessage(ChatValue).then(CallChatApi(ChatValue));
+    emitMessage(ChatValue).then(callChatApi(ChatValue));
     //이때 입력한 것들은 보내짐
     event.currentTarget[0].value = ``;
   };

@@ -4,6 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import swal from "sweetalert";
 import Loading from "./Loading";
 import styled from "styled-components";
+import api from "../api";
 
 const Container = styled.div`
   display: flex;
@@ -151,17 +152,26 @@ function BoardDetail() {
     time.getMonth() + 1
   }/${time.getDate()} ${time.getHours()}:${time.getMinutes()}`;
 
-  const CallBoardDetailApi = () =>
+  const getBoardDetailApi = () =>
     axios
-      .post(`https://jjackbalance.info/boardDetail`, {
+      .post(`${api.BASE_URL}/boardDetail`, {
         userId: userId,
       })
       .then((res) => setDetail(res.data));
   //boardDetail Api에 userId를 보내서 useId와 일치하는 배열 데이터를 찾아옴
 
-  const CallBoardCommentsApi = (userId, userName, inputValue) => {
+  const getBoardCommentsApi = () => {
     return axios
-      .post(`https://jjackbalance.info/board/comment`, {
+      .post(`${api.BASE_URL}/board/comment/get`, {
+        userId: userId,
+        userName: userName,
+      })
+      .then((res) => setComment(res.data));
+  };
+
+  const pushBoardCommentsApi = (userId, userName, inputValue) => {
+    return axios
+      .post(`${api.BASE_URL}/board/comment`, {
         userId: userId,
         userName: userName,
         comment: inputValue,
@@ -170,25 +180,17 @@ function BoardDetail() {
       .then((res) => setComment(res.data));
   }; //submit하면 댓글정보를 보낼 수 있도록함
 
-  const GetBoardCommentsApi = () => {
-    return axios
-      .post(`https://jjackbalance.info/board/comment/get`, {
-        userId: userId,
-        userName: userName,
-      })
-      .then((res) => setComment(res.data));
-  };
   // 위 페이지에 들어오면 댓글정보를 볼 수 있게 API를 최초에 1회 호출함
 
   useEffect(() => {
-    CallBoardDetailApi();
-    GetBoardCommentsApi();
+    getBoardDetailApi();
+    getBoardCommentsApi();
   }, []);
 
   const onSubmit = (event) => {
     event.preventDefault();
     const inputValue = event.currentTarget[0].value;
-    CallBoardCommentsApi(userId, userName, inputValue);
+    pushBoardCommentsApi(userId, userName, inputValue);
     event.currentTarget[0].value = ``;
     swal("성공", "댓글작성이 완료되었습니다.", "success");
   };
@@ -204,7 +206,7 @@ function BoardDetail() {
   };
 
   const DeleteBoardMentApi = (userName, id) => {
-    axios.delete(`https://jjackbalance.info/board/mine/comment/delete`, {
+    axios.delete(`${api.BASE_URL}/board/mine/comment/delete`, {
       data: { userName: userName, _id: id },
     });
   };

@@ -6,6 +6,7 @@ import LoginBarrier from "./LoginBarrier";
 import NoticeTalk from "./NoticeTalk";
 import styled, { createGlobalStyle } from "styled-components";
 import ChatComponents from "./ChatComponents";
+import api from "../api";
 
 const Title = styled.h1`
   font-size: 4rem;
@@ -42,7 +43,7 @@ const ButtonContainer = styled.div`
 `;
 
 function Chat() {
-  const socket = io.connect(`https://jjackbalance.info`);
+  const socket = io.connect(`${api.BASE_URL}`);
   const userId = localStorage.getItem(`userId`);
   const [noticeChat, setNoticeChat] = useState(null);
   const [freeChat, setFreeChat] = useState(null);

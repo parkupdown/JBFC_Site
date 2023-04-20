@@ -164,7 +164,7 @@ app.post(`/board/write`, (req, res) => {
   insertBoardData(req, res);
 });
 
-app.post(`/board/`, (req, res) => {
+app.post(`/board`, (req, res) => {
   db.collection("Board")
     .find({ category: req.body.category })
     .toArray(function (error, result) {

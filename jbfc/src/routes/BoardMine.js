@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import swal from "sweetalert";
 import Loading from "./Loading";
+import api from "../api";
 
 const Title = styled.h3`
   text-align: center;
@@ -143,39 +144,40 @@ function BoardMine() {
   const [mine, setMine] = useState(null);
   const navigator = useNavigate();
 
-  const CallBoardMineApi = () => {
-    return axios
-      .post(`https://jjackbalance.info/board/mine`, {
-        userId: userId,
-      })
-      .then((res) => setMine(res.data));
+  const callBoardMineApi = async () => {
+    try {
+      const res = await axios.post(`${api.BASE_URL}/board/mine`, { userId });
+      setMine(res.data);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   useEffect(() => {
-    CallBoardMineApi();
+    callBoardMineApi();
   }, []);
 
   const goBack = () => {
     navigator(-1);
   };
 
-  const DeleteMine = (listId) => {
-    setMine((current) => {
-      const newMine = current.filter(
-        (item, index) => index !== parseInt(listId)
+  const deleteMine = async (userId, listId) => {
+    try {
+      await axios.delete(`${api.BASE_URL}/board/mine/delete`, {
+        data: { userId: userId },
+      });
+      setMine((current) =>
+        current.filter((item, index) => index !== parseInt(listId))
       );
-      return newMine;
-    });
+      swal("성공", "게시글 삭제가 완료되었습니다.", "success");
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const onClick = (event, userId) => {
-    axios.delete(`https://jjackbalance.info/board/mine/delete`, {
-      data: { userId: userId },
-    });
-    //delete는 데이터를 넣어주는 방법이 다르다!
-
     const listId = event.currentTarget.parentElement.parentElement.id;
-    DeleteMine(listId);
+    deleteMine(userId, listId);
     swal("성공", "게시글 삭제가 완료되었습니다.", "success");
   };
 

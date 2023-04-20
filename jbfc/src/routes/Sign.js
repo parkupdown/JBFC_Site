@@ -6,6 +6,7 @@ import styled from "styled-components";
 import "animate.css";
 import swal from "sweetalert";
 import SignValidation from "./SignValidation";
+import api from "../api";
 
 const Box = styled.div`
   background-color: #f2f2f2;
@@ -122,7 +123,7 @@ function Sign() {
 
   const Validation = (teamName, nickName, userId, password) => {
     axios
-      .post(`https://jjackbalance.info/sign`, {
+      .post(`${api.BASE_URL}/sign`, {
         userId: userId,
         userPassword: password,
         nickName: nickName,
@@ -156,7 +157,7 @@ function Sign() {
 
   const InsertUserData = (teamName, nickName, userId, userPassword) => {
     axios
-      .post(`https://jjackbalance.info/sign/insertUserData`, {
+      .post(`${api.BASE_URL}/sign/insertUserData`, {
         teamName: teamName,
         nickName: nickName,
         userId: userId,

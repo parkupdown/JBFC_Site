@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import "animate.css";
 import Loading from "./Loading";
+import api from "../api";
 
 function NoticeTalk({ userId, socket, data, ChatComponents }) {
   const [chatData, setChatData] = useState(null);
@@ -16,20 +17,20 @@ function NoticeTalk({ userId, socket, data, ChatComponents }) {
     ChatComponentsTitle,
   ] = ChatComponents;
 
-  const GetChatApi = () => {
+  const getChatApi = () => {
     axios
-      .post(`https://jjackbalance.info/chat`, {
+      .post(`${api.BASE_URL}/chat`, {
         category: "Notice",
       })
       .then((res) => setChatData(res.data));
   }; //여기서 최초 정보를 가져옴
 
   useEffect(() => {
-    GetChatApi();
+    getChatApi();
   }, []);
 
-  const CallChatApi = (ChatValue) => {
-    axios.post(`https://jjackbalance.info/chat/insertOne`, {
+  const callChatApi = (ChatValue) => {
+    axios.post(`${api.BASE_URL}/chat/insertOne`, {
       userId: userId,
       message: ChatValue,
       category: "Notice",
@@ -48,7 +49,7 @@ function NoticeTalk({ userId, socket, data, ChatComponents }) {
   const sendMessage = async (event) => {
     event.preventDefault();
     const ChatValue = event.currentTarget[0].value;
-    emitMessage(ChatValue).then(CallChatApi(ChatValue));
+    emitMessage(ChatValue).then(callChatApi(ChatValue));
 
     //이때 입력한 것들은 보내짐 이때 ChatApi를 통해 저장이됨 그럼 그 값을 가져온 다음 그 값을 바로 넣어주면 되자나
     event.currentTarget[0].value = ``;
