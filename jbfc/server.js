@@ -28,7 +28,7 @@ app.use(function (req, res, next) {
 });
 app.use(
   session({
-    secret: "ParkUpDown",
+    secret: process.env.SECRET,
     resave: true,
     saveUninitialized: false,
   })
@@ -36,14 +36,11 @@ app.use(
 
 let db;
 //mongodb+srv://tkdgk1996:<password>@cluster0.btnfifg.mongodb.net/?retryWrites=true&w=majority
-MongoClient.connect(
-  "mongodb+srv://tkdgk1996:FBG9w8AwL8J0p5Zy@cluster0.btnfifg.mongodb.net/?retryWrites=true&w=majority",
-  { useUnifiedTopology: true }
-)
+MongoClient.connect(process.env.DB_URL, { useUnifiedTopology: true })
   .then((client) => {
     db = client.db(`JB`);
 
-    http.listen(8080, function () {
+    http.listen(process.env.SERVER_PORT, function () {
       console.log(`Listening on 8080`);
     });
   })
