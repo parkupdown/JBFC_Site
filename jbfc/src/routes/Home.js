@@ -96,6 +96,7 @@ function Home() {
   const userId = localStorage.getItem(`userId`);
   const navigate = useNavigate();
 
+  // 사용자의 위치를 받아오는 함수
   const getLocation = () => {
     return new Promise(async (resolve, reject) => {
       try {
@@ -108,6 +109,7 @@ function Home() {
     });
   };
 
+  // 날씨 API를 통해 날씨 정보를 가져오는 함수
   const callWeatherApi = (lat, lnd) => {
     return axios
       .get(api.WEATHER(lat, lnd))
@@ -117,6 +119,7 @@ function Home() {
       });
   };
 
+  // 미세먼지 API를 통해 미세먼지 정보를 가져오는 함수
   const callPollutionApi = () => {
     return axios
       .get(api.POLLUTION)
@@ -126,6 +129,7 @@ function Home() {
       });
   };
 
+  // 비동기 함수들을 동기적으로 호출하여 최종적으로 날씨데이터와 미세먼지데이터를 배열의형태로 반환
   const fetchWeatherData = async () => {
     const latlnd = await getLocation();
     const weatherData = await callWeatherApi(
@@ -137,14 +141,16 @@ function Home() {
     return [weatherData, pollutionData];
   };
 
+  //Recoil로 전역으로 관리하기위해 setter 함수생성
   const setWeatherPollution = useSetRecoilState(WeatherPollution);
-  //Recoil로 전역으로 관리
 
+  //useQuery를 통해 날씨 데이터와 미세먼지 데이터를 가져올 수 있는 함수를 실행
   const { isLoading, data, error, refetch } = useQuery(
     "Weather",
     fetchWeatherData
   );
 
+  //15분마다 refetch하도록 설계 (미세먼지 데이터가 15분마다 갱신)
   useEffect(() => {
     const interval = setInterval(() => {
       refetch();
@@ -153,6 +159,8 @@ function Home() {
     return () => clearInterval(interval);
   }, [refetch]);
 
+  // useQuery를 활용해서 isLoading이 false면 최초 1회 전역상태관리 setter함수를 통해
+  // data를 전역에 둠
   useEffect(() => {
     if (!isLoading) {
       setWeatherPollution(data);

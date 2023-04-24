@@ -132,23 +132,26 @@ const SelectCategory = styled.select`
 
 function BoardWrite() {
   const navigator = useNavigate();
+  //카테고리의 기본 값은 "free"로 향하게 둔다.
   const [category, setCategory] = useState("free");
 
+  // select 태그에 변화가 생기면 category의 값을 변경시킨다.
   const selectChange = (event) => {
     const categoryOfBoard = event.currentTarget.value;
     setCategory(categoryOfBoard);
   };
-
+  // 작성이 완료되면 작성이 완료되었다는 문구와 함께 2초 후 게시글이 있는 Board 컴포넌트를 렌더링한다.
   const afterSubmit = () => {
     swal(
       "작성이 완료되었습니다.",
-      "게시글 삭제는 내가 쓴 글에서 삭제 가능합니다. 2초 뒤 자동 게시글로 돌아갑니다.",
+      "게시글 삭제는 내가 쓴 글에서 삭제 가능합니다.      2초 뒤 게시글로 돌아갑니다.",
       "success"
     );
     setTimeout(() => navigator(`/board`), 2000);
   };
 
-  const postBoardWriteApi = (userId, title, contents, nowTime) => {
+  //DB에 Board에 작성할 데이터를 넣는다.
+  const inputBoardWriteApi = (userId, title, contents, nowTime) => {
     axios
       .post(`${api.BASE_URL}/board/write`, {
         userId: userId,
@@ -160,11 +163,13 @@ function BoardWrite() {
       .then(afterSubmit());
   };
 
+  // Input을 리셋하는 함수
   const resetInput = (event) => {
     event.currentTarget[0].value = ``;
     event.currentTarget[1].value = ``;
   };
 
+  // form이 submit 되었을 때 DB데이터 저장 및 input reset을 실행하는 함수
   const onSubmit = (event) => {
     event.preventDefault();
 
@@ -176,7 +181,7 @@ function BoardWrite() {
       time.getMonth() + 1
     }월 ${time.getDate()}일 ${time.getHours()}시 ${time.getMinutes()}분`;
 
-    postBoardWriteApi(userId, title, contents, nowTime);
+    inputBoardWriteApi(userId, title, contents, nowTime);
     resetInput(event);
   };
 

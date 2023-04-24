@@ -72,9 +72,9 @@ const WeatherContainer = styled.div`
 `;
 
 function Weather({ data }) {
+  // 시간을 일의 단위로 변경시켜주는함수
   const findDataIndex = () => {
     const nowHour = new Date().getHours();
-
     let dataIndex = 0;
     if (nowHour < 14) {
       dataIndex = 0;
@@ -93,20 +93,22 @@ function Weather({ data }) {
   };
 
   const makeWeatherInfo = (data) => {
+    // 하루에 해당하는 Index 추출
     const dataIndex = findDataIndex(data);
+    // Index에 해당하는 data 추출
     let weatherInfo = data.data.list[dataIndex];
-    const maxTemp = Math.floor(weatherInfo.main.temp_max - 272.15);
     //최고온도
-    const minTemp = Math.floor(weatherInfo.main.temp_min - 272.15);
+    const maxTemp = Math.floor(weatherInfo.main.temp_max - 272.15);
     //최저온도
-    const averageTemp = Math.floor(weatherInfo.main.temp - 272.15);
+    const minTemp = Math.floor(weatherInfo.main.temp_min - 272.15);
     //평균온도
+    const averageTemp = Math.floor(weatherInfo.main.temp - 272.15);
 
     const weatherConditionId = weatherInfo.weather[0].id;
     let message;
     let iconClassName;
 
-    // 온도에 따라 메세지 다르게 출력
+    // 온도에 따라 메세지,아이콘 다르게 출력
     if (weatherConditionId < 300) {
       message = Constants.WEATHER.THUNDERSTORM;
       iconClassName = Constants.WEATHERICON.THUNDERSTORM;
@@ -140,8 +142,9 @@ function Weather({ data }) {
     return [averageTemp, maxTemp, minTemp, message, iconClassName];
   };
 
+  // 만들어진 weatherData를 변수로 저장
+  // 후에 이 데이터로 map 하여 데이터를 뿌림
   const weatherInfo = makeWeatherInfo(data);
-  // send data
 
   return (
     <Container>

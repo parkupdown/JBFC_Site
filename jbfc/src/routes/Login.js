@@ -63,21 +63,25 @@ const Sign = styled.h4`
 
 function Login() {
   const navigate = useNavigate();
+  // login했는지를 체크해서 했다면 Home 컴포넌트로 유저 이동
   const CheckLoggedIn = () => {
     if (localStorage.getItem(`userId`) !== null) {
       navigate(`/home`);
     }
   };
+
+  // CheckLoggedIn 실행
   CheckLoggedIn();
   const goToHome = () => {
     navigate(`/home`);
   };
 
+  // localstorage에 userInformation을 저장하는함수
   const SetLocalStorage = (userInfomation) => {
     localStorage.setItem(`userId`, userInfomation);
   };
-
-  const CheckIDPASS = (userId, userPassword) => {
+  // 로그인 성고인지 실패인지를 검사하고 실패하면 경고문구, 성공하면 SetLocalStorage함수 실행 및 Home 컴포넌트로 이동
+  const checkIdPass = (userId, userPassword) => {
     axios
       .post(`${api.BASE_URL}/login`, {
         userId: userId,
@@ -91,6 +95,7 @@ function Login() {
             "warning"
           );
         }
+        // userInfomation에는 teamName과 nickName이 들어감
         const userInfomation = `[${res.data.teamName}] ${res.data.nickName}`;
         SetLocalStorage(userInfomation);
         goToHome();
@@ -105,16 +110,13 @@ function Login() {
       });
   };
 
+  // Submit하면 CheckIDPass를실행함
   const onSubmit = (event) => {
     event.preventDefault();
     const userId = event.currentTarget[0].value;
     const userPass = event.currentTarget[1].value;
-    CheckIDPASS(userId, userPass);
+    checkIdPass(userId, userPass);
   };
-
-  //set안됐는데
-
-  // Define a styled component for the outer container
 
   return (
     <Box>

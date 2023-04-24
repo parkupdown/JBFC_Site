@@ -142,7 +142,10 @@ const JJACKTitle = styled.h3`
 `;
 
 function BoardDetail() {
+  //유저가 클릭한 게시글의 고유 ID를 useParams를 통해 가져옴
   const { userId } = useParams();
+
+  // 유저의 로그인 정보를 가져옴
   const userName = localStorage.getItem(`userId`);
   const [detail, setDetail] = useState(null);
   const [comment, setComment] = useState(null);
@@ -152,23 +155,24 @@ function BoardDetail() {
     time.getMonth() + 1
   }/${time.getDate()} ${time.getHours()}:${time.getMinutes()}`;
 
+  // 유저가 클릭한 게시글의 고유 id를 비교해 해당 id의 detailData를 detail에 저장
   const getBoardDetailApi = () =>
     axios
       .post(`${api.BASE_URL}/boardDetail`, {
         userId: userId,
       })
       .then((res) => setDetail(res.data));
-  //boardDetail Api에 userId를 보내서 useId와 일치하는 배열 데이터를 찾아옴
 
+  //DB에 userId를 보내서 useId와 일치하는 댓글 데이터를 가져와 comment에 저장
   const getBoardCommentsApi = () => {
     return axios
       .post(`${api.BASE_URL}/board/comment/get`, {
         userId: userId,
-        userName: userName,
       })
       .then((res) => setComment(res.data));
   };
 
+  // 댓글을 달면 board의 고유 id를 기억 userName,comment,time을 저장함
   const pushBoardCommentsApi = (userId, userName, inputValue) => {
     return axios
       .post(`${api.BASE_URL}/board/comment`, {
@@ -178,15 +182,15 @@ function BoardDetail() {
         time: nowTime,
       })
       .then((res) => setComment(res.data));
-  }; //submit하면 댓글정보를 보낼 수 있도록함
+  };
 
   // 위 페이지에 들어오면 댓글정보를 볼 수 있게 API를 최초에 1회 호출함
-
   useEffect(() => {
     getBoardDetailApi();
     getBoardCommentsApi();
   }, []);
 
+  // 댓글을 Submit하면  DB에 새로운 댓글에대한 내용 저장 후 알림
   const onSubmit = (event) => {
     event.preventDefault();
     const inputValue = event.currentTarget[0].value;
@@ -195,6 +199,7 @@ function BoardDetail() {
     swal("성공", "댓글작성이 완료되었습니다.", "success");
   };
 
+  //본인이 작성한 뎃글인지 판단
   const CheckCommentHost = (userName, commentName) => {
     if (userName !== commentName) {
       return swal(
@@ -205,12 +210,14 @@ function BoardDetail() {
     }
   };
 
+  // userName과 게시글 고유의 id를 비교하여 게시글의 댓글을 삭제
   const DeleteBoardMentApi = (userName, id) => {
     axios.delete(`${api.BASE_URL}/board/mine/comment/delete`, {
       data: { userName: userName, _id: id },
     });
   };
 
+  // 유저에게 서버와 로딩하는 시간없이 바로 지워지는 것처럼 함
   const DeleteUI = (ListId) => {
     setComment((current) => {
       const newMine = current.filter(
@@ -222,6 +229,7 @@ function BoardDetail() {
     swal("성공", "댓글삭제가 완료되었습니다.", "success");
   };
 
+  // 댓글 삭제를 실행하는 함수
   const commentRemove = (event, userName, commentName, id) => {
     CheckCommentHost(userName, commentName);
     DeleteBoardMentApi(userName, id);

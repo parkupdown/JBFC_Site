@@ -7,15 +7,17 @@ import api from "../api";
 function FreeTalk({ userId, socket, data, ChatComponents }) {
   const [chatData, setChatData] = useState(null);
   const [chatNewData, setChatNewData] = useState([]);
+
+  //Chat styled-components를 가져온다.
   const [
     Container,
     ChatContainer,
     InputContainer,
     ChatList,
-    Ment,
     ChatComponentsTitle,
   ] = ChatComponents;
 
+  // "Free" 카테고리에 있는 채팅 목록을 가져온 후 chatdata에 저장한다.
   const getChatApi = () => {
     axios
       .post(`${api.BASE_URL}/chat`, {
@@ -24,10 +26,12 @@ function FreeTalk({ userId, socket, data, ChatComponents }) {
       .then((res) => setChatData(res.data));
   };
 
+  //최초 1회 채팅 목록을 가져온다.
   useEffect(() => {
     getChatApi();
   }, []);
 
+  // 채팅에 필요한 데이터를 DB에 저장한다.
   const callChatApi = (ChatValue) => {
     axios.post(`${api.BASE_URL}/chat/insertOne`, {
       userId: userId,
@@ -35,12 +39,16 @@ function FreeTalk({ userId, socket, data, ChatComponents }) {
       category: "Free",
     });
   };
+
+  // 채팅 된 내용을 서버에 보내 서버에서 다시 모든 클라이언트로 데이터를 전송하도록한다.
+  // 소켓을 사용하여 양방향통신을 위한 트리거가 된다.
   const emitMessage = (ChatValue) => {
     return new Promise((resolve, reject) => {
       socket.emit("send_message_free", { userId: userId, message: ChatValue });
     });
   };
 
+  // 메세지를 서버에 전달하고 DB에 전달 후 input을 리셋한다.
   const sendMessage = async (event) => {
     event.preventDefault();
     const ChatValue = event.currentTarget[0].value;
@@ -49,14 +57,13 @@ function FreeTalk({ userId, socket, data, ChatComponents }) {
     event.currentTarget[0].value = ``;
   };
 
+  //최초 1회 data가 null이 아니면 data를 newchat에 저장한다.
+  // 이때 Data는 상위 컴포넌트(Chat)에서 가져온 실시간 채팅 데이터가 된다.
   useEffect(() => {
     if (data !== null) {
       setChatNewData((current) => [...current, data]);
     }
   }, [data]);
-
-  // 이게 아니라 setState에 들어갔던 것이 나오도록해야할듯
-  //이부분이 잘못됨
 
   return (
     <>

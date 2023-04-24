@@ -75,16 +75,20 @@ const BackButton = styled.button`
 `;
 
 function DetailWeatherPollution() {
+  // Recoil을 사용하여 날씨, 미세먼지 데이터를 불러온다.
   const data = useRecoilValue(WeatherPollution);
 
+  // 화면에 맞게 그래프가 그려지도록 한다.
   const [chartWidth, setChartWidth] = useState(window.innerWidth * 0.7);
   const [chartHeight, setChartHeight] = useState(window.innerHeight * 0.8);
 
+  // 사이즈를 조절하는데 필요한 함수
   const handleResize = () => {
     setChartWidth(window.innerWidth * 0.7);
     setChartHeight(window.innerHeight * 0.6);
   };
 
+  //화면을 감지하고 resize할 수 있는 이밴트 리스너를 등록한다.
   useEffect(() => {
     window.addEventListener("resize", handleResize);
     return () => {

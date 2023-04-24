@@ -180,10 +180,12 @@ const BoardContainer = styled.div`
 `;
 
 function Board() {
+  //로그인 정보를 가져옴
   const userId = localStorage.getItem(`userId`);
   const [boardData, setBoardData] = useState(null);
   const [category, setCategory] = useState(`free`);
 
+  //카테고리에 따른 게시판 데이터를 가져온 후 boardData에 저장
   const CallBoardApi = (categoryOfBoard) => {
     axios
       .post(`${api.BASE_URL}/board`, {
@@ -192,17 +194,17 @@ function Board() {
       .then((res) => setBoardData(res.data))
       .catch((error) => alert(error));
   };
-
+  // 카테고리가 변경되면 해당 카테고리에 맞는 게시판 데이터를 가져온 후 boardData에 저장
   useEffect(() => {
     CallBoardApi(category);
   }, [category]);
 
+  // select 태그를 이용해서 카테고리가 변경되면 카테고리 데이터를 category에 저장 후 카테고리에 맞는 게시판 data를 boardData에 저장
   const selectChange = (event) => {
     const categoryOfBoard = event.currentTarget.value;
     setCategory(categoryOfBoard);
     CallBoardApi(categoryOfBoard);
   };
-  //선택한 카테고리에 따라 해당하는 게시글을 보여주도록함
 
   return userId === null ? (
     <LoginBarrier />
@@ -242,6 +244,7 @@ function Board() {
             <ul>
               {boardData
                 ? boardData.map((data, index) => (
+                    // DB에서 해당 게시글의 고유 ID를 보냄
                     <Link to={`/board/${data._id}`}>
                       <div key={index}>
                         <li key={index}>

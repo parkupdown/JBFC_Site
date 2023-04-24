@@ -98,15 +98,6 @@ app.post(`/sign`, (req, res) => {
 app.post(`/sign/insertUserData`, (req, res) => {
   insertUserData(req, res);
 });
-app.post(`/boardDetail`, (req, res) => {
-  db.collection("Board").findOne(
-    { _id: ObjectId(req.body.userId) },
-    //string 타입을 ObjectId타입으로 변환 후 비교함
-    function (error, result) {
-      res.send(result);
-    }
-  );
-});
 
 app.post(`/login`, async (req, res, next) => {
   const checkLogin = await db

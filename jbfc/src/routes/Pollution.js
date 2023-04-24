@@ -70,16 +70,17 @@ const WeatherContainer = styled.div`
 `;
 
 function Pollution({ data }) {
+  //data에는 미세먼지 데이터(배열)이 담겨있다.
   const pollutionInfo = data.data.response.body.items[7];
+  // 2시 데이터를 가져옴
   const pm10 = parseInt(pollutionInfo.pm10Value);
-  //미세먼지
   const pm25 = parseInt(pollutionInfo.pm25Value);
-  //초미세먼지
   const pm10Grade = pollutionInfo.pm10Grade;
   //미세먼지 등급
   const pm25Grade = pollutionInfo.pm25Grade;
   //초미세먼지 등급
 
+  //미세먼지 등급에 따라 message와 incon과 color를 다르게 바인딩
   const checkPollutionCondition = () => {
     let message;
     let iconClassName;

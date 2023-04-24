@@ -13,30 +13,32 @@ function NoticeTalk({ userId, socket, data, ChatComponents }) {
     ChatContainer,
     InputContainer,
     ChatList,
-    Ment,
     ChatComponentsTitle,
   ] = ChatComponents;
 
+  // Notice에 해당하는 채팅목록을 가져와 chatData에 저장
   const getChatApi = () => {
     axios
       .post(`${api.BASE_URL}/chat`, {
         category: "Notice",
       })
       .then((res) => setChatData(res.data));
-  }; //여기서 최초 정보를 가져옴
-
+  };
+  // 최초에 1회 채팅목록을 가져옴
   useEffect(() => {
     getChatApi();
   }, []);
 
-  const callChatApi = (ChatValue) => {
+  // 채팅 데이터를 DB에 저장
+  const inputChatApi = (ChatValue) => {
     axios.post(`${api.BASE_URL}/chat/insertOne`, {
       userId: userId,
       message: ChatValue,
       category: "Notice",
     });
-  }; //여기서 데이터를 DB에 넣어준다.
+  };
 
+  // socket을 사용하여 서버에 데이터를 보냄 그럼 서버는 모든 클라이언트에 데이터를 뿌려줄 수 있다.
   const emitMessage = (ChatValue) => {
     return new Promise((resolve, reject) => {
       socket.emit("send_message_notice", {
@@ -44,17 +46,19 @@ function NoticeTalk({ userId, socket, data, ChatComponents }) {
         message: ChatValue,
       });
     });
-  }; //여기서 socket에 보내면
+  };
 
+  // 메세지를 socket을 이용해 서버에 전달한 후 Chat 리스트를 DB에 저장한다.
   const sendMessage = async (event) => {
     event.preventDefault();
     const ChatValue = event.currentTarget[0].value;
-    emitMessage(ChatValue).then(callChatApi(ChatValue));
+    emitMessage(ChatValue).then(inputChatApi(ChatValue));
 
-    //이때 입력한 것들은 보내짐 이때 ChatApi를 통해 저장이됨 그럼 그 값을 가져온 다음 그 값을 바로 넣어주면 되자나
     event.currentTarget[0].value = ``;
   };
 
+  // 최초 1회 data(서버에서 온 데이터가 null이아니면)가 null이 아니면 chatNewData에 서버에서 온 data를 저장한다.
+  // 리펙토링필요 newChat사용하지않아도 socket.on 사용하면될듯
   useEffect(() => {
     if (data !== null) {
       setChatNewData((current) => [...current, data]);

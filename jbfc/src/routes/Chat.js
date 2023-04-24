@@ -50,10 +50,13 @@ function Chat() {
   const [toggle, setToggle] = useState(true);
   const navigator = useNavigate();
 
+  // Submit 버튼의 disable을 조절하기 위해 토글 함수
   const clickToggle = () => {
     setToggle((current) => !current);
   };
 
+  // 페이지가 1회 로딩시 socket으로부터 실시간 서버의 데이터를 받아와 noticeChat과 freeChat에 저장한다.
+  // 이는 서버에서 데이터를 보낼때(양방향통신) 마다 데이터를 변화시킬 수 있다.
   useEffect(() => {
     socket.on(`broadcast_notice`, (data) => {
       setNoticeChat(data);
@@ -65,8 +68,9 @@ function Chat() {
     navigator(`/chat/Notice`);
   }, []);
 
+  //chat에 필요한 컴포넌트를 불러온다.
   const chatComponents = ChatComponents();
-  // chatComponens를 불러옴
+
   {
     return userId === null ? (
       <LoginBarrier></LoginBarrier>

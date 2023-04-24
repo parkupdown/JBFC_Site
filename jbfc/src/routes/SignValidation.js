@@ -5,7 +5,7 @@ class SignValidation {
     this.userId = userId;
     this.userPassword = userPassword;
   }
-
+  // 공백이 있는지 확인하는 Validation
   CheckBlank = () => {
     if (this.userId !== null && this.nickName !== null) {
       const arrUserId = this.userId.split(``);
@@ -16,8 +16,9 @@ class SignValidation {
     }
     return true;
   };
+
+  // 입력란을 모두 채웠는지 확인하는 Validation
   CheckNull = () => {
-    //check버튼을 누르는 순간 각 this 값들은 ""이 됨 (setState 됨으로)
     if (
       this.teamName === "" ||
       this.nickName === "" ||
@@ -29,6 +30,7 @@ class SignValidation {
     return true;
   };
 
+  // 특수문자가 없도록하기위해 특수문자를 검열하는 Validation
   CheckSpecial = () => {
     const regExp = /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/g;
     return regExp.test(this.userId) || regExp.test(this.nickName)

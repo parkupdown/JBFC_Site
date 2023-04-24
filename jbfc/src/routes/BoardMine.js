@@ -140,10 +140,12 @@ const Wrapper = styled.div`
 `;
 
 function BoardMine() {
+  //유저의 로그인 정보를 가져옴
   const userId = localStorage.getItem(`userId`);
   const [mine, setMine] = useState(null);
   const navigator = useNavigate();
 
+  //내가 쓴 글을 가져와 mine에 저장
   const callBoardMineApi = async () => {
     try {
       const res = await axios.post(`${api.BASE_URL}/board/mine`, { userId });
@@ -152,7 +154,7 @@ function BoardMine() {
       console.error(error);
     }
   };
-
+  // 최초 1회 내가 쓴 글을 Mine에 저장하도록 함
   useEffect(() => {
     callBoardMineApi();
   }, []);
@@ -161,11 +163,14 @@ function BoardMine() {
     navigator(-1);
   };
 
+  // 내가 쓴 글에서 삭제하고 싶은 글을 찾아내 해당 글을 DB에서 삭제함
+  // 이때의 userId는 localstorage의 userId가 아닌 data._id 즉 mine 데이터 arr의 ._id가 들어간다.
   const deleteMine = async (userId, listId) => {
     try {
       await axios.delete(`${api.BASE_URL}/board/mine/delete`, {
         data: { userId: userId },
       });
+      // 즉각적으로 지워지는것처럼보이게 listId를 가져옴
       setMine((current) =>
         current.filter((item, index) => index !== parseInt(listId))
       );
@@ -175,6 +180,7 @@ function BoardMine() {
     }
   };
 
+  // 클릭했을 때 원하는 게시글을 삭제함
   const onClick = (event, userId) => {
     const listId = event.currentTarget.parentElement.parentElement.id;
     deleteMine(userId, listId);
