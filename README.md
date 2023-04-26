@@ -41,6 +41,7 @@
 </p>
 <p align="center">
 <img src="https://img.shields.io/badge/React-61DAFB?style=flat&logo=React&logoColor=white"/>
+ <img src="https://img.shields.io/badge/Recoil-61DAFB?style=flat&logo=React&logoColor=white"/>
   <img src="https://img.shields.io/badge/React Query-FF4154?style=flat&logo=React Query&logoColor=white"/>
 <img src="https://img.shields.io/badge/styled-components-DB7093?style=flat&logo=styled-components&logoColor=white"/>
 </p>
