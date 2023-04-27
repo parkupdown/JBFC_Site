@@ -67,7 +67,7 @@
 
 
 ### 로그인 및 회원가입 
-<p align="center">
+<p align="left">
 
 <img src=https://user-images.githubusercontent.com/101778169/234798311-5bc1494d-e6e5-4742-bfa4-75271ebeabf6.png  width="500" height="300"/>
 <img src=https://user-images.githubusercontent.com/101778169/234798323-9f546ea7-c1e3-4ec4-be35-194f5c050b7c.png  width="500" height="300"/>
@@ -83,7 +83,7 @@
 
 
 ### 날씨 및 미세먼지 
-<p align="cneter">
+<p align="left">
 
 <img src=https://user-images.githubusercontent.com/101778169/234798588-a869db9c-29db-4b46-92aa-27437c90e348.png  width="500" height="300"/>
 <img src=https://user-images.githubusercontent.com/101778169/234798566-4cc17901-6eb4-4c47-9935-ffc54dc95943.png  width="500" height="300"/>
