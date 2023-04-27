@@ -29,6 +29,13 @@
 <li>회원들간 실시간 소통이 가능하게 하자 </li>
 <li>채팅방 두 개를 개설하여 매칭 및 공지방, 수다방을 구분하자</li>
 
+## BOIRERPLATE 📦
+<p align="center">
+<img src="https://img.shields.io/badge/node.js16.15.1-339933?style=flat&logo=Node.js&logoColor=white"/>
+<img src="https://img.shields.io/badge/8.11.0-CB3837?style=flat&logo=npm&logoColor=white"/>
+</p>
+
+
  ##   🛠 기술 스택 🛠
 <p align="center">
 <img src="https://img.shields.io/badge/HTML5-E34F26?style=flat&logo=HTML5&logoColor=white"/>
@@ -56,13 +63,59 @@
 <a href="https://velog.io/@tkdgk1996 "><img src="https://img.shields.io/badge/Tech%20Blog-11B48A?style=flat-square&logo=Vimeo&logoColor=white&link=https://velog.io/@tkdgk1996 "/></a>
 </p>
 
-## 배포된 웹 사이트
+## 화면 구성 🗃
 
-https://jbfc-site-f6eyczp6t-updownpark2.vercel.app/
+
+### 로그인 및 회원가입 
+<p align="center">
+
+<img src=https://user-images.githubusercontent.com/101778169/234798311-5bc1494d-e6e5-4742-bfa4-75271ebeabf6.png  width="500" height="300"/>
+<img src=https://user-images.githubusercontent.com/101778169/234798323-9f546ea7-c1e3-4ec4-be35-194f5c050b7c.png  width="500" height="300"/>
+</p>
+
+
+### 홈 화면
+<p align="left">
+
+<img src=https://user-images.githubusercontent.com/101778169/234798739-52deb849-359a-4029-9cda-f8652985719c.png  width="500" height="300"/>
+</p>
+<hr/>
+
+
+### 날씨 및 미세먼지 
+<p align="cneter">
+
+<img src=https://user-images.githubusercontent.com/101778169/234798588-a869db9c-29db-4b46-92aa-27437c90e348.png  width="500" height="300"/>
+<img src=https://user-images.githubusercontent.com/101778169/234798566-4cc17901-6eb4-4c47-9935-ffc54dc95943.png  width="500" height="300"/>
+</p>
+<hr/>
+
+### 게시판 
+<p align="left">
+<img src=https://user-images.githubusercontent.com/101778169/234798637-3099173f-7c60-48a9-900b-cd4405c9ee58.png  width="500" height="300"/>
+</p>
+
+<hr/>
+
+
+### 채팅
+<p align="left">
+
+<img src=https://user-images.githubusercontent.com/101778169/234798703-c5693227-40f9-427b-bdca-a47ca2d44ba0.png  width="500" height="300"/>
+</p>
+
+<hr/>
+
+
+## 배포된 웹 사이트
+<h3>짝발란스 FC</h3>
+ <a href="https://jbfc-site-f6eyczp6t-updownpark2.vercel.app/"><img src=https://user-images.githubusercontent.com/101778169/234801493-2983ef85-6cb2-435e-b64a-580ff3e7cae2.PNG width="100" height="100"/></a>
 
 ## 웹 사이트를 배포하며 배운 점들을 작성한 개인 기술 블로그
+<h3>조개소년의 Velog</h3>
+<a href="https://velog.io/@tkdgk1996 "><img src=https://img.shields.io/badge/Tech%20Blog-11B48A?style=flat-square&logo=Vimeo&logoColor=white&link=https://velog.io/@tkdgk1996 width="180" height="100" /></a>
 
-https://velog.io/@tkdgk1996/series/%ED%92%8B%EC%82%B4-%EB%8F%99%ED%98%B8%ED%9A%8C-SNS-%ED%94%8C%EB%9E%AB%ED%8F%BC-%EA%B0%9C%EB%B0%9C%EA%B8%B0
+
 
 
 
