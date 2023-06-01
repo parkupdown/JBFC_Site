@@ -46,6 +46,7 @@
 </p>
 <p align="center">
 <img src="https://img.shields.io/badge/React-61DAFB?style=flat&logo=React&logoColor=white"/>
+ <img src="https://img.shields.io/badge/Recoil-61DAFB?style=flat&logo=React&logoColor=white"/>
   <img src="https://img.shields.io/badge/React Query-FF4154?style=flat&logo=React Query&logoColor=white"/>
 <img src="https://img.shields.io/badge/styled-components-DB7093?style=flat&logo=styled-components&logoColor=white"/>
 </p>
@@ -60,10 +61,64 @@
 <a href="https://velog.io/@tkdgk1996 "><img src="https://img.shields.io/badge/Tech%20Blog-11B48A?style=flat-square&logo=Vimeo&logoColor=white&link=https://velog.io/@tkdgk1996 "/></a>
 </p>
 
+## 화면 구성 🗃
+
+### 로그인 및 회원가입
+
+<p align="left">
+
+<img src=https://user-images.githubusercontent.com/101778169/234798311-5bc1494d-e6e5-4742-bfa4-75271ebeabf6.png  width="500" height="300"/>
+<img src=https://user-images.githubusercontent.com/101778169/234798323-9f546ea7-c1e3-4ec4-be35-194f5c050b7c.png  width="500" height="300"/>
+</p>
+
+### 홈 화면
+
+<p align="left">
+
+<img src=https://user-images.githubusercontent.com/101778169/234798739-52deb849-359a-4029-9cda-f8652985719c.png  width="500" height="300"/>
+</p>
+<hr/>
+
+### 날씨 및 미세먼지
+
+<p align="left">
+
+<img src=https://user-images.githubusercontent.com/101778169/234798588-a869db9c-29db-4b46-92aa-27437c90e348.png  width="500" height="300"/>
+<img src=https://user-images.githubusercontent.com/101778169/235046210-7ca33693-4861-4442-8b74-ad1104caaace.png  width="500" height="300"/>
+
+</p>
+
+<hr/>
+
+### 게시판
+
+<p align="left">
+<img src=https://user-images.githubusercontent.com/101778169/234798637-3099173f-7c60-48a9-900b-cd4405c9ee58.png  width="500" height="300"/>
+</p>
+
+<hr/>
+
+### 채팅
+
+<p align="left">
+
+<img src=https://user-images.githubusercontent.com/101778169/234798703-c5693227-40f9-427b-bdca-a47ca2d44ba0.png  width="500" height="300"/>
+</p>
+
+<hr/>
+
 ## 배포된 웹 사이트
 
-https://jbfc-site-f6eyczp6t-updownpark2.vercel.app/
+<h3>짝발란스 FC</h3>
+ <a href="https://jbfc-site-f6eyczp6t-updownpark2.vercel.app/"><img src=https://user-images.githubusercontent.com/101778169/234801493-2983ef85-6cb2-435e-b64a-580ff3e7cae2.PNG width="100" height="100"/></a>
 
 ## 웹 사이트를 배포하며 배운 점들을 작성한 개인 기술 블로그
 
-https://velog.io/@tkdgk1996/series/%ED%92%8B%EC%82%B4-%EB%8F%99%ED%98%B8%ED%9A%8C-SNS-%ED%94%8C%EB%9E%AB%ED%8F%BC-%EA%B0%9C%EB%B0%9C%EA%B8%B0
+<<<<<<< HEAD
+
+# https://velog.io/@tkdgk1996/series/%ED%92%8B%EC%82%B4-%EB%8F%99%ED%98%B8%ED%9A%8C-SNS-%ED%94%8C%EB%9E%AB%ED%8F%BC-%EA%B0%9C%EB%B0%9C%EA%B8%B0
+
+<h3>조개소년의 Velog</h3>
+<a href="https://velog.io/@tkdgk1996 "><img src=https://img.shields.io/badge/Tech%20Blog-11B48A?style=flat-square&logo=Vimeo&logoColor=white&link=https://velog.io/@tkdgk1996 width="180" height="100" /></a>
+
+> > > > > > > 3b2b43a79e2377ff070a12a6561ce3976a544b08
