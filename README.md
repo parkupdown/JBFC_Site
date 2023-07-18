@@ -112,11 +112,7 @@
 <h3>짝발란스 FC</h3>
  <a href="https://jbfc-site-f6eyczp6t-updownpark2.vercel.app/"><img src=https://user-images.githubusercontent.com/101778169/234801493-2983ef85-6cb2-435e-b64a-580ff3e7cae2.PNG width="100" height="100"/></a>
 
-## 웹 사이트를 배포하며 배운 점들을 작성한 개인 기술 블로그
 
-
-
-# https://velog.io/@tkdgk1996/series/%ED%92%8B%EC%82%B4-%EB%8F%99%ED%98%B8%ED%9A%8C-SNS-%ED%94%8C%EB%9E%AB%ED%8F%BC-%EA%B0%9C%EB%B0%9C%EA%B8%B0
 
 <h3>조개소년의 Velog</h3>
 <a href="https://velog.io/@tkdgk1996 "><img src=https://img.shields.io/badge/Tech%20Blog-11B48A?style=flat-square&logo=Vimeo&logoColor=white&link=https://velog.io/@tkdgk1996 width="180" height="100" /></a>
