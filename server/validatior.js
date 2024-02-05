@@ -1,7 +1,7 @@
 const { validationResult } = require("express-validator");
 const { StatusCodes } = require("http-status-codes");
 
-const joinValidate = (req, res, next) => {
+const validate = (req, res, next) => {
   const err = validationResult(req);
   if (!err.isEmpty()) {
     res.status(StatusCodes.BAD_REQUEST).json(err.array());
@@ -11,4 +11,5 @@ const joinValidate = (req, res, next) => {
   }
   return next();
 };
-module.exports = joinValidate;
+
+module.exports = validate;
