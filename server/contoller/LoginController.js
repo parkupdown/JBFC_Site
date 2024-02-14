@@ -14,6 +14,7 @@ const makeJwt = (userId) => {
 
 const insertUserInfo = (req, res) => {
   const { userId, userPassword } = req.body;
+
   const sql = "SELECT * FROM userInfo WHERE user_id = ?;";
   conn.query(sql, userId, function (err, result) {
     if (err) {
@@ -34,9 +35,9 @@ const insertUserInfo = (req, res) => {
         10,
         process.env.VITE_HASH_ALGORITHM
       )
-      .toString(process.env.VITE_HASH_BASE);
+      .toString("base64");
     const savedPassword = result[0].user_password;
-
+    console.log(userId, userPassword, savedPassword, hashPassword);
     if (hashPassword === savedPassword) {
       // 여기서 이제 jwt를 발급해주어야함
       const token = makeJwt(userId);
