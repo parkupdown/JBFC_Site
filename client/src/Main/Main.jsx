@@ -17,6 +17,7 @@ import player2 from "./Player/2.png";
 import player3 from "./Player/3.png";
 import player4 from "./Player/4.png";
 import player5 from "./Player/5.png";
+import { Link } from "react-router-dom";
 
 const Container = styled.div`
   h1 {
@@ -62,7 +63,9 @@ export default function Main() {
       let { data } = await axios.get("http://localhost:3060/token", {
         withCredentials: true,
       });
+      console.log(data);
       data = data.userId;
+
       setUserId(data);
     } catch (error) {
       throw new Error("세션이 만료되었습니다.");
@@ -86,7 +89,12 @@ export default function Main() {
       <h1>짝발란스</h1>
       <NavContainer>
         <div>팀</div>
-        <div>게시판</div>
+
+        <div>
+          <Link to={"/board"} state={{ userId: userId }}>
+            게시판
+          </Link>
+        </div>
         <div>경기일정</div>
         <div>피드백</div>
       </NavContainer>
