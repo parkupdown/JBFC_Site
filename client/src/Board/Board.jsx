@@ -1,7 +1,7 @@
 import axios from "axios";
-import { useState } from "react";
 import { useRef } from "react";
 import { useEffect } from "react";
+import { useInfiniteQuery } from "react-query";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
@@ -35,46 +35,57 @@ const BoardContainer = styled.div`
 `;
 
 export default function Board() {
-  const [boardData, setBoardData] = useState([]);
-  const [page, setPage] = useState(0);
   const ref = useRef(null);
+
   //여기서 한번 불러와보자
   const navigate = useNavigate();
   const goLogin = () => {
     navigate("/login");
   };
 
-  const getBoardData = async () => {
-    const board = await axios.get(`http://localhost:3060/board?limit=${page}`);
-    console.log(board, page);
+  const getBoardData = async ({ pageParam = 0 }) => {
+    const board = await axios.get(
+      `http://localhost:3060/board?limit=${pageParam}`
+    );
     if (board.data === false) {
       return;
     }
-    setBoardData((current) => [...current, ...board.data]);
-    setPage((current) => current + 1);
+    // 만약 서버에서 데이터가 없다면 False를 보내주기로 하였다.
+    // False인 경우에 더이상 Data를 update하지 않는다.
+
+    return board.data;
   };
 
-  useEffect(() => {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          // 화면에 보이는지 여부 확인
-          // 추가 데이터를 가져오는 함수 호출
-          getBoardData();
-        }
-      });
-    });
+  //const { isLoading, data } = useQuery("boardData", getBoardData);
+  let { data, isLoading, fetchNextPage, hasNextPage } = useInfiniteQuery({
+    queryKey: "boardData",
+    queryFn: getBoardData,
+    getNextPageParam: (lastPage, allpages) => {
+      //언제 undefined하느냐가 관건
+      const nextPage = allpages.length;
 
-    // containerRef가 설정되었을 때만 observe를 호출합니다.
+      if (lastPage === undefined) {
+        return undefined;
+      }
+      //lastPage가 Undefined면 더이상 다음 페이지를 불러오지 않는다.
+      return nextPage;
+    },
+  });
+
+  useEffect(() => {
+    const observer = new IntersectionObserver((e) => {
+      if (e[0].isIntersecting) {
+        fetchNextPage();
+      }
+    });
     if (ref.current) {
       observer.observe(ref.current);
     }
-
-    // observer 해제
-    return () => {
+    if (!hasNextPage) {
       observer.disconnect();
-    };
-  }, [page]);
+    } // 만약 다음 페이지가 없다면 옵저버 제거
+    return () => observer.disconnect();
+  }, [hasNextPage]);
 
   const checkAuthorization = async () => {
     try {
@@ -96,7 +107,7 @@ export default function Board() {
       }
     };
     checkUserSession();
-  }, []);
+  }, [isLoading, hasNextPage]);
 
   return (
     <Container>
@@ -105,20 +116,51 @@ export default function Board() {
         <h2>게시글 작성</h2>
       </Link>
       <BoardContainerWrrap>
-        {boardData.map((data, key) => (
-          <Link key={key} to={"/board/detail"} state={{ boardId: data.id }}>
-            <BoardContainer id={data.id}>
-              {data.thumbnail !== null ? (
-                <img src={`http://localhost:3060/image/${data.thumbnail}`} />
-              ) : (
-                <img src="http://localhost:3060/image/thumbnail.jpeg"></img>
-              )}
-              <span>{data.title}</span>
-            </BoardContainer>
-          </Link>
-        ))}
+        {isLoading ? (
+          <div>로딩중</div>
+        ) : (
+          data.pages.map((page) => {
+            return page === undefined
+              ? null
+              : page.map((data, key) => (
+                  <Link
+                    key={key}
+                    to={"/board/detail"}
+                    state={{ boardId: data.id }}
+                  >
+                    <BoardContainer id={data.id}>
+                      {data.thumbnail !== null ? (
+                        <img
+                          src={`http://localhost:3060/image/${data.thumbnail}`}
+                        />
+                      ) : (
+                        <img src="http://localhost:3060/image/thumbnail.jpeg" />
+                      )}
+                      <span>{data.title}</span>
+                    </BoardContainer>
+                  </Link>
+                ));
+          })
+        )}
       </BoardContainerWrrap>
       <div ref={ref}></div>
     </Container>
   );
 }
+/*
+     {isLoading ? (
+          <div>로딩중</div>
+        ) : (
+          data.map((data_, key) => (
+            <Link key={key} to={"/board/detail"} state={{ boardId: data_.id }}>
+              <BoardContainer id={data_.id}>
+                {data_.thumbnail !== null ? (
+                  <img src={`http://localhost:3060/image/${data_.thumbnail}`} />
+                ) : (
+                  <img src="http://localhost:3060/image/thumbnail.jpeg"></img>
+                )}
+                <span>{data_.title}</span>
+              </BoardContainer>
+            </Link>
+          ))
+        )} */

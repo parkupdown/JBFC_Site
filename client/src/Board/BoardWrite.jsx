@@ -1,11 +1,13 @@
 import axios from "axios";
 import { useEffect } from "react";
 import { useState } from "react";
+import { useMutation, useQueryClient } from "react-query";
 import { useNavigate } from "react-router-dom";
 
 export default function BoardWrite() {
   const [userId, setUserId] = useState(null);
   const navigate = useNavigate();
+
   const goLogin = () => {
     navigate("/login");
   };
@@ -57,6 +59,19 @@ export default function BoardWrite() {
     }
   };
 
+  const insertBoardData = async (formData) => {
+    await axios.post("http://localhost:3060/board", formData, {
+      headers: { "Content-Type": "multipart/form-data", charset: "utf-8" },
+    });
+  };
+
+  const queryClient = useQueryClient();
+  const mutaion = useMutation((formData) => insertBoardData(formData), {
+    onSuccess: () => {
+      queryClient.invalidateQueries("boardData");
+    },
+  });
+
   const handleApi = async (e) => {
     e.preventDefault();
     let [title, content] = e.target.parentElement;
@@ -68,9 +83,8 @@ export default function BoardWrite() {
     formData.append("title", title);
     formData.append("content", content);
     formData.append("time", getPublishedTime());
-    await axios.post("http://localhost:3060/board", formData, {
-      headers: { "Content-Type": "multipart/form-data", charset: "utf-8" },
-    });
+
+    mutaion.mutate(formData);
     navigate("/board");
   };
 

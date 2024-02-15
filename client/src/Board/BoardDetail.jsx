@@ -33,6 +33,9 @@ export default function BoardDetail() {
   const goLogin = () => {
     navigate("/login");
   };
+  const goBack = () => {
+    navigate(-1);
+  };
   const checkAuthorization = async () => {
     try {
       await axios.get("http://localhost:3060/token", {
@@ -79,6 +82,7 @@ export default function BoardDetail() {
       <span>
         작성자{boardDetailData.user_id} -{boardDetailData.time}
       </span>
+      <button onClick={goBack}>뒤로가기</button>
     </Container>
   );
 }
