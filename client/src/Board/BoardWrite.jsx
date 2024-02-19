@@ -60,17 +60,42 @@ export default function BoardWrite() {
   };
 
   const insertBoardData = async (formData) => {
-    await axios.post("http://localhost:3060/board", formData, {
+    const response = await axios.post("http://localhost:3060/board", formData, {
       headers: { "Content-Type": "multipart/form-data", charset: "utf-8" },
     });
+    return response.data;
+  };
+
+  const isLastPage = (lastPageBoardData) => {
+    if (lastPageBoardData === undefined) {
+      return true;
+    }
+    return false;
   };
 
   const queryClient = useQueryClient();
   const mutaion = useMutation((formData) => insertBoardData(formData), {
-    onSuccess: () => {
-      queryClient.invalidateQueries("boardData");
+    onSuccess: (data) => {
+      queryClient.setQueryData("boardData", (prev) => {
+        // 가장 마지막 Page에 load된 prev의 data의 마지막 id가 1차이가 난다면? 추가해주기
+        let prevBoardData = prev.pages;
+        let lastPageBoardData = prevBoardData[prevBoardData.length - 1];
+        if (isLastPage(lastPageBoardData)) {
+          if (prevBoardData[prevBoardData.length - 2].length === 6) {
+            prevBoardData[prevBoardData.length - 1] = [data];
+            return { pages: prevBoardData };
+          }
+          if (prevBoardData[prevBoardData.length - 2].length !== 6) {
+            prevBoardData[prevBoardData.length - 2].push(data);
+            return { pages: prevBoardData };
+          }
+        }
+        return { pages: prevBoardData };
+        // lastPage가 아니면 수정으로 캐싱데이터 변경하지 않아도됨
+      });
     },
   });
+  // 근데 이렇게 하면 제출하고 나서 캐싱 데이터가 완전히 수정됨
 
   const handleApi = async (e) => {
     e.preventDefault();

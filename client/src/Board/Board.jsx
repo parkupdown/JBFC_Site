@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useRef } from "react";
 import { useEffect } from "react";
-import { useInfiniteQuery } from "react-query";
+import { useInfiniteQuery, useQuery, useQueryClient } from "react-query";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
@@ -45,7 +45,7 @@ export default function Board() {
 
   const getBoardData = async ({ pageParam = 0 }) => {
     const board = await axios.get(
-      `http://localhost:3060/board?limit=${pageParam}`
+      `http://localhost:3060/board?page=${pageParam}`
     );
     if (board.data === false) {
       return;
@@ -57,6 +57,7 @@ export default function Board() {
   };
 
   //const { isLoading, data } = useQuery("boardData", getBoardData);
+
   let { data, isLoading, fetchNextPage, hasNextPage } = useInfiniteQuery({
     queryKey: "boardData",
     queryFn: getBoardData,
@@ -65,7 +66,7 @@ export default function Board() {
       const nextPage = allpages.length;
 
       if (lastPage === undefined) {
-        return undefined;
+        return undefined; // 캐시된 데이터가 없을 때는 더 이상 요청하지 않음
       }
       //lastPage가 Undefined면 더이상 다음 페이지를 불러오지 않는다.
       return nextPage;
@@ -107,7 +108,7 @@ export default function Board() {
       }
     };
     checkUserSession();
-  }, [isLoading, hasNextPage]);
+  }, []);
 
   return (
     <Container>

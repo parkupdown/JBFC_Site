@@ -75,7 +75,7 @@ export default function Join() {
   const submitUserInfo = async (e) => {
     e.preventDefault();
     let [userId, userPassword, userPasswordCheck, userNickname] = e.target;
-    console.log(userId.value);
+
     userId = userId.value;
     userPassword = userPassword.value;
     userPasswordCheck = userPasswordCheck.value;
