@@ -2,7 +2,7 @@ import axios from "axios";
 import { useState } from "react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -27,7 +27,8 @@ const BoardDetailContainer = styled.div`
 `;
 
 export default function BoardDetail() {
-  const { boardId } = useLocation().state;
+  const { boardId } = useParams();
+
   const [boardDetailData, setBoardDetailData] = useState([]);
   const navigate = useNavigate();
   const goLogin = () => {

@@ -4,6 +4,8 @@ import { Routes } from "react-router-dom";
 import { BrowserRouter } from "react-router-dom";
 import React from "react";
 import { Loader } from "./Loader/Loader";
+import Team from "./Team/Team";
+import BoardMine from "./Board/BoardMine";
 
 const Join = React.lazy(() => import("./Join/Join"));
 const Login = React.lazy(() => import("./Login/Login"));
@@ -22,7 +24,9 @@ export default function Router() {
           <Route path="/login" element={<Login />} />
           <Route path="/board" element={<Board />} />
           <Route path="/board/write" element={<BoardWrite />} />
-          <Route path="/board/detail" element={<BoardDetail />} />
+          <Route path="/board/detail/:boardId" element={<BoardDetail />} />
+          <Route path="/team" element={<Team />} />
+          <Route path="/board/mine" element={<BoardMine />} />
         </Routes>
       </Suspense>
     </BrowserRouter>

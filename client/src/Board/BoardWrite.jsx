@@ -76,6 +76,8 @@ export default function BoardWrite() {
   const queryClient = useQueryClient();
   const mutaion = useMutation((formData) => insertBoardData(formData), {
     onSuccess: (data) => {
+      queryClient.invalidateQueries("lastestBoardData");
+      queryClient.invalidateQueries("myBoardData");
       queryClient.setQueryData("boardData", (prev) => {
         // 가장 마지막 Page에 load된 prev의 data의 마지막 id가 1차이가 난다면? 추가해주기
         let prevBoardData = prev.pages;

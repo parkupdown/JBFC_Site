@@ -1,23 +1,15 @@
-import axios from "axios";
-
 import { useState } from "react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Navigation } from "swiper/modules";
+import { Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
-import img1 from "./Poster/1.png";
-import img2 from "./Poster/2.png";
-import img3 from "./Poster/3.png";
-import img4 from "./Poster/4.jpeg";
-import player1 from "./Player/1.png";
-import player2 from "./Player/2.png";
-import player3 from "./Player/3.png";
-import player4 from "./Player/4.png";
-import player5 from "./Player/5.png";
 import { Link } from "react-router-dom";
+import { CheckAuthorization } from "../CheckAuthorization/CheckAuthorization";
+import { useQuery } from "react-query";
+import axios from "axios";
 
 const Container = styled.div`
   h1 {
@@ -49,33 +41,46 @@ const SwipterContainer = styled.div`
     object-fit: cover;
   }
 `;
+const BoardAndScheduleContainer = styled.div`
+  display: flex;
+  justify-content: center;
+`;
+const BoardContainer = styled.div`
+  width: 25vw;
+
+  padding: 20px;
+  border: 1px dotted black;
+  border-radius: 20px;
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+`;
+const ScheduleContainer = styled.div`
+  width: 25vw;
+
+  padding: 20px;
+  border: 1px dotted black;
+  border-radius: 20px;
+`;
+
 export default function Main() {
   // 여기서 jwt여부 체크해서 없으면 바로 그냥 로그인으로
-  const playerArr = [player1, player2, player3, player4, player5];
+  const [userId, setUserId] = useState(null);
   const navigate = useNavigate();
   const goLogin = () => {
     navigate("/login");
   };
-  const [userId, setUserId] = useState("");
-
-  const checkAuthorization = async () => {
-    try {
-      let { data } = await axios.get("http://localhost:3060/token", {
-        withCredentials: true,
-      });
-      console.log(data);
-      data = data.userId;
-
-      setUserId(data);
-    } catch (error) {
-      throw new Error("세션이 만료되었습니다.");
-    }
+  const goTeam = () => {
+    navigate("/team");
   };
 
   useEffect(() => {
     const checkUserSession = async () => {
       try {
-        await checkAuthorization();
+        const userId = await CheckAuthorization();
+        setUserId(userId);
       } catch (error) {
         alert(error);
         goLogin();
@@ -84,12 +89,19 @@ export default function Main() {
     checkUserSession();
   }, []);
 
+  //게시글 최신글 긁어오자
+  const getLastestBoardData = async () => {
+    const getData = await axios.get("http://localhost:3060/board/lastest");
+    return getData.data;
+  };
+
+  const { isLoading, data } = useQuery("lastestBoardData", getLastestBoardData);
+
   return (
     <Container>
       <h1>짝발란스</h1>
       <NavContainer>
-        <div>팀</div>
-
+        <div onClick={() => goTeam()}>팀</div>
         <div>
           <Link to={"/board"} state={{ userId: userId }}>
             게시판
@@ -98,22 +110,37 @@ export default function Main() {
         <div>경기일정</div>
         <div>피드백</div>
       </NavContainer>
-      <span>선수단 소개</span>
-      <SwipterContainer>
-        <Swiper
-          spaceBetween={50}
-          slidesPerView={2}
-          loop={true}
-          modules={[Navigation, Autoplay]}
-          autoplay={{ delay: 2000 }}
-        >
-          {playerArr.map((player, index) => (
-            <SwiperSlide key={index}>
-              <img src={player} />
-            </SwiperSlide>
-          ))}
-        </Swiper>
-      </SwipterContainer>
+      <BoardAndScheduleContainer>
+        {isLoading ? null : (
+          <BoardContainer>
+            {data[0] === undefined ? (
+              <h3>최근게시글이존재하지 않습니다</h3>
+            ) : (
+              <div onClick={() => navigate(`/board/detail/${data[0].id}`)}>
+                <h3>최근 게시글</h3>
+                <div>
+                  {data[0].thumbnail === null ? (
+                    <img src="http://localhost:3060/image/thumbnail.jpeg" />
+                  ) : (
+                    <img
+                      src={`http://localhost:3060/image/${data[0].thumbnail}`}
+                    />
+                  )}
+                  <p>제목: {data[0].title}</p>
+                  <p>-{data[0].content.substr(0, 10)}</p>
+                  <p> {data[0].user_id}</p>
+                </div>
+              </div>
+            )}
+          </BoardContainer>
+        )}
+        {/*경기일정 */}
+        <ScheduleContainer>
+          <h3>오늘은 경기일정이 없습니다.</h3>
+        </ScheduleContainer>
+      </BoardAndScheduleContainer>
+
+      {/* 최신 게시글 */}
 
       <SwipterContainer>
         <Swiper
@@ -125,22 +152,22 @@ export default function Main() {
         >
           <SwiperSlide>
             <a href="https://m.sports.naver.com/video/1145409">
-              <img src={img1} />
+              <img src={`/Poster/1.png`} />
             </a>
           </SwiperSlide>
           <SwiperSlide>
             <a href="https://m.sports.naver.com/video/1145598">
-              <img src={img2} />
+              <img src={`/Poster/2.png`} />
             </a>
           </SwiperSlide>
           <SwiperSlide>
             <a href="https://m.sports.naver.com/video/1145464">
-              <img src={img3} />
+              <img src={`/Poster/3.png`} />
             </a>
           </SwiperSlide>
           <SwiperSlide>
             <a href="https://m.sports.naver.com/video/1145375">
-              <img src={img4} />
+              <img src={`/Poster/4.jpeg`} />
             </a>
           </SwiperSlide>
         </Swiper>
