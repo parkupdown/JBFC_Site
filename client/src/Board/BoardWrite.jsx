@@ -123,6 +123,7 @@ export default function BoardWrite() {
   return (
     <div>
       <h3>작성페이지</h3>
+      <h3 onClick={() => navigate(-1)}>뒤로가기</h3>
       <form>
         <input type="text" placeholder="제목" />
         <p>

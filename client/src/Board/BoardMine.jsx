@@ -4,10 +4,11 @@ import { CheckAuthorization } from "../CheckAuthorization/CheckAuthorization";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useRef } from "react";
-import { useInfiniteQuery } from "react-query";
+import { useInfiniteQuery, useMutation } from "react-query";
 import styled from "styled-components";
 import { useLocation } from "react-router-dom";
-
+import { useState } from "react";
+import { useQueryClient } from "react-query";
 const Container = styled.div`
   width: 100vw;
 `;
@@ -40,6 +41,20 @@ export default function BoardMine() {
   const { userId } = useLocation().state;
   const ref = useRef(null);
   const navigator = useNavigate();
+  const [removeMode, setRemoveMode] = useState(false);
+  const [removeBoardIdArr, setRemoveBoardIdArr] = useState([]);
+
+  const goToBoardDetail = (dataId) => navigator(`/board/detail/${dataId}`);
+  const setCheckedItem = (checked, id) => {
+    if (checked) {
+      setRemoveBoardIdArr((current) => [...current, id]);
+    } else if (!checked) {
+      setRemoveBoardIdArr((current) => {
+        const newData = current.filter((item) => item !== id);
+        return newData;
+      });
+    }
+  };
 
   useEffect(() => {
     const checkUserSession = async () => {
@@ -47,7 +62,6 @@ export default function BoardMine() {
         await CheckAuthorization();
       } catch (error) {
         alert(error);
-        navigator("/login");
       }
     };
     checkUserSession();
@@ -57,6 +71,7 @@ export default function BoardMine() {
     const getData = await axios.get(
       `http://localhost:3060/board/mine/${userId}?page=${pageParam}`
     );
+
     if (getData.data === false) {
       return;
     }
@@ -78,9 +93,37 @@ export default function BoardMine() {
     },
   });
 
+  const removeMyBoardData = async () => {
+    try {
+      await axios.delete("http://localhost:3060/board/mine", {
+        data: { removeBoardIdArr: removeBoardIdArr },
+      });
+      setRemoveMode((current) => !current);
+    } catch (error) {
+      alert("오류 발생");
+    }
+  };
+
+  const queryClient = useQueryClient();
+  const mutation = useMutation(() => removeMyBoardData(), {
+    onSuccess: () => {
+      queryClient.setQueryData("myBoardData", (prev) => {
+        let prevBoardData = prev.pages;
+        console.log(prevBoardData);
+        const newData = prevBoardData.map((arr) => {
+          if (arr === undefined) {
+            return [];
+          }
+          return arr.filter((data) => !removeBoardIdArr.includes(data.id));
+        });
+        return { pages: newData };
+      });
+    },
+  });
+  // 캐싱된데이터는 유지하면서 수정으로 해당 정보를 수정함
+
   useEffect(() => {
     const observer = new IntersectionObserver((e) => {
-      console.log(e);
       if (e[0].isIntersecting) {
         fetchNextPage();
       }
@@ -98,6 +141,9 @@ export default function BoardMine() {
     <Container>
       <h1>내가 작성한 게시글</h1>
       <h3 onClick={() => navigator(-1)}>뒤로가기</h3>
+      <div onClick={() => setRemoveMode((current) => !current)}>
+        {removeMode ? <h3>삭제 취소</h3> : <h3>게시글 삭제</h3>}
+      </div>
       <BoardContainerWrrap>
         {isLoading ? (
           <h2>로딩중</h2>
@@ -107,10 +153,21 @@ export default function BoardMine() {
               ? null
               : page.map((data, key) => (
                   <BoardContainer
-                    onClick={() => navigator(`/board/detail/${data.id}`)}
+                    onClick={removeMode ? null : () => goToBoardDetail(data.id)}
                     id={data.id}
                     key={key}
                   >
+                    {removeMode ? (
+                      <div>
+                        <input
+                          type="checkbox"
+                          onChange={(e) =>
+                            setCheckedItem(e.target.checked, data.id)
+                          }
+                        />
+                        <label>삭제</label>
+                      </div>
+                    ) : null}
                     {data.thumbnail !== null ? (
                       <img
                         src={`http://localhost:3060/image/${data.thumbnail}`}
@@ -123,6 +180,12 @@ export default function BoardMine() {
                 ));
           })
         )}
+
+        {removeMode ? (
+          <button type="button" onClick={() => mutation.mutate()}>
+            제출
+          </button>
+        ) : null}
       </BoardContainerWrrap>
       <div ref={ref}></div>
     </Container>

@@ -106,6 +106,7 @@ export default function Board() {
   return (
     <Container>
       <h1>게시판</h1>
+      <h2 onClick={() => navigate("/")}>뒤로가기</h2>
       <h2 onClick={() => navigate(`/board/write`, { state: { userId } })}>
         게시글 작성
       </h2>
