@@ -3,10 +3,12 @@ import { useQuery } from "react-query";
 import { useQueryClient } from "react-query";
 
 export default function Comment({ boardId, writer }) {
+  //여기서 writer는 게시글의 작성자
   const getTime = () => {
     const date = new Date();
     return `${date.getMonth()}월 ${date.getDay()}일 ${date.getHours()}시 ${date.getMinutes()}분`;
   };
+
   const queryClient = useQueryClient();
   const insertCommentData = async (e) => {
     e.preventDefault();
@@ -18,10 +20,15 @@ export default function Comment({ boardId, writer }) {
       writer: writer,
       time: time,
     };
-    await axios.post(`http://localhost:3060/comment`, commentData);
+    const getData = await axios.post(
+      `http://localhost:3060/comment`,
+      commentData
+    );
     //작성하면 캐싱데이터를 다시 불러올수있게?
-    queryClient.setQueryData(`comment${boardId}`, (prev) => {
-      return [...prev, commentData];
+    const newCommentData = getData.data;
+
+    queryClient.setQueryData(`comment${boardId}`, () => {
+      return newCommentData;
     });
     // 캐싱 데이터 업데이트
     alert("작성완료");
@@ -36,6 +43,14 @@ export default function Comment({ boardId, writer }) {
   };
 
   const { isLoading, data } = useQuery(`comment${boardId}`, getCommentData);
+
+  const removeCommentData = async (commentId) => {
+    await axios.delete(`http://localhost:3060/comment/${commentId}`);
+    queryClient.setQueryData(`comment${boardId}`, (prev) => {
+      const newData = prev.filter((data) => data.id !== commentId);
+      return newData;
+    });
+  };
 
   // 기본적으로 댓글 데이터 가져오기
   return (
@@ -54,6 +69,11 @@ export default function Comment({ boardId, writer }) {
                 <p>{comment.writer}</p>
                 <p>{comment.content}</p>
                 <p>- {comment.time}</p>
+                {comment.writer === writer ? (
+                  <button onClick={() => removeCommentData(comment.id)}>
+                    댓글삭제
+                  </button>
+                ) : null}
               </div>
             ))}
           </div>

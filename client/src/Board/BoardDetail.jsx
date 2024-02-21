@@ -29,8 +29,8 @@ const BoardDetailContainer = styled.div`
 
 export default function BoardDetail() {
   const { boardId } = useParams();
-
   const [boardDetailData, setBoardDetailData] = useState([]);
+  const [userId, setUserId] = useState(null);
   const navigate = useNavigate();
   const goLogin = () => {
     navigate("/login");
@@ -40,9 +40,11 @@ export default function BoardDetail() {
   };
   const checkAuthorization = async () => {
     try {
-      await axios.get("http://localhost:3060/token", {
+      const userInfo = await axios.get("http://localhost:3060/token", {
         withCredentials: true,
       });
+      const getUserId = userInfo.data.userId;
+      setUserId(getUserId);
     } catch (error) {
       throw new Error("세션이 만료되었습니다.");
     }
@@ -89,7 +91,7 @@ export default function BoardDetail() {
       <span>
         작성자{boardDetailData.user_id} -{boardDetailData.time}
       </span>
-      <Comment boardId={boardId} writer={boardDetailData.user_id} />
+      <Comment boardId={boardId} writer={userId} />
       <button onClick={goBack}>뒤로가기</button>
     </Container>
   );
