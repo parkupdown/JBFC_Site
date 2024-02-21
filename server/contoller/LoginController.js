@@ -37,7 +37,7 @@ const insertUserInfo = (req, res) => {
       )
       .toString("base64");
     const savedPassword = result[0].user_password;
-    console.log(userId, userPassword, savedPassword, hashPassword);
+
     if (hashPassword === savedPassword) {
       // 여기서 이제 jwt를 발급해주어야함
       const token = makeJwt(userId);
