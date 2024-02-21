@@ -1,11 +1,8 @@
 const express = require("express");
-const router = express.Router();
 const multer = require("multer");
 const upload = multer({ dest: "uploads/" });
 const conn = require("../mariadb");
 const { StatusCodes } = require("http-status-codes");
-const { STATUS_CODES } = require("http");
-const { send } = require("process");
 
 const insertBoardData = (req, res) => {
   let { userId, title, content, time } = req.body;
@@ -116,7 +113,6 @@ const getMyBoardData = (req, res) => {
 
 const deleteBoardData = (req, res) => {
   let { removeBoardIdArr } = req.body;
-  console.log(removeBoardIdArr);
   const deleteSql = removeBoardIdArr.map(
     (boardId) => `DELETE FROM board WHERE id =${boardId};`
   );
