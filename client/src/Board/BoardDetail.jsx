@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
+import Comment from "../Comment/Comment";
 
 const Container = styled.div`
   width: 100vw;
@@ -68,6 +69,11 @@ export default function BoardDetail() {
     getBoardDetailData();
   }, []);
 
+  // boardId에 댓글을 쓰면?
+  // 해당 게시글의 댓글이 자신의 id로 적히는 것
+  // 그럼 나는 댓글 Table에 boardId에 대한 게시글을 작성을 하고
+  // boardId는 FK값이되고 얘의 PK값의 board 테이블의 PK값이네
+
   return (
     <Container>
       <BoardDetailContainer>
@@ -83,6 +89,7 @@ export default function BoardDetail() {
       <span>
         작성자{boardDetailData.user_id} -{boardDetailData.time}
       </span>
+      <Comment boardId={boardId} writer={boardDetailData.user_id} />
       <button onClick={goBack}>뒤로가기</button>
     </Container>
   );

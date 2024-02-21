@@ -183,7 +183,7 @@ export default function BoardMine() {
 
         {removeMode ? (
           <button type="button" onClick={() => mutation.mutate()}>
-            제출
+            삭제
           </button>
         ) : null}
       </BoardContainerWrrap>

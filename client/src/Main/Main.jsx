@@ -151,22 +151,22 @@ export default function Main() {
           navigation
         >
           <SwiperSlide>
-            <a href="https://m.sports.naver.com/video/1145409">
+            <a href="https://m.sports.naver.com/video/1145409" target="blank">
               <img src={`/Poster/1.png`} />
             </a>
           </SwiperSlide>
           <SwiperSlide>
-            <a href="https://m.sports.naver.com/video/1145598">
+            <a href="https://m.sports.naver.com/video/1145598" target="blank">
               <img src={`/Poster/2.png`} />
             </a>
           </SwiperSlide>
           <SwiperSlide>
-            <a href="https://m.sports.naver.com/video/1145464">
+            <a href="https://m.sports.naver.com/video/1145464" target="blank">
               <img src={`/Poster/3.png`} />
             </a>
           </SwiperSlide>
           <SwiperSlide>
-            <a href="https://m.sports.naver.com/video/1145375">
+            <a href="https://m.sports.naver.com/video/1145375" target="blank">
               <img src={`/Poster/4.jpeg`} />
             </a>
           </SwiperSlide>
