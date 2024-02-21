@@ -4,6 +4,8 @@ const multer = require("multer");
 const upload = multer({ dest: "uploads/" });
 const conn = require("../mariadb");
 const { StatusCodes } = require("http-status-codes");
+const { STATUS_CODES } = require("http");
+const { send } = require("process");
 
 const insertBoardData = (req, res) => {
   let { userId, title, content, time } = req.body;
@@ -15,7 +17,6 @@ const insertBoardData = (req, res) => {
     thumbnail = null;
   }
 
-  console.log(userId, title, content, image, time);
   // 여기서 req.file의 name을 db에 저장하는거지
   // text, userId까지!
   const sql =
@@ -26,31 +27,53 @@ const insertBoardData = (req, res) => {
       res.status(StatusCodes.BAD_REQUEST).end();
       return;
     }
-    res.status(StatusCodes.CREATED).end();
-  });
+    //여기서 새로운 데이터를 보내줌
 
-  res.send(true);
+    const newData = {
+      id: result.insertId,
+      user_id: userId,
+      title: title,
+      content: content,
+      thumbnail: thumbnail,
+      time: time,
+    };
+    res.status(StatusCodes.OK).json(newData);
+    return;
+  });
 };
 
 const getBoardData = (req, res) => {
   const sql = "SELECT * FROM board;";
-  let { limit } = req.query;
-  limit = parseInt(limit);
+  let { page } = req.query;
+  page = parseInt(page);
+
   conn.query(sql, function (err, result) {
     if (err) {
       res.status(StatusCodes.BAD_REQUEST).end();
       return;
     }
-    limit = limit * 6;
-    if (limit > result.length) {
+    page = page * 6;
+    if (page > result.length) {
       res.status(StatusCodes.OK).json(false);
       return;
     }
-    let boardData = result.slice(limit, limit + 6);
+
+    let boardData = result.slice(page, page + 6);
     // 이렇게하면 전체적으로 계속 불러와짐 그럼 ??
     // page에 맞게 가져오는거지
 
     res.status(StatusCodes.OK).json(boardData);
+  });
+};
+
+const getLastestBoardData = (req, res) => {
+  const sql = "SELECT * FROM board ORDER BY id DESC LIMIT 1;";
+  conn.query(sql, function (err, result) {
+    if (err) {
+      res.status(StatusCodes.BAD_REQUEST).end();
+      return;
+    }
+    res.status(StatusCodes.OK).json(result);
   });
 };
 
@@ -67,4 +90,53 @@ const getBoardDetailData = (req, res) => {
   });
 };
 
-module.exports = { insertBoardData, getBoardData, getBoardDetailData };
+const getMyBoardData = (req, res) => {
+  const { userId } = req.params;
+  let { page } = req.query;
+  page = parseInt(page);
+
+  const sql = "SELECT * FROM board WHERE user_id = ?;";
+  conn.query(sql, userId, function (err, result) {
+    if (err) {
+      res.status(StatusCodes.BAD_REQUEST).end();
+      return;
+    }
+    page = page * 6;
+    if (page > result.length) {
+      res.status(StatusCodes.OK).json(false);
+      return;
+    }
+    let boardData = result.slice(page, page + 6);
+    // 이렇게하면 전체적으로 계속 불러와짐 그럼 ??
+    // page에 맞게 가져오는거지
+
+    res.status(StatusCodes.OK).json(boardData);
+  });
+};
+
+const deleteBoardData = (req, res) => {
+  let { removeBoardIdArr } = req.body;
+  console.log(removeBoardIdArr);
+  const deleteSql = removeBoardIdArr.map(
+    (boardId) => `DELETE FROM board WHERE id =${boardId};`
+  );
+
+  deleteSql.forEach((sql) => {
+    conn.query(sql, function (err, result) {
+      if (err) {
+        res.status(StatusCodes.BAD_REQUEST).end();
+        return;
+      }
+    });
+  });
+  res.status(StatusCodes.CREATED).send(true);
+};
+
+module.exports = {
+  insertBoardData,
+  getBoardData,
+  getBoardDetailData,
+  getLastestBoardData,
+  getMyBoardData,
+  deleteBoardData,
+};

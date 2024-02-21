@@ -14,7 +14,7 @@ app.listen(3060, () => console.log("서버켜짐"));
 const joinRouter = require("./routes/joins");
 const loginRouter = require("./routes/login");
 const tokenRouter = require("./routes/token");
-const boardRouter = require("./routes/borad");
+const boardRouter = require("./routes/board");
 
 app.use("/join", joinRouter);
 app.use("/login", loginRouter);

@@ -8,6 +8,9 @@ const {
   insertBoardData,
   getBoardData,
   getBoardDetailData,
+  getLastestBoardData,
+  getMyBoardData,
+  deleteBoardData,
 } = require("../contoller/BoardController");
 
 router
@@ -17,4 +20,9 @@ router
 
 router.route("/detail/:id").get(getBoardDetailData);
 
+router.route(`/lastest`).get(getLastestBoardData);
+
+router.route("/mine/:userId").get(getMyBoardData);
+
+router.route("/mine").delete(deleteBoardData);
 module.exports = router;
