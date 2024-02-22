@@ -44,13 +44,15 @@ const SwipterContainer = styled.div`
 const BoardAndScheduleContainer = styled.div`
   display: flex;
   justify-content: center;
+  flex-direction: column;
+  align-items: center;
 `;
 const BoardContainer = styled.div`
-  width: 25vw;
-
+  width: 50vw;
   padding: 20px;
   border: 1px dotted black;
   border-radius: 20px;
+
   img {
     width: 100%;
     height: 100%;
@@ -59,10 +61,23 @@ const BoardContainer = styled.div`
 `;
 
 const ScheduleContainer = styled.div`
-  width: 25vw;
+  width: 95vw;
   padding: 20px;
   border: 1px dotted black;
   border-radius: 20px;
+`;
+const ScheduleAndImgBox = styled.div`
+  display: flex;
+  justify-content: space-around;
+  width: 95vw;
+`;
+const ImgBox = styled.div`
+  width: 40vw;
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
 `;
 
 export default function Main() {
@@ -98,7 +113,25 @@ export default function Main() {
     return getData.data;
   };
 
-  const { isLoading, data } = useQuery("lastestBoardData", getLastestBoardData);
+  const getTodayScheduleData = async () => {
+    const date = new Date();
+    let month = date.getMonth() + 1;
+    let day = date.getDate();
+    day = parseInt(day);
+    const getData = await axios.get(
+      `http://localhost:3060/schedule/today?month=${month}&day=${day}`
+    );
+    return getData.data;
+  };
+
+  const { isLoading: boardLoading, data: boardData } = useQuery(
+    "lastestBoardData",
+    getLastestBoardData
+  );
+  const { isLoading: scheduleLoading, data: scheduleData } = useQuery(
+    "todaySchedule",
+    getTodayScheduleData
+  );
 
   return (
     <Container>
@@ -114,38 +147,61 @@ export default function Main() {
         <div>피드백</div>
       </NavContainer>
       <BoardAndScheduleContainer>
-        {isLoading ? null : (
+        {boardLoading ? null : (
           <BoardContainer>
-            {data[0] === undefined ? (
+            {boardData[0] === undefined ? (
               <h3>최근게시글이존재하지 않습니다</h3>
             ) : (
-              <div onClick={() => navigate(`/board/detail/${data[0].id}`)}>
+              <div onClick={() => navigate(`/board/detail/${boardData[0].id}`)}>
                 <h3>최근 게시글</h3>
                 <div>
-                  {data[0].thumbnail === null ? (
-                    <img src="http://localhost:3060/image/thumbnail.jpeg" />
+                  {boardData[0].thumbnail === null ? (
+                    <ImgBox>
+                      <img src="http://localhost:3060/image/thumbnail.jpeg" />
+                    </ImgBox>
                   ) : (
-                    <img
-                      src={`http://localhost:3060/image/${data[0].thumbnail}`}
-                    />
+                    <ImgBox>
+                      <img
+                        src={`http://localhost:3060/image/${boardData[0].thumbnail}`}
+                      />
+                    </ImgBox>
                   )}
-                  <p>제목: {data[0].title}</p>
-                  <p>-{data[0].content.substr(0, 10)}</p>
-                  <p> {data[0].user_id}</p>
+                  <p>제목: {boardData[0].title}</p>
+                  <p>-{boardData[0].content.substr(0, 10)}</p>
+                  <p> {boardData[0].user_id}</p>
                 </div>
               </div>
             )}
           </BoardContainer>
         )}
         {/*경기일정 */}
-        <ScheduleContainer>
-          <h3>오늘은 경기일정이 없습니다.</h3>
-        </ScheduleContainer>
+        {scheduleLoading ? null : (
+          <ScheduleContainer>
+            {scheduleData.length === 0 ? (
+              <h2>오늘은 경기가 없습니다.</h2>
+            ) : (
+              <ScheduleAndImgBox>
+                <div>
+                  <h2>오늘 경기</h2>
+                  <p>광주 {scheduleData[0].ground}</p>
+                  <p>시간: {scheduleData[0].time}</p>
+                  <p>자체/매칭: {scheduleData[0].type_of_match}</p>
+                  <p>참여인원: {scheduleData[0].num_of_player}</p>
+                  <p>{scheduleData[0].price}원/2시간</p>
+                </div>
+                <ImgBox>
+                  <img src={`/Ground/${scheduleData[0].ground}.png`} />
+                </ImgBox>
+              </ScheduleAndImgBox>
+            )}
+          </ScheduleContainer>
+        )}
       </BoardAndScheduleContainer>
 
       {/* 최신 게시글 */}
 
       <SwipterContainer>
+        <h2>News!</h2>
         <Swiper
           spaceBetween={50}
           slidesPerView={1}

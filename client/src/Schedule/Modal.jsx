@@ -68,7 +68,8 @@ const CancelButton = styled(Button)`
 `;
 
 export default function Modal({ closeModal, clickedDay, isUpdateSchedule }) {
-  const [ground, setGround] = useState("");
+  const [ground, setGround] = useState("청개구리");
+  const [time, setTime] = useState("14시-16시");
   const [numOfPlayer, setNumOfPlayer] = useState("");
   const [typeOfMatch, setTypeOfMatch] = useState("자체");
   const [price, setPrice] = useState("");
@@ -82,6 +83,7 @@ export default function Modal({ closeModal, clickedDay, isUpdateSchedule }) {
       month: month,
       day: day,
       ground: ground,
+      time: time,
       num_of_player: numOfPlayer,
       type_of_match: typeOfMatch,
       price: price,
@@ -95,7 +97,7 @@ export default function Modal({ closeModal, clickedDay, isUpdateSchedule }) {
     queryClient.setQueryData(`${month}월`, (prev) => {
       return [...prev, newScheduleData.data];
     });
-
+    queryClient.invalidateQueries("todaySchedule");
     // 캐싱된 데이터에서 위 데이터를 업데이트 해주면 된다.
     closeModal();
   };
@@ -106,12 +108,14 @@ export default function Modal({ closeModal, clickedDay, isUpdateSchedule }) {
       month: month,
       day: day,
       ground: ground,
+      time: time,
       num_of_player: numOfPlayer,
       type_of_match: typeOfMatch,
       price: price,
     };
     await axios.put(`http://localhost:3060/schedule`, scheduleData);
     // 캐싱 새롭게할 필요가 없다.
+    queryClient.invalidateQueries("todaySchedule");
     closeModal();
   };
 
@@ -122,12 +126,41 @@ export default function Modal({ closeModal, clickedDay, isUpdateSchedule }) {
         <CancelButton onClick={() => closeModal()}>취소</CancelButton>
         <InputContainer>
           <InputLabel>풋살장:</InputLabel>
-          <InputField
+          <SelectField
             placeholder="대여 풋살장"
-            type="text"
             value={ground}
             onChange={(e) => setGround(e.target.value)}
-          />
+          >
+            <option value="청개구리">청개구리</option>
+            <option value="북구챔스">북구챔스</option>
+            <option value="상무챔스">상무챔스</option>
+            <option value="상지풋살">상지풋살</option>
+            <option value="베스트풋살">베스트풋살</option>
+            <option value="JK">JK</option>
+            <option value="기타">기타</option>
+          </SelectField>
+        </InputContainer>
+        <InputContainer>
+          <InputLabel>시간:</InputLabel>
+          <SelectField
+            placeholder="대여 시간"
+            value={time}
+            onChange={(e) => setTime(e.target.value)}
+          >
+            <option value="9시-11시">9시-11시</option>
+            <option value="10시-12시">10시-12시</option>
+            <option value="11시-13시">11시-13시</option>
+            <option value="13시-15시">13시-15시</option>
+            <option value="14시-16시">14시-16시</option>
+            <option value="15시-17시">15시-17시</option>
+            <option value="16시-18시">16시-18시</option>
+            <option value="17시-19시">17시-19시</option>
+            <option value="18시-20시">18시-20시</option>
+            <option value="19시-21시">19시-21시</option>
+            <option value="20시-22시">20시-22시</option>
+            <option value="21시-23시">21시-23시</option>
+            <option value="22시-24시">22시-24시</option>
+          </SelectField>
         </InputContainer>
         <InputContainer>
           <InputLabel>인원 수:</InputLabel>

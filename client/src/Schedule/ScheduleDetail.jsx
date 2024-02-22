@@ -81,6 +81,7 @@ function ModalDetail({
       `http://localhost:3060/schedule?month=${month}&day=${day}`
     );
     queryClient.setQueryData(`${month}월`, (prev) => deletedData.data);
+    queryClient.invalidateQueries("todaySchedule");
     closeModal();
   };
 
@@ -95,6 +96,7 @@ function ModalDetail({
               날짜: {scheduleDetailData[0].month}월 {scheduleDetailData[0].day}
               일
             </SpanField>
+            <SpanField>시간: {scheduleDetailData[0].time}</SpanField>
             <SpanField>
               매칭/자체: {scheduleDetailData[0].type_of_match}
             </SpanField>

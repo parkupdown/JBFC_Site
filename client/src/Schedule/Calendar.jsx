@@ -68,7 +68,7 @@ const Calendar = () => {
   };
 
   const { isLoading, data } = useQuery(`${month}월`, getScheduleData);
-  console.log(data);
+
   useEffect(() => {
     if (!isLoading) {
       setScheduledDay(() => {
