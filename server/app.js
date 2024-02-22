@@ -16,9 +16,11 @@ const loginRouter = require("./routes/login");
 const tokenRouter = require("./routes/token");
 const boardRouter = require("./routes/board");
 const commentRouter = require("./routes/comment");
+const scheduleRouter = require("./routes/schedule");
 
 app.use("/join", joinRouter);
 app.use("/login", loginRouter);
 app.use("/token", tokenRouter);
 app.use("/board", boardRouter);
 app.use("/comment", commentRouter);
+app.use("/schedule", scheduleRouter);
