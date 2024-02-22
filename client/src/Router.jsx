@@ -6,6 +6,7 @@ import React from "react";
 import { Loader } from "./Loader/Loader";
 import Team from "./Team/Team";
 import BoardMine from "./Board/BoardMine";
+import Schedule from "./Schedule/Schedule";
 
 const Join = React.lazy(() => import("./Join/Join"));
 const Login = React.lazy(() => import("./Login/Login"));
@@ -27,6 +28,7 @@ export default function Router() {
           <Route path="/board/detail/:boardId" element={<BoardDetail />} />
           <Route path="/team" element={<Team />} />
           <Route path="/board/mine" element={<BoardMine />} />
+          <Route path="/schedule" element={<Schedule />} />
         </Routes>
       </Suspense>
     </BrowserRouter>

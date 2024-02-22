@@ -57,9 +57,9 @@ const BoardContainer = styled.div`
     object-fit: contain;
   }
 `;
+
 const ScheduleContainer = styled.div`
   width: 25vw;
-
   padding: 20px;
   border: 1px dotted black;
   border-radius: 20px;
@@ -74,6 +74,9 @@ export default function Main() {
   };
   const goTeam = () => {
     navigate("/team");
+  };
+  const goSchedule = () => {
+    navigate("/schedule");
   };
 
   useEffect(() => {
@@ -107,7 +110,7 @@ export default function Main() {
             게시판
           </Link>
         </div>
-        <div>경기일정</div>
+        <div onClick={() => goSchedule()}>경기일정</div>
         <div>피드백</div>
       </NavContainer>
       <BoardAndScheduleContainer>
