@@ -2,10 +2,11 @@ const conn = require("../mariadb");
 const { StatusCodes } = require("http-status-codes");
 
 const insertSchedule = (req, res) => {
-  let { month, day, ground, num_of_player, type_of_match, price } = req.body;
+  let { month, day, ground, time, num_of_player, type_of_match, price } =
+    req.body;
   const sql =
-    "INSERT INTO schedule (month, day, ground, num_of_player, type_of_match, price) VALUE (?,?,?,?,?,?)";
-  const value = [month, day, ground, num_of_player, type_of_match, price];
+    "INSERT INTO schedule (month, day, ground,time, num_of_player, type_of_match, price) VALUE (?,?,?,?,?,?)";
+  const value = [month, day, ground, time, num_of_player, type_of_match, price];
 
   conn.query(sql, value, function (err, result) {
     if (err) {
@@ -17,6 +18,7 @@ const insertSchedule = (req, res) => {
       month: month,
       day: day,
       ground: ground,
+      time: time,
       num_of_player: num_of_player,
       type_of_match: type_of_match,
       price: price,
@@ -27,10 +29,11 @@ const insertSchedule = (req, res) => {
   });
 };
 const updateSchedule = (req, res) => {
-  let { month, day, ground, num_of_player, type_of_match, price } = req.body;
+  let { month, day, ground, time, num_of_player, type_of_match, price } =
+    req.body;
   const sql =
-    "UPDATE schedule SET ground =? , num_of_player=?,type_of_match= ?,price=? WHERE month=? AND day=?;";
-  const value = [ground, num_of_player, type_of_match, price, month, day];
+    "UPDATE schedule SET ground =? , time = ?, num_of_player=?,type_of_match= ?,price=? WHERE month=? AND day=?;";
+  const value = [ground, time, num_of_player, type_of_match, price, month, day];
 
   conn.query(sql, value, function (err, result) {
     if (err) {
@@ -46,7 +49,7 @@ const deleteSchedule = (req, res) => {
   const { month, day } = req.query;
   const sql = "DELETE FROM schedule WHERE month=? AND day=?;";
   const value = [month, day];
-  console.log(month, day);
+
   conn.query(sql, value, function (err, result) {
     if (err) {
       res.status(StatusCodes.BAD_REQUEST).end();
@@ -57,7 +60,7 @@ const deleteSchedule = (req, res) => {
         res.status(StatusCodes.BAD_REQUEST).end();
         return;
       }
-      console.log(result);
+
       res.status(StatusCodes.OK).json(result);
     });
   });
@@ -79,12 +82,26 @@ const getSchedule = (req, res) => {
 
 const getScheduleDetail = (req, res) => {
   const { day, month } = req.query;
-  console.log(day, month);
+
   const sql = "SELECT * FROM schedule WHERE month = ? AND day = ? ";
   const value = [day, month];
   conn.query(sql, value, function (err, result) {
     if (err) {
       res.status(StatusCodes.BAD_GATEWAY).end();
+      return;
+    }
+    res.status(StatusCodes.OK).json(result);
+  });
+};
+
+const getTodaySchedule = (req, res) => {
+  const { month, day } = req.query;
+  console.log(month, day);
+  const sql = "SELECT * FROM schedule WHERE month = ? AND day = ?;";
+  const value = [month, day];
+  conn.query(sql, value, function (err, result) {
+    if (err) {
+      res.status(StatusCodes.BAD_REQUEST).end();
       return;
     }
     res.status(StatusCodes.OK).json(result);
@@ -97,4 +114,5 @@ module.exports = {
   getScheduleDetail,
   updateSchedule,
   deleteSchedule,
+  getTodaySchedule,
 };
