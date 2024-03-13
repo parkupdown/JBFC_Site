@@ -1,6 +1,7 @@
 import Router from "./Router.jsx";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
+import { GlobalStyle } from "./styles/global.js";
 
 function App() {
   const queryClient = new QueryClient({
@@ -15,6 +16,7 @@ function App() {
   return (
     <>
       <QueryClientProvider client={queryClient}>
+        <GlobalStyle />
         <Router />
         <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
