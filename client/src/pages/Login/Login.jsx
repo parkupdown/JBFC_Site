@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import gif from "./video/login.gif";
+import gif from "../../assets/video";
 
 const Container = styled.div`
   height: 100vh;
@@ -14,6 +14,7 @@ const Container = styled.div`
     justify-content: center;
   }
 `;
+
 const ContainerInnerBox = styled.div`
   display: flex;
   flex-direction: column;

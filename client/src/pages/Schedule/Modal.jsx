@@ -95,7 +95,7 @@ export default function Modal({ closeModal, clickedDay, isUpdateSchedule }) {
     );
 
     queryClient.setQueryData(`${month}월`, (prev) => {
-      return [...prev, newScheduleData.data];
+      return [...prev, newScheduleData.data].sort((a, b) => a.day - b.day);
     });
     queryClient.invalidateQueries("todaySchedule");
     // 캐싱된 데이터에서 위 데이터를 업데이트 해주면 된다.

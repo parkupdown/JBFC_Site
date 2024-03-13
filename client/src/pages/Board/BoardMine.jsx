@@ -1,5 +1,4 @@
 import axios from "axios";
-
 import { CheckAuthorization } from "../CheckAuthorization/CheckAuthorization";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -109,10 +108,22 @@ export default function BoardMine() {
     onSuccess: () => {
       queryClient.setQueryData("myBoardData", (prev) => {
         let prevBoardData = prev.pages;
-        console.log(prevBoardData);
+        console.log(prevBoardData, removeBoardIdArr);
         const newData = prevBoardData.map((arr) => {
           if (arr === undefined) {
             return [];
+          }
+          return arr.filter((data) => !removeBoardIdArr.includes(data.id));
+        });
+        return { pages: newData };
+      });
+      // myPage에서 삭제
+
+      queryClient.setQueryData("boardData", (prev) => {
+        let prevBoardData = prev.pages;
+        let newData = prevBoardData.map((arr) => {
+          if (arr === undefined) {
+            return undefined;
           }
           return arr.filter((data) => !removeBoardIdArr.includes(data.id));
         });

@@ -3,10 +3,9 @@ import { useState } from "react";
 import { useRef } from "react";
 import { useEffect } from "react";
 import { useInfiniteQuery } from "react-query";
-
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { CheckAuthorization } from "../CheckAuthorization/CheckAuthorization";
+import { CheckAuthorization } from "../../CheckAuthorization/CheckAuthorization";
 
 const Container = styled.div`
   width: 100vw;

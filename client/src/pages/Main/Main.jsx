@@ -7,7 +7,7 @@ import { Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import { Link } from "react-router-dom";
-import { CheckAuthorization } from "../CheckAuthorization/CheckAuthorization";
+import { CheckAuthorization } from "../../CheckAuthorization/CheckAuthorization";
 import { useQuery } from "react-query";
 import axios from "axios";
 
@@ -57,6 +57,7 @@ const BoardContainer = styled.div`
     width: 100%;
     height: 100%;
     object-fit: contain;
+    border-radius: 10px;
   }
 `;
 
@@ -77,6 +78,7 @@ const ImgBox = styled.div`
     width: 100%;
     height: 100%;
     object-fit: contain;
+    border-radius: 14px;
   }
 `;
 
@@ -92,6 +94,9 @@ export default function Main() {
   };
   const goSchedule = () => {
     navigate("/schedule");
+  };
+  const goFeedBack = () => {
+    navigate("/feedback");
   };
 
   useEffect(() => {
@@ -144,7 +149,7 @@ export default function Main() {
           </Link>
         </div>
         <div onClick={() => goSchedule()}>경기일정</div>
-        <div>피드백</div>
+        <div onClick={() => goFeedBack()}>피드백</div>
       </NavContainer>
       <BoardAndScheduleContainer>
         {boardLoading ? null : (

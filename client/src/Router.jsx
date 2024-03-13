@@ -4,16 +4,17 @@ import { Routes } from "react-router-dom";
 import { BrowserRouter } from "react-router-dom";
 import React from "react";
 import { Loader } from "./Loader/Loader";
-import Team from "./Team/Team";
-import BoardMine from "./Board/BoardMine";
-import Schedule from "./Schedule/Schedule";
 
-const Join = React.lazy(() => import("./Join/Join"));
-const Login = React.lazy(() => import("./Login/Login"));
-const Main = React.lazy(() => import("./Main/Main"));
-const Board = React.lazy(() => import("./Board/Board"));
-const BoardWrite = React.lazy(() => import("./Board/BoardWrite"));
-const BoardDetail = React.lazy(() => import("./Board/BoardDetail"));
+const Join = React.lazy(() => import("./pages/Join/Join"));
+const Login = React.lazy(() => import("./pages/Login/Login"));
+const Main = React.lazy(() => import("./pages/Main/Main"));
+const Board = React.lazy(() => import("./pages/Board/Board"));
+const BoardWrite = React.lazy(() => import("./pages/Board/BoardWrite"));
+const BoardDetail = React.lazy(() => import("./pages/Board/BoardDetail"));
+const Team = React.lazy(() => import("./pages/Team/Team"));
+const BoardMine = React.lazy(() => import("./pages/Board/BoardMine"));
+const Schedule = React.lazy(() => import("./pages/Schedule/Schedule"));
+const FeedBack = React.lazy(() => import("./pages/FeedBack/FeedBack"));
 
 export default function Router() {
   return (
@@ -29,6 +30,7 @@ export default function Router() {
           <Route path="/team" element={<Team />} />
           <Route path="/board/mine" element={<BoardMine />} />
           <Route path="/schedule" element={<Schedule />} />
+          <Route path="/feedback" element={<FeedBack />} />
         </Routes>
       </Suspense>
     </BrowserRouter>

@@ -44,7 +44,7 @@ const Day = styled.div`
 `;
 
 const CellBox = styled.div`
-  border: ${(props) => `1px dotted ${props.scheduled}`};
+  border: ${(props) => `1.5px dotted ${props.scheduled}`};
   padding: 25px;
   font-size: 10px;
   text-align: center;
