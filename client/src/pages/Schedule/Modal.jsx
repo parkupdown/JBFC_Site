@@ -90,10 +90,7 @@ export default function Modal({ closeModal, clickedDay, isUpdateSchedule }) {
       price: price,
     };
 
-    const newScheduleData = await axios.post(
-      "http://localhost:3060/schedule",
-      scheduleData
-    );
+    const newScheduleData = await httpClient.post("/schedule", scheduleData);
 
     queryClient.setQueryData(`${month}월`, (prev) => {
       return [...prev, newScheduleData.data].sort((a, b) => a.day - b.day);
@@ -114,7 +111,7 @@ export default function Modal({ closeModal, clickedDay, isUpdateSchedule }) {
       type_of_match: typeOfMatch,
       price: price,
     };
-    await httpClient.put(`http://localhost:3060/schedule`, scheduleData);
+    await httpClient.put(`/schedule`, scheduleData);
     // 캐싱 새롭게할 필요가 없다.
     queryClient.invalidateQueries("todaySchedule");
     closeModal();

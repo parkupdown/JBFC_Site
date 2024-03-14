@@ -38,9 +38,7 @@ export default function FeedBack() {
   };
 
   const getScheduleData = async () => {
-    const getSchedule = await httpClient.get(
-      `http://localhost:3060/schedule?month=${month}`
-    );
+    const getSchedule = await httpClient.get(`/schedule?month=${month}`);
     const scheduleData = getSchedule.data;
     return scheduleData;
   };

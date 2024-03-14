@@ -20,10 +20,7 @@ export default function Comment({ boardId, writer }) {
       writer: writer,
       time: time,
     };
-    const getData = await httpClient.post(
-      `http://localhost:3060/comment`,
-      commentData
-    );
+    const getData = await httpClient.post(`/comment`, commentData);
     //작성하면 캐싱데이터를 다시 불러올수있게?
     const newCommentData = getData.data;
 
@@ -37,9 +34,7 @@ export default function Comment({ boardId, writer }) {
   };
 
   const getCommentData = async () => {
-    const getdata = await httpClient.get(
-      `http://localhost:3060/comment/${boardId}`
-    );
+    const getdata = await httpClient.get(`/comment/${boardId}`);
     const commentData = getdata.data;
     return commentData;
   };
@@ -47,7 +42,7 @@ export default function Comment({ boardId, writer }) {
   const { isLoading, data } = useQuery(`comment${boardId}`, getCommentData);
 
   const removeCommentData = async (commentId) => {
-    await httpClient.delete(`http://localhost:3060/comment/${commentId}`);
+    await httpClient.delete(`/comment/${commentId}`);
     queryClient.setQueryData(`comment${boardId}`, (prev) => {
       const newData = prev.filter((data) => data.id !== commentId);
       return newData;

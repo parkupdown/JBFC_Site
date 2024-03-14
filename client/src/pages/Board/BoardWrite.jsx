@@ -61,13 +61,9 @@ export default function BoardWrite() {
   };
 
   const insertBoardData = async (formData) => {
-    const response = await httpClient.post(
-      "http://localhost:3060/board",
-      formData,
-      {
-        headers: { "Content-Type": "multipart/form-data", charset: "utf-8" },
-      }
-    );
+    const response = await httpClient.post("/board", formData, {
+      headers: { "Content-Type": "multipart/form-data", charset: "utf-8" },
+    });
     return response.data;
   };
 

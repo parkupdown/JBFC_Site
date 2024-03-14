@@ -1,5 +1,6 @@
 import axios from "axios";
-import { getToken } from "../store/authStore";
+import { getToken, removeToken } from "../store/authStore";
+import { removeNickName } from "../store/nickNameStore";
 
 const BASE_URL = "http://localhost:3060";
 const DEFAULT_TIMEOUT = 30000;
@@ -24,6 +25,8 @@ const customAxios = (config) => {
     (error) => {
       if (error.response.status === 401) {
         alert("세션이 만료되었습니다.");
+        removeToken();
+        removeNickName();
         window.location.href = "/login";
       }
       return Promise.reject(error);

@@ -78,8 +78,8 @@ function ModalDetail({
 
   const deleteSchedule = async () => {
     let [month, day] = clickedDay.split(`월`);
-    const deletedData = await axios.delete(
-      `http://localhost:3060/schedule?month=${month}&day=${day}`
+    const deletedData = await httpClient.delete(
+      `/schedule?month=${month}&day=${day}`
     );
     queryClient.setQueryData(`${month}월`, (prev) => deletedData.data);
     queryClient.invalidateQueries("todaySchedule");
@@ -136,7 +136,7 @@ export default function ScheduleDetailModal({ closeModal, clickedDay }) {
   // 굳이 캐싱하지 않아도됨
   const getScheduleDetailData = async () => {
     const getScheduleDetail = await httpClient.get(
-      `http://localhost:3060/schedule/detail?month=${month}&day=${day}`
+      `/schedule/detail?month=${month}&day=${day}`
     );
     return getScheduleDetail.data;
   };

@@ -41,7 +41,7 @@ export default function BoardDetail() {
   };
   const checkAuthorization = async () => {
     try {
-      const userInfo = await httpClient.get("http://localhost:3060/token", {
+      const userInfo = await httpClient.get("/token", {
         withCredentials: true,
       });
       const getUserId = userInfo.data.userId;
@@ -52,9 +52,7 @@ export default function BoardDetail() {
   };
 
   const getBoardDetailData = async () => {
-    const data = await httpClient.get(
-      `http://localhost:3060/board/detail/${boardId}`
-    );
+    const data = await httpClient.get(`/board/detail/${boardId}`);
     const boardData = data.data[0];
     setBoardDetailData(boardData);
   };

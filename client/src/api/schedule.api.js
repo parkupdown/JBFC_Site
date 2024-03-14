@@ -6,7 +6,7 @@ export const getTodayScheduleData = async () => {
   let day = date.getDate();
   day = parseInt(day);
   const getData = await httpClient.get(
-    `http://localhost:3060/schedule/today?month=${month}&day=${day}`
+    `/schedule/today?month=${month}&day=${day}`
   );
   return getData.data;
 };

@@ -54,20 +54,9 @@ export default function BoardMine() {
     }
   };
 
-  useEffect(() => {
-    const checkUserSession = async () => {
-      try {
-        await CheckAuthorization();
-      } catch (error) {
-        alert(error);
-      }
-    };
-    checkUserSession();
-  }, []);
-
   const getMyBoardData = async ({ pageParam = 0 }) => {
     const getData = await httpClient.get(
-      `http://localhost:3060/board/mine/${userId}?page=${pageParam}`
+      `/board/mine/${userId}?page=${pageParam}`
     );
 
     if (getData.data === false) {
@@ -93,7 +82,7 @@ export default function BoardMine() {
 
   const removeMyBoardData = async () => {
     try {
-      await httpClient.delete("http://localhost:3060/board/mine", {
+      await httpClient.delete("/board/mine", {
         data: { removeBoardIdArr: removeBoardIdArr },
       });
       setRemoveMode((current) => !current);

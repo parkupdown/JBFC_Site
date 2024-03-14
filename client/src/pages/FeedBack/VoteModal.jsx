@@ -14,9 +14,7 @@ export default function VoteModal({ scheduleData, closeModal }) {
   // 있다면? 바로 결과를 보여주기
 
   const getPlayerData = async () => {
-    const getData = await httpClient.get(
-      `http://localhost:3060/player/${scheduleData.id}`
-    );
+    const getData = await httpClient.get(`/player/${scheduleData.id}`);
     return getData.data;
   };
 

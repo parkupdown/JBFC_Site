@@ -7,8 +7,10 @@ function App() {
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
-        staleTime: 1000 * 60,
-        cacheTime: 1000 * 60 * 5,
+        staleTime: 1000 * 60 * 60 * 2,
+        //2시간
+        cacheTime: 1000 * 60 * 60 * 2,
+        //2시간
       },
     },
   });

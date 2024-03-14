@@ -1,4 +1,3 @@
-import axios from "axios";
 import { useState } from "react";
 import { useRef } from "react";
 import { useEffect } from "react";
@@ -46,9 +45,7 @@ export default function Board() {
   };
 
   const getBoardData = async ({ pageParam = 0 }) => {
-    const board = await httpClient.get(
-      `http://localhost:3060/board?page=${pageParam}`
-    );
+    const board = await httpClient.get(`/board?page=${pageParam}`);
     if (board.data === false) {
       return;
     }

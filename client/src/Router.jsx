@@ -4,6 +4,7 @@ import { Routes } from "react-router-dom";
 import { BrowserRouter } from "react-router-dom";
 import React from "react";
 import { Loader } from "./Loader/Loader";
+import Layout from "./components/layout/Layout";
 
 const Join = React.lazy(() => import("./pages/Join/Join"));
 const Login = React.lazy(() => import("./pages/Login/Login"));
@@ -21,8 +22,22 @@ export default function Router() {
     <BrowserRouter>
       <Suspense fallback={<Loader />}>
         <Routes>
-          <Route path="/" element={<Main />} />
-          <Route path="/join" element={<Join />} />
+          <Route
+            path="/"
+            element={
+              <Layout>
+                <Main />
+              </Layout>
+            }
+          />
+          <Route
+            path="/join"
+            element={
+              <Layout>
+                <Join />
+              </Layout>
+            }
+          />
           <Route path="/login" element={<Login />} />
           <Route path="/board" element={<Board />} />
           <Route path="/board/write" element={<BoardWrite />} />

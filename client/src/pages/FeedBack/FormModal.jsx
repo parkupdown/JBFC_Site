@@ -78,7 +78,7 @@ export default function FormModal({ closeModal, scheduleData }) {
   };
 
   const insertPlayerData = async () => {
-    httpClient.post("http://localhost:3060/player", {
+    httpClient.post("/player", {
       playerNames: playerNames,
       schedule_id: scheduleData.id,
     });

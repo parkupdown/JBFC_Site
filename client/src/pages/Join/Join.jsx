@@ -1,8 +1,95 @@
-import joinValidation from "../../Validation/joinValidation";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { httpClient } from "../../api/http";
+import { useForm } from "react-hook-form";
+import { inputProps } from "../../constants/input.contant";
+import { checkDuplication } from "../../Validation/joinValidation";
 
+export default function Join() {
+  const navigate = useNavigate();
+  const goLogin = () => {
+    navigate("/login");
+  };
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  const postApi = async (userId, userPassword, userNickname) => {
+    try {
+      await httpClient.post("/join", {
+        userId: userId,
+        userPassword: userPassword,
+        userNickname: userNickname,
+      });
+    } catch (err) {
+      alert("모든 데이터값을 입력해주세요.");
+    }
+  };
+
+  const checkPassword = (password, passwordRe) => {
+    if (password !== passwordRe) {
+      throw new Error("비밀번호 확인이 일치하지 않습니다.");
+    }
+  };
+
+  const onSubmit = async (data) => {
+    const { id, password, passwordRe, nickName } = data;
+    try {
+      checkPassword(password, passwordRe);
+      await checkDuplication(id, "ID");
+      await checkDuplication(nickName, "NICKNAME");
+      postApi(id, password, nickName);
+      alert("회원가입완료");
+      goLogin();
+    } catch (error) {
+      alert(error);
+    }
+  };
+
+  return (
+    <Container>
+      <Summary>
+        스포츠가 주는 다양한 감정을
+        <br />
+        즐기며 살아갑시다
+        <br />
+      </Summary>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        {inputProps(errors).map((item) => (
+          <>
+            <InputWrapper>
+              <p>{item.name}</p>
+              <input
+                type="text"
+                placeholder={`${item.name}`}
+                {...register(item.id, {
+                  required: {
+                    value: true,
+                    message: `${item.name}을(를) 입력해주세요.`,
+                  },
+                  maxLength: {
+                    value: item.max,
+                    message: `최대${item.max}글자까지 입력이 가능합니다.`,
+                  },
+                  minLength: {
+                    value: item.min,
+                    message: `최소${item.min}글자를 입력해주세요.`,
+                  },
+                })}
+              />
+            </InputWrapper>
+            {item.error && <p>{item.error.message}</p>}
+          </>
+        ))}
+
+        <button type="submit">제출</button>
+      </form>
+    </Container>
+  );
+}
 const Container = styled.div`
   height: 100vh;
   width: 100vw;
@@ -47,90 +134,3 @@ const InputWrapper = styled.div`
     font-size: 15px;
   }
 `;
-
-export default function Join() {
-  const navigate = useNavigate();
-  const goLogin = () => {
-    navigate("/login");
-  };
-
-  const postApi = async (userId, userPassword, userNickname) => {
-    try {
-      await httpClient.post("http://localhost:3060/join", {
-        userId: userId,
-        userPassword: userPassword,
-        userNickname: userNickname,
-      });
-    } catch (err) {
-      alert("모든 데이터값을 입력해주세요.");
-    }
-  };
-
-  const checkPasswordDubble = (firstPassword, secondPassword) => {
-    if (firstPassword !== secondPassword) {
-      throw new Error("비밀번호 확인이 일치하지 않습니다.");
-    }
-  };
-
-  const submitUserInfo = async (e) => {
-    e.preventDefault();
-    let [userId, userPassword, userPasswordCheck, userNickname] = e.target;
-
-    userId = userId.value;
-    userPassword = userPassword.value;
-    userPasswordCheck = userPasswordCheck.value;
-    userNickname = userNickname.value;
-    // 여기서 이걸 보낼 수 있게 되었다.
-    try {
-      checkPasswordDubble(userPassword, userPasswordCheck);
-      await joinValidation(userId, userPassword, userNickname);
-      await postApi(userId, userPassword, userNickname);
-      alert("회원가입완료");
-      goLogin();
-    } catch (error) {
-      alert(error);
-    }
-    //여기서 요청 중단되어야함
-  };
-
-  //validation 만들기.
-  /*
-  1. 공백없이
-  2. 이미존재하는 ID여부
-  3. 7글자이상
-  */
-
-  return (
-    <Container>
-      <Summary>
-        스포츠가 주는 다양한 감정을
-        <br />
-        즐기며 살아갑시다
-        <br />
-      </Summary>
-
-      <form onSubmit={(e) => submitUserInfo(e)}>
-        <InputWrapper>
-          <p>아이디</p>
-          <input type="text" placeholder="아이디를 입력해주세요" />
-        </InputWrapper>
-        <InputWrapper>
-          <p>비밀번호</p>
-          <input type="password" placeholder="비밀번호를 입력해주세요" />
-        </InputWrapper>
-        <InputWrapper>
-          <p>비밀번호 확인</p>
-          <input
-            type="password"
-            placeholder="비밀번호를 한 번 더 입력해주세요"
-          />
-        </InputWrapper>
-        <InputWrapper>
-          <p>닉네임</p>
-          <input type="text" placeholder="닉네임을 입력해주세요" />
-        </InputWrapper>
-        <button>제출</button>
-      </form>
-    </Container>
-  );
-}

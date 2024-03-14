@@ -4,6 +4,7 @@ import styled from "styled-components";
 import gif from "../../assets/video/login.gif";
 import { setToke } from "../../store/authStore";
 import { setNickName } from "../../store/nickNameStore";
+import { httpClient } from "../../api/http";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -23,8 +24,8 @@ export default function Login() {
 
   const postApi = async (userId, userPassword) => {
     try {
-      const response = await axios.post(
-        "http://localhost:3060/login",
+      const response = await httpClient.post(
+        "/login",
         {
           userId: userId,
           userPassword: userPassword,
