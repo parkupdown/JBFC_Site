@@ -2,9 +2,12 @@ const express = require("express");
 const router = express.Router();
 const conn = require("../mariadb");
 const { StatusCodes } = require("http-status-codes");
-const { STATUS_CODES } = require("http");
+const { isAuthorization } = require("./CheckAuthorization");
 
 const postCommentData = (req, res) => {
+  if (!isAuthorization(req, res)) {
+    return;
+  }
   let { board_id, content, writer, time } = req.body;
   const sql =
     "INSERT INTO comment (board_id, content, writer, time) VALUE (?,?,?,?);";
@@ -31,6 +34,10 @@ const postCommentData = (req, res) => {
 };
 
 const getCommentData = (req, res) => {
+  if (!isAuthorization(req, res)) {
+    return;
+  }
+
   const { boardId } = req.params;
 
   const sql = "SELECT * FROM comment WHERE board_id = ? ;";
@@ -45,6 +52,9 @@ const getCommentData = (req, res) => {
 };
 
 const deleteCommentData = (req, res) => {
+  if (!isAuthorization(req, res)) {
+    return;
+  }
   const { commentId } = req.params;
   const sql = "DELETE  FROM comment WHERE id = ?";
 

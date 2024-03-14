@@ -17,6 +17,7 @@ const tokenRouter = require("./routes/token");
 const boardRouter = require("./routes/board");
 const commentRouter = require("./routes/comment");
 const scheduleRouter = require("./routes/schedule");
+const playerRouter = require("./routes/player");
 
 app.use("/join", joinRouter);
 app.use("/login", loginRouter);
@@ -24,3 +25,4 @@ app.use("/token", tokenRouter);
 app.use("/board", boardRouter);
 app.use("/comment", commentRouter);
 app.use("/schedule", scheduleRouter);
+app.use("/player", playerRouter);

@@ -1,11 +1,18 @@
 const conn = require("../mariadb");
 const { StatusCodes } = require("http-status-codes");
+const { decodeJwt } = require("./DecodedJwt");
+const jwt = require("jsonwebtoken");
+const { isAuthorization } = require("./CheckAuthorization");
 
 const insertSchedule = (req, res) => {
+  if (!isAuthorization(req, res)) {
+    return;
+  }
+
   let { month, day, ground, time, num_of_player, type_of_match, price } =
     req.body;
   const sql =
-    "INSERT INTO schedule (month, day, ground,time, num_of_player, type_of_match, price) VALUE (?,?,?,?,?,?)";
+    "INSERT INTO schedule (month, day, ground,time, num_of_player, type_of_match, price) VALUE (?,?,?, ?,?,?,?)";
   const value = [month, day, ground, time, num_of_player, type_of_match, price];
 
   conn.query(sql, value, function (err, result) {
@@ -29,6 +36,10 @@ const insertSchedule = (req, res) => {
   });
 };
 const updateSchedule = (req, res) => {
+  if (!isAuthorization(req, res)) {
+    return;
+  }
+
   let { month, day, ground, time, num_of_player, type_of_match, price } =
     req.body;
   const sql =
@@ -46,6 +57,10 @@ const updateSchedule = (req, res) => {
 };
 
 const deleteSchedule = (req, res) => {
+  if (!isAuthorization(req, res)) {
+    return;
+  }
+
   const { month, day } = req.query;
   const sql = "DELETE FROM schedule WHERE month=? AND day=?;";
   const value = [month, day];
@@ -67,8 +82,12 @@ const deleteSchedule = (req, res) => {
 };
 
 const getSchedule = (req, res) => {
+  if (!isAuthorization(req, res)) {
+    return;
+  }
+
   const { month } = req.query;
-  const sql = "SELECT * FROM schedule WHERE month = ?";
+  const sql = "SELECT * FROM schedule WHERE month = ? ORDER BY day ASC";
 
   conn.query(sql, month, function (err, result) {
     if (err) {
@@ -81,6 +100,10 @@ const getSchedule = (req, res) => {
 };
 
 const getScheduleDetail = (req, res) => {
+  if (!isAuthorization(req, res)) {
+    return;
+  }
+
   const { day, month } = req.query;
 
   const sql = "SELECT * FROM schedule WHERE month = ? AND day = ? ";
@@ -95,6 +118,10 @@ const getScheduleDetail = (req, res) => {
 };
 
 const getTodaySchedule = (req, res) => {
+  if (!isAuthorization(req, res)) {
+    return;
+  }
+
   const { month, day } = req.query;
   console.log(month, day);
   const sql = "SELECT * FROM schedule WHERE month = ? AND day = ?;";

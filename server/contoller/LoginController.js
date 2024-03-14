@@ -41,9 +41,8 @@ const insertUserInfo = (req, res) => {
     if (hashPassword === savedPassword) {
       // 여기서 이제 jwt를 발급해주어야함
       const token = makeJwt(userId);
-
       res.cookie("token", token, { httpOnly: true });
-      res.status(StatusCodes.OK).json(result);
+      res.status(StatusCodes.OK).json({ ...result[0], token: token });
     } else if (hashPassword !== savedPassword) {
       res.status(StatusCodes.UNAUTHORIZED).end();
     }

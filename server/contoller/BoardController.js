@@ -3,8 +3,15 @@ const multer = require("multer");
 const upload = multer({ dest: "uploads/" });
 const conn = require("../mariadb");
 const { StatusCodes } = require("http-status-codes");
+const { decodeJwt } = require("./DecodedJwt");
+const jwt = require("jsonwebtoken");
+const { isAuthorization } = require("./CheckAuthorization");
 
 const insertBoardData = (req, res) => {
+  if (!isAuthorization(req, res)) {
+    return;
+  }
+
   let { userId, title, content, time } = req.body;
   let image = req.file;
   let thumbnail;
@@ -40,6 +47,10 @@ const insertBoardData = (req, res) => {
 };
 
 const getBoardData = (req, res) => {
+  if (!isAuthorization(req, res)) {
+    return;
+  }
+
   const sql = "SELECT * FROM board;";
   let { page } = req.query;
   page = parseInt(page);
@@ -64,6 +75,11 @@ const getBoardData = (req, res) => {
 };
 
 const getLastestBoardData = (req, res) => {
+  if (!isAuthorization(req, res)) {
+    return;
+  }
+  console.log(isAuthorization(req, res));
+
   const sql = "SELECT * FROM board ORDER BY id DESC LIMIT 1;";
   conn.query(sql, function (err, result) {
     if (err) {
@@ -75,6 +91,10 @@ const getLastestBoardData = (req, res) => {
 };
 
 const getBoardDetailData = (req, res) => {
+  if (!isAuthorization(req, res)) {
+    return;
+  }
+
   const { id } = req.params;
 
   const sql = "SELECT * FROM board WHERE id = ?;";
@@ -88,6 +108,10 @@ const getBoardDetailData = (req, res) => {
 };
 
 const getMyBoardData = (req, res) => {
+  if (!isAuthorization(req, res)) {
+    return;
+  }
+
   const { userId } = req.params;
   let { page } = req.query;
   page = parseInt(page);
@@ -112,6 +136,10 @@ const getMyBoardData = (req, res) => {
 };
 
 const deleteBoardData = (req, res) => {
+  if (!isAuthorization(req, res)) {
+    return;
+  }
+
   let { removeBoardIdArr } = req.body;
   const deleteSql = removeBoardIdArr.map(
     (boardId) => `DELETE FROM board WHERE id =${boardId};`
