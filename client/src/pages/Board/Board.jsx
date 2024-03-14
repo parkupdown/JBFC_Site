@@ -6,6 +6,7 @@ import { useInfiniteQuery } from "react-query";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { CheckAuthorization } from "../../CheckAuthorization/CheckAuthorization";
+import { httpClient } from "../../api/http";
 
 const Container = styled.div`
   width: 100vw;
@@ -45,7 +46,7 @@ export default function Board() {
   };
 
   const getBoardData = async ({ pageParam = 0 }) => {
-    const board = await axios.get(
+    const board = await httpClient.get(
       `http://localhost:3060/board?page=${pageParam}`
     );
     if (board.data === false) {

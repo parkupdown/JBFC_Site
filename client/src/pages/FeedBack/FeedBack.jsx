@@ -4,6 +4,7 @@ import { useQuery } from "react-query";
 import { useNavigate } from "react-router-dom";
 import FormModal from "./FormModal";
 import VoteModal from "./VoteModal";
+import { httpClient } from "../../api/http";
 
 export default function FeedBack() {
   // 여기서 이번달 경기일정을 받아와서
@@ -37,7 +38,7 @@ export default function FeedBack() {
   };
 
   const getScheduleData = async () => {
-    const getSchedule = await axios.get(
+    const getSchedule = await httpClient.get(
       `http://localhost:3060/schedule?month=${month}`
     );
     const scheduleData = getSchedule.data;
@@ -60,7 +61,6 @@ export default function FeedBack() {
 
   const clickSchedule = (e) => {
     let getScheduleId;
-    console.log(e.target.tagName);
     if (e.target.tagName === "DIV") {
       getScheduleId = parseInt(e.target.id);
     } else {

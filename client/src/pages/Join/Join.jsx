@@ -1,7 +1,7 @@
-import axios from "axios";
-import joinValidation from "../Validation/joinValidation";
+import joinValidation from "../../Validation/joinValidation";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { httpClient } from "../../api/http";
 
 const Container = styled.div`
   height: 100vh;
@@ -56,7 +56,7 @@ export default function Join() {
 
   const postApi = async (userId, userPassword, userNickname) => {
     try {
-      await axios.post("http://localhost:3060/join", {
+      await httpClient.post("http://localhost:3060/join", {
         userId: userId,
         userPassword: userPassword,
         userNickname: userNickname,

@@ -1,5 +1,3 @@
-import { useState } from "react";
-import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -7,88 +5,14 @@ import { Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import { Link } from "react-router-dom";
-import { CheckAuthorization } from "../../CheckAuthorization/CheckAuthorization";
 import { useQuery } from "react-query";
-import axios from "axios";
-
-const Container = styled.div`
-  h1 {
-    font-weight: 300;
-    text-align: center;
-    margin-top: 20px;
-  }
-  span {
-    font-weight: 300;
-    text-align: left;
-    margin-left: 5px;
-    display: block;
-    margin-top: 20px;
-  }
-`;
-const NavContainer = styled.div`
-  display: flex;
-  justify-content: space-around;
-  margin-top: 30px;
-`;
-const SwipterContainer = styled.div`
-  margin-top: 30px;
-  padding: 20px;
-  text-align: center;
-  img {
-    border-radius: 10px;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-`;
-const BoardAndScheduleContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  align-items: center;
-`;
-const BoardContainer = styled.div`
-  width: 50vw;
-  padding: 20px;
-  border: 1px dotted black;
-  border-radius: 20px;
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    border-radius: 10px;
-  }
-`;
-
-const ScheduleContainer = styled.div`
-  width: 95vw;
-  padding: 20px;
-  border: 1px dotted black;
-  border-radius: 20px;
-`;
-const ScheduleAndImgBox = styled.div`
-  display: flex;
-  justify-content: space-around;
-  width: 95vw;
-`;
-const ImgBox = styled.div`
-  width: 40vw;
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    border-radius: 14px;
-  }
-`;
+import { getLastestBoardData } from "../../api/board.api";
+import { getTodayScheduleData } from "../../api/schedule.api";
 
 export default function Main() {
   // 여기서 jwt여부 체크해서 없으면 바로 그냥 로그인으로
-  const [userId, setUserId] = useState(null);
   const navigate = useNavigate();
-  const goLogin = () => {
-    navigate("/login");
-  };
+
   const goTeam = () => {
     navigate("/team");
   };
@@ -99,40 +23,15 @@ export default function Main() {
     navigate("/feedback");
   };
 
-  useEffect(() => {
-    const checkUserSession = async () => {
-      try {
-        const userId = await CheckAuthorization();
-        setUserId(userId);
-      } catch (error) {
-        alert(error);
-        goLogin();
-      }
-    };
-    checkUserSession();
-  }, []);
-
   //게시글 최신글 긁어오자
-  const getLastestBoardData = async () => {
-    const getData = await axios.get("http://localhost:3060/board/lastest");
-    return getData.data;
-  };
-
-  const getTodayScheduleData = async () => {
-    const date = new Date();
-    let month = date.getMonth() + 1;
-    let day = date.getDate();
-    day = parseInt(day);
-    const getData = await axios.get(
-      `http://localhost:3060/schedule/today?month=${month}&day=${day}`
-    );
-    return getData.data;
-  };
 
   const { isLoading: boardLoading, data: boardData } = useQuery(
     "lastestBoardData",
     getLastestBoardData
   );
+
+  //cashe처리가 되니까 expire가 되어도 그냥 진행되는구나..
+
   const { isLoading: scheduleLoading, data: scheduleData } = useQuery(
     "todaySchedule",
     getTodayScheduleData
@@ -144,7 +43,7 @@ export default function Main() {
       <NavContainer>
         <div onClick={() => goTeam()}>팀</div>
         <div>
-          <Link to={"/board"} state={{ userId: userId }}>
+          <Link to={"/board"} state={{ userId: 2 }}>
             게시판
           </Link>
         </div>
@@ -239,3 +138,74 @@ export default function Main() {
     </Container>
   );
 }
+
+const Container = styled.div`
+  h1 {
+    font-weight: 300;
+    text-align: center;
+    margin-top: 20px;
+  }
+  span {
+    font-weight: 300;
+    text-align: left;
+    margin-left: 5px;
+    display: block;
+    margin-top: 20px;
+  }
+`;
+const NavContainer = styled.div`
+  display: flex;
+  justify-content: space-around;
+  margin-top: 30px;
+`;
+const SwipterContainer = styled.div`
+  margin-top: 30px;
+  padding: 20px;
+  text-align: center;
+  img {
+    border-radius: 10px;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+`;
+const BoardAndScheduleContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+`;
+const BoardContainer = styled.div`
+  width: 50vw;
+  padding: 20px;
+  border: 1px dotted black;
+  border-radius: 20px;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 10px;
+  }
+`;
+
+const ScheduleContainer = styled.div`
+  width: 95vw;
+  padding: 20px;
+  border: 1px dotted black;
+  border-radius: 20px;
+`;
+const ScheduleAndImgBox = styled.div`
+  display: flex;
+  justify-content: space-around;
+  width: 95vw;
+`;
+const ImgBox = styled.div`
+  width: 40vw;
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 14px;
+  }
+`;

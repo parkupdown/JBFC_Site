@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import { useNavigate } from "react-router-dom";
+import { httpClient } from "../../api/http";
 
 export default function BoardWrite() {
   const [userId, setUserId] = useState(null);
@@ -13,7 +14,7 @@ export default function BoardWrite() {
   };
   const checkAuthorization = async () => {
     try {
-      let { data } = await axios.get("http://localhost:3060/token", {
+      let { data } = await httpClient.get("http://localhost:3060/token", {
         withCredentials: true,
       });
       data = data.userId;
@@ -60,9 +61,13 @@ export default function BoardWrite() {
   };
 
   const insertBoardData = async (formData) => {
-    const response = await axios.post("http://localhost:3060/board", formData, {
-      headers: { "Content-Type": "multipart/form-data", charset: "utf-8" },
-    });
+    const response = await httpClient.post(
+      "http://localhost:3060/board",
+      formData,
+      {
+        headers: { "Content-Type": "multipart/form-data", charset: "utf-8" },
+      }
+    );
     return response.data;
   };
 

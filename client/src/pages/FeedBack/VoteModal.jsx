@@ -2,6 +2,7 @@ import axios from "axios";
 import { useQuery } from "react-query";
 import FormModal from "./FormModal";
 import styled from "styled-components";
+import { httpClient } from "../../api/http";
 
 // 일단 여기로 들어와서 만약 아직 생성된 투표가 없다면 ? 으로가는걸로
 // eslint-disable-next-line react/prop-types
@@ -13,7 +14,7 @@ export default function VoteModal({ scheduleData, closeModal }) {
   // 있다면? 바로 결과를 보여주기
 
   const getPlayerData = async () => {
-    const getData = await axios.get(
+    const getData = await httpClient.get(
       `http://localhost:3060/player/${scheduleData.id}`
     );
     return getData.data;

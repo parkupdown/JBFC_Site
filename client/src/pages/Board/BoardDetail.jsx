@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import Comment from "../Comment/Comment";
+import { httpClient } from "../../api/http";
 
 const Container = styled.div`
   width: 100vw;
@@ -40,7 +41,7 @@ export default function BoardDetail() {
   };
   const checkAuthorization = async () => {
     try {
-      const userInfo = await axios.get("http://localhost:3060/token", {
+      const userInfo = await httpClient.get("http://localhost:3060/token", {
         withCredentials: true,
       });
       const getUserId = userInfo.data.userId;
@@ -51,7 +52,7 @@ export default function BoardDetail() {
   };
 
   const getBoardDetailData = async () => {
-    const data = await axios.get(
+    const data = await httpClient.get(
       `http://localhost:3060/board/detail/${boardId}`
     );
     const boardData = data.data[0];

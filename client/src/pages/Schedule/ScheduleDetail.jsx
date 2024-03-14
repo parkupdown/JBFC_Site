@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import styled from "styled-components";
 import Modal from "./Modal";
 import { useQuery, useQueryClient } from "react-query";
+import { httpClient } from "../../api/http";
 
 const ModalBackground = styled.div`
   position: fixed;
@@ -134,7 +135,7 @@ export default function ScheduleDetailModal({ closeModal, clickedDay }) {
   //캐싱안하고 그냥 useEffect로
   // 굳이 캐싱하지 않아도됨
   const getScheduleDetailData = async () => {
-    const getScheduleDetail = await axios.get(
+    const getScheduleDetail = await httpClient.get(
       `http://localhost:3060/schedule/detail?month=${month}&day=${day}`
     );
     return getScheduleDetail.data;

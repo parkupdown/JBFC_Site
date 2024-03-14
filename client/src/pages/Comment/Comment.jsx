@@ -1,6 +1,6 @@
-import axios from "axios";
 import { useQuery } from "react-query";
 import { useQueryClient } from "react-query";
+import { httpClient } from "../../api/http";
 
 export default function Comment({ boardId, writer }) {
   //여기서 writer는 게시글의 작성자
@@ -20,7 +20,7 @@ export default function Comment({ boardId, writer }) {
       writer: writer,
       time: time,
     };
-    const getData = await axios.post(
+    const getData = await httpClient.post(
       `http://localhost:3060/comment`,
       commentData
     );
@@ -37,7 +37,9 @@ export default function Comment({ boardId, writer }) {
   };
 
   const getCommentData = async () => {
-    const getdata = await axios.get(`http://localhost:3060/comment/${boardId}`);
+    const getdata = await httpClient.get(
+      `http://localhost:3060/comment/${boardId}`
+    );
     const commentData = getdata.data;
     return commentData;
   };
@@ -45,7 +47,7 @@ export default function Comment({ boardId, writer }) {
   const { isLoading, data } = useQuery(`comment${boardId}`, getCommentData);
 
   const removeCommentData = async (commentId) => {
-    await axios.delete(`http://localhost:3060/comment/${commentId}`);
+    await httpClient.delete(`http://localhost:3060/comment/${commentId}`);
     queryClient.setQueryData(`comment${boardId}`, (prev) => {
       const newData = prev.filter((data) => data.id !== commentId);
       return newData;

@@ -5,6 +5,7 @@ import axios from "axios";
 import { useQuery } from "react-query";
 import { useEffect } from "react";
 import ScheduleDetailModal from "./ScheduleDetail";
+import { httpClient } from "../../api/http";
 
 const CalendarContainer = styled.div`
   margin: 20px auto;
@@ -60,7 +61,7 @@ const Calendar = () => {
 
   //여기서 캐싱해서 db의 데이터를 가져옴
   const getScheduleData = async () => {
-    const getSchedule = await axios.get(
+    const getSchedule = await httpClient.get(
       `http://localhost:3060/schedule?month=${month}`
     );
     const scheduleData = getSchedule.data;

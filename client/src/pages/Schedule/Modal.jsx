@@ -2,6 +2,7 @@ import { useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import { useQueryClient } from "react-query";
+import { httpClient } from "../../api/http";
 
 const ModalBackground = styled.div`
   position: fixed;
@@ -113,7 +114,7 @@ export default function Modal({ closeModal, clickedDay, isUpdateSchedule }) {
       type_of_match: typeOfMatch,
       price: price,
     };
-    await axios.put(`http://localhost:3060/schedule`, scheduleData);
+    await httpClient.put(`http://localhost:3060/schedule`, scheduleData);
     // 캐싱 새롭게할 필요가 없다.
     queryClient.invalidateQueries("todaySchedule");
     closeModal();

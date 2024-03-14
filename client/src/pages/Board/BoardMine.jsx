@@ -1,5 +1,3 @@
-import axios from "axios";
-import { CheckAuthorization } from "../CheckAuthorization/CheckAuthorization";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useRef } from "react";
@@ -8,6 +6,7 @@ import styled from "styled-components";
 import { useLocation } from "react-router-dom";
 import { useState } from "react";
 import { useQueryClient } from "react-query";
+import { httpClient } from "../../api/http";
 const Container = styled.div`
   width: 100vw;
 `;
@@ -67,7 +66,7 @@ export default function BoardMine() {
   }, []);
 
   const getMyBoardData = async ({ pageParam = 0 }) => {
-    const getData = await axios.get(
+    const getData = await httpClient.get(
       `http://localhost:3060/board/mine/${userId}?page=${pageParam}`
     );
 
@@ -94,7 +93,7 @@ export default function BoardMine() {
 
   const removeMyBoardData = async () => {
     try {
-      await axios.delete("http://localhost:3060/board/mine", {
+      await httpClient.delete("http://localhost:3060/board/mine", {
         data: { removeBoardIdArr: removeBoardIdArr },
       });
       setRemoveMode((current) => !current);
@@ -108,7 +107,7 @@ export default function BoardMine() {
     onSuccess: () => {
       queryClient.setQueryData("myBoardData", (prev) => {
         let prevBoardData = prev.pages;
-        console.log(prevBoardData, removeBoardIdArr);
+
         const newData = prevBoardData.map((arr) => {
           if (arr === undefined) {
             return [];

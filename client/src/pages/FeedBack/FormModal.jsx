@@ -2,6 +2,7 @@ import axios from "axios";
 import { useState } from "react";
 import { useQueryClient } from "react-query";
 import styled from "styled-components";
+import { httpClient } from "../../api/http";
 
 const ModalBackground = styled.div`
   position: fixed;
@@ -77,7 +78,7 @@ export default function FormModal({ closeModal, scheduleData }) {
   };
 
   const insertPlayerData = async () => {
-    axios.post("http://localhost:3060/player", {
+    httpClient.post("http://localhost:3060/player", {
       playerNames: playerNames,
       schedule_id: scheduleData.id,
     });
