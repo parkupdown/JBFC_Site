@@ -1,12 +1,16 @@
 import { useContext } from "react";
 import styled from "styled-components";
 import { ThemeContext } from "../../context/themeContext";
-import { ToggleSwitch } from "./ToggleSwitch";
+import { ToggleSwitch } from "../header/ToggleSwitch";
+import { Auth } from "../header/Auth";
+import { useNavigate } from "react-router-dom";
+import { GoBack } from "../header/Goback";
 
 export default function Header() {
   return (
     <HeaderStyled>
-      <h1>짝발란스</h1>
+      <GoBack />
+      <Auth />
       <ToggleSwitch />
     </HeaderStyled>
   );
