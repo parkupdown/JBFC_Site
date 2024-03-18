@@ -9,5 +9,9 @@ body{
 h1{
     margin: 0;
 }
-
+*{
+    color: ${(props) => (props.themeName === "light" ? "black" : "white")};
+    background-color: ${(props) =>
+      props.themeName === "light" ? "white" : "grey"};
+}
 `;
