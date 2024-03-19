@@ -1,41 +1,14 @@
-import axios from "axios";
-import { useEffect } from "react";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
-import { useNavigate } from "react-router-dom";
 import { httpClient } from "../../api/http";
+import { getNickName } from "../../store/nickNameStore";
+import { goBoard } from "../../utils/pageMove";
+import { useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
 
 export default function BoardWrite() {
-  const [userId, setUserId] = useState(null);
-  const navigate = useNavigate();
-
-  const goLogin = () => {
-    navigate("/login");
-  };
-  const checkAuthorization = async () => {
-    try {
-      let { data } = await httpClient.get("http://localhost:3060/token", {
-        withCredentials: true,
-      });
-      data = data.userId;
-      setUserId(data);
-    } catch (error) {
-      throw new Error("세션이 만료되었습니다.");
-    }
-  };
-
-  useEffect(() => {
-    const checkUserSession = async () => {
-      try {
-        await checkAuthorization();
-      } catch (error) {
-        alert(error);
-        goLogin();
-      }
-    };
-    checkUserSession();
-  }, []);
-
+  const nickName = getNickName();
+  const navigator = useNavigate();
   let [imageFile, setImageFile] = useState(null);
   let [thumbnail, setThumbnail] = useState(null);
 
@@ -64,6 +37,7 @@ export default function BoardWrite() {
     const response = await httpClient.post("/board", formData, {
       headers: { "Content-Type": "multipart/form-data", charset: "utf-8" },
     });
+    console.log(response);
     return response.data;
   };
 
@@ -100,36 +74,55 @@ export default function BoardWrite() {
   });
   // 근데 이렇게 하면 제출하고 나서 캐싱 데이터가 완전히 수정됨
 
-  const handleApi = async (e) => {
-    e.preventDefault();
-    let [title, content] = e.target.parentElement;
-    title = title.value;
-    content = content.value;
-    let formData = new FormData();
-    formData.append("image", imageFile);
-    formData.append("userId", userId);
-    formData.append("title", title);
-    formData.append("content", content);
-    formData.append("time", getPublishedTime());
-
-    mutaion.mutate(formData);
-    navigate("/board");
-  };
-
   const deleteThumbnail = () => {
     setThumbnail(null);
     setImageFile(null);
   };
 
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  const onSubmit = (data) => {
+    const { title, content } = data;
+    let formData = new FormData();
+    formData.append("image", imageFile);
+    formData.append("nickname", nickName);
+    formData.append("title", title);
+    formData.append("content", content);
+    formData.append("time", getPublishedTime());
+    mutaion.mutate(formData);
+    navigator("/board");
+  };
+  console.log(errors);
   return (
     <div>
-      <h3>작성페이지</h3>
-      <h3 onClick={() => navigate(-1)}>뒤로가기</h3>
       <form>
-        <input type="text" placeholder="제목" />
+        <input
+          type="text"
+          placeholder="제목"
+          {...register("title", {
+            maxLength: { value: 10, message: "제목은 10글자까지 가능합니다." },
+            required: "제목을 입력해주세요.",
+          })}
+        />
+        <p>{errors.title && errors.title.message}</p>
         <p>
-          <textarea cols="40" rows="10"></textarea>
+          <textarea
+            cols="40"
+            rows="10"
+            {...register("content", {
+              maxLength: {
+                value: 200,
+                message: "최대 200글자 입력 가능합니다.",
+              },
+              required: "본문 내용을 입력해주세요.",
+            })}
+          ></textarea>
         </p>
+        <p>{errors.content && errors.content.message}</p>
         {thumbnail === null ? null : (
           <img style={{ width: "20%" }} src={thumbnail}></img>
         )}
@@ -137,7 +130,7 @@ export default function BoardWrite() {
         <button type="button" onClick={deleteThumbnail}>
           파일삭제
         </button>
-        <button onClick={(e) => handleApi(e)}>제출</button>
+        <button onClick={handleSubmit(onSubmit)}>제출</button>
       </form>
     </div>
   );
