@@ -5,6 +5,7 @@ import { getNickName } from "../../store/nickNameStore";
 import { goBoard } from "../../utils/pageMove";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import styled from "styled-components";
 
 export default function BoardWrite() {
   const nickName = getNickName();
@@ -96,11 +97,11 @@ export default function BoardWrite() {
     mutaion.mutate(formData);
     navigator("/board");
   };
-  console.log(errors);
+
   return (
-    <div>
-      <form>
-        <input
+    <Container>
+      <Form>
+        <Input
           type="text"
           placeholder="제목"
           {...register("title", {
@@ -108,30 +109,89 @@ export default function BoardWrite() {
             required: "제목을 입력해주세요.",
           })}
         />
-        <p>{errors.title && errors.title.message}</p>
-        <p>
-          <textarea
-            cols="40"
-            rows="10"
-            {...register("content", {
-              maxLength: {
-                value: 200,
-                message: "최대 200글자 입력 가능합니다.",
-              },
-              required: "본문 내용을 입력해주세요.",
-            })}
-          ></textarea>
-        </p>
-        <p>{errors.content && errors.content.message}</p>
-        {thumbnail === null ? null : (
-          <img style={{ width: "20%" }} src={thumbnail}></img>
-        )}
-        <input onChange={(e) => handleChange(e)} type="file" accept="image/*" />
-        <button type="button" onClick={deleteThumbnail}>
+        <ErrorMessage>{errors.title && errors.title.message}</ErrorMessage>
+
+        <Textarea
+          cols="40"
+          rows="10"
+          {...register("content", {
+            maxLength: {
+              value: 200,
+              message: "최대 200글자 입력 가능합니다.",
+            },
+            required: "본문 내용을 입력해주세요.",
+          })}
+        ></Textarea>
+        <ErrorMessage>{errors.content && errors.content.message}</ErrorMessage>
+
+        {thumbnail === null ? null : <Image src={thumbnail} />}
+        <FileInput
+          onChange={(e) => handleChange(e)}
+          type="file"
+          accept="image/*"
+        />
+        <Button type="button" onClick={deleteThumbnail}>
           파일삭제
-        </button>
-        <button onClick={handleSubmit(onSubmit)}>제출</button>
-      </form>
-    </div>
+        </Button>
+        <Button className="upload" onClick={handleSubmit(onSubmit)}>
+          등록
+        </Button>
+      </Form>
+    </Container>
   );
 }
+
+const Container = styled.div`
+  padding: 20px;
+`;
+
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const Input = styled.input`
+  margin-bottom: 10px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 50%;
+  height: 7vh;
+  border-radius: 10px;
+`;
+
+const Textarea = styled.textarea`
+  margin-bottom: 10px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  width: 100%;
+  height: 40vh;
+`;
+
+const ErrorMessage = styled.p`
+  color: red;
+`;
+
+const Image = styled.img`
+  width: 30%;
+`;
+
+const FileInput = styled.input`
+  margin-bottom: 10px;
+`;
+
+const Button = styled.button`
+  padding: 10px 20px;
+  background-color: #0056b3;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 20px;
+  &:hover {
+    background-color: #0056b3;
+  }
+`;

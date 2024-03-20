@@ -7,6 +7,8 @@ import { useLocation } from "react-router-dom";
 import { useState } from "react";
 import { useQueryClient } from "react-query";
 import { httpClient } from "../../api/http";
+import { getNickName } from "../../store/nickNameStore";
+
 const Container = styled.div`
   width: 100vw;
 `;
@@ -36,7 +38,7 @@ const BoardContainer = styled.div`
 `;
 
 export default function BoardMine() {
-  const { userId } = useLocation().state;
+  const nickName = getNickName();
   const ref = useRef(null);
   const navigator = useNavigate();
   const [removeMode, setRemoveMode] = useState(false);
@@ -56,7 +58,7 @@ export default function BoardMine() {
 
   const getMyBoardData = async ({ pageParam = 0 }) => {
     const getData = await httpClient.get(
-      `/board/mine/${userId}?page=${pageParam}`
+      `/board/mine/${nickName}?page=${pageParam}`
     );
 
     if (getData.data === false) {
@@ -138,8 +140,6 @@ export default function BoardMine() {
 
   return (
     <Container>
-      <h1>내가 작성한 게시글</h1>
-      <h3 onClick={() => navigator(-1)}>뒤로가기</h3>
       <div onClick={() => setRemoveMode((current) => !current)}>
         {removeMode ? <h3>삭제 취소</h3> : <h3>게시글 삭제</h3>}
       </div>
