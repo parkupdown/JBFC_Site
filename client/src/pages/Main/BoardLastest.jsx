@@ -1,44 +1,26 @@
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { Content } from "../Board/BoardCase";
 
 export function BoardLastest({ boardData }) {
-  const navigate = useNavigate();
-  const nickName = localStorage.getItem("nickname");
   return (
-    <BoardContainer>
+    <div>
       {boardData === undefined ? (
         <h3>최근게시글이존재하지 않습니다</h3>
       ) : (
-        <div onClick={() => navigate(`/board/detail/${boardData.id}`)}>
-          <h3>최근 게시글</h3>
-          <div className="contents">
-            <div>
-              {boardData.thumbnail === null ? (
-                <ImgBox>
-                  <img src="http://localhost:3060/image/thumbnail.jpeg" />
-                </ImgBox>
-              ) : (
-                <ImgBox>
-                  <img
-                    src={`http://localhost:3060/image/${boardData.thumbnail}`}
-                  />
-                </ImgBox>
-              )}
-            </div>
-            <div>
-              <span>Title: {boardData.title}</span>
-              <span>{boardData.content.substr(0, 10)}</span>
-              <span>{nickName}</span>
-            </div>
-          </div>
-        </div>
+        <>
+          <Content boardData={boardData} />
+        </>
       )}
-    </BoardContainer>
+    </div>
   );
 }
 
+/*
 const BoardContainer = styled.div`
-  width: 100vw;
+  height: 30vh;
+
+  // 반응형으로 몇이상이면 25로
   padding: 20px;
   border-radius: 20px;
   .contents {
@@ -47,6 +29,10 @@ const BoardContainer = styled.div`
   }
   img {
     width: 100%;
+      width: 25vw;
+  @media (max-width: 768px) {
+    width: 100vw;
+  }
     height: 100%;
     object-fit: contain;
     border-radius: 10px;
@@ -60,4 +46,4 @@ const ImgBox = styled.div`
     object-fit: contain;
     border-radius: 14px;
   }
-`;
+`; */

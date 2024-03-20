@@ -23,34 +23,46 @@ const newsArr = [
 
 export function SportsNews() {
   return (
-    <SwipterContainer>
-      <h3>News!</h3>
-      <Swiper
-        spaceBetween={50}
-        slidesPerView={1}
-        loop={true}
-        modules={[Navigation]}
-        navigation
-      >
-        {newsArr.map((news, key) => (
-          <SwiperSlide key={key}>
-            <a href={news.url}>
-              <img src={news.imgUrl} />
-            </a>
-          </SwiperSlide>
-        ))}
-      </Swiper>
-    </SwipterContainer>
+    <>
+      <CategoryTitle>News</CategoryTitle>
+      <SwipterContainer>
+        <Swiper
+          spaceBetween={50}
+          slidesPerView={1}
+          loop={true}
+          modules={[Navigation]}
+          navigation
+        >
+          {newsArr.map((news, key) => (
+            <SwiperSlide key={key}>
+              <a href={news.url} target="blank">
+                <img src={news.imgUrl} />
+              </a>
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      </SwipterContainer>
+    </>
   );
 }
+
+const CategoryTitle = styled.h4`
+  margin-left: 20px;
+`;
+
 const SwipterContainer = styled.div`
+  width: 100%;
   margin-top: 30px;
   padding: 20px;
-  text-align: center;
+  .swiper {
+    width: 50%;
+    @media (max-width: 860px) {
+      width: 100%;
+    }
+  }
   img {
     border-radius: 10px;
     width: 100%;
-    height: 100%;
     object-fit: cover;
   }
 `;
