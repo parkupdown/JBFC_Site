@@ -6,51 +6,15 @@ import styled from "styled-components";
 import { httpClient } from "../../api/http";
 import { Link } from "react-router-dom";
 import { Content } from "./BoardCase";
+import { useBoardInfinite } from "../../hooks/useBoardInfinite";
+import { fetchAllBoard } from "../../api/board.api";
 
 export default function Board() {
-  const navigator = useNavigate();
   const ref = useRef(null);
   // id가 아닌 nickname으로 불러오자
 
-  const getBoardData = async ({ pageParam = 0 }) => {
-    const board = await httpClient.get(`/board?page=${pageParam}`);
-    if (board.data === false) {
-      return;
-    }
-    return board.data;
-  };
-
   //const { isLoading, data } = useQuery("boardData", getBoardData);
-
-  let { data, isLoading, fetchNextPage, hasNextPage } = useInfiniteQuery({
-    queryKey: "boardData",
-    queryFn: getBoardData,
-    getNextPageParam: (lastPage, allpages) => {
-      const nextPage = allpages.length;
-
-      if (lastPage === undefined) {
-        return undefined; // 캐시된 데이터가 없을 때는 더 이상 요청하지 않음
-      }
-      return nextPage;
-    },
-  });
-
-  useEffect(() => {
-    const observer = new IntersectionObserver((e) => {
-      if (e[0].isIntersecting) {
-        fetchNextPage();
-      }
-    });
-    if (ref.current) {
-      observer.observe(ref.current);
-    }
-    if (!hasNextPage) {
-      observer.disconnect();
-    } // 만약 다음 페이지가 없다면 옵저버 제거
-    return () => observer.disconnect();
-  }, [hasNextPage]);
-
-  !isLoading && console.log(data.pages);
+  const { data, isLoading } = useBoardInfinite(ref, "boardData", fetchAllBoard);
 
   return (
     <Container>
