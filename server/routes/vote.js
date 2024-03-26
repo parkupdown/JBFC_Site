@@ -6,10 +6,7 @@ const {
 } = require("../contoller/VoteController");
 const router = express.Router();
 
-router
-  .route("/vote:schedule_id")
-  .get(getVoteUserData)
-  .delete(deleteVoteUserData);
-router.route("/vote").post(insertVoteUserData);
+router.route("/:schedule_id").get(getVoteUserData);
+router.route("/").post(insertVoteUserData).delete(deleteVoteUserData);
 
 module.exports = router;
