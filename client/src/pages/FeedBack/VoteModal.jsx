@@ -1,55 +1,86 @@
-import axios from "axios";
-import { useQuery } from "react-query";
-import FormModal from "./FormModal";
+import { useForm } from "react-hook-form";
 import styled from "styled-components";
+import "bootstrap/dist/css/bootstrap.min.css";
+import { getNickName } from "../../store/nickNameStore";
 import { httpClient } from "../../api/http";
+import { QueryClient, useQueryClient } from "react-query";
+import { useNavigate } from "react-router-dom";
 
-// 일단 여기로 들어와서 만약 아직 생성된 투표가 없다면 ? 으로가는걸로
-// eslint-disable-next-line react/prop-types
-export default function VoteModal({ scheduleData, closeModal }) {
-  //캐싱해서 가져오기
+export default function VoteModal({ closeModal, playerData, scheduleId }) {
+  const nickName = getNickName();
 
-  // 여기서 해당 schedule에 대한 데이터를 가져와서 만약 없다면?
-  // 없습니다. 피드백 창을 만들기
-  // 있다면? 바로 결과를 보여주기
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
 
-  const getPlayerData = async () => {
-    const getData = await httpClient.get(`/player/${scheduleData.id}`);
-    return getData.data;
+  const scoreArr = Array.from({ length: 6 }, (_, i) => i * 2);
+
+  const insertVoteData = async (voteResult) => {
+    await httpClient.post(`/vote`, {
+      schedule_id: scheduleId,
+      nickName: nickName,
+      voteResult: voteResult,
+    });
+  };
+  // 투표넣었음
+  // 이제 점수더하기
+
+  const updateVoteScore = async (voteResult) => {
+    await httpClient.put("/player", {
+      schedule_id: scheduleId,
+      voteResult: voteResult,
+    });
   };
 
-  const { isLoading, data } = useQuery(`${scheduleData.id}`, getPlayerData);
+  const onSubmit = async (voteResult) => {
+    console.log(voteResult);
+    await insertVoteData(voteResult);
+    await updateVoteScore(voteResult);
+    closeModal();
+  };
 
-  // 그럼 여기서 이제 인원에 대한 투표를 넣어줘야함
+  // 여기서 Player table에 점수부분에 더하고
+  // vote에 투표했음을 표시
+
   return (
     <div>
-      {isLoading ? (
-        <h3>로딩중입니다.</h3>
-      ) : data.length === 0 ? (
-        <FormModal
-          scheduleData={scheduleData}
-          closeModal={closeModal}
-        ></FormModal>
-      ) : (
-        <div>
-          <h1>투표창</h1>
-          <ModalBackground>
-            <ModalContent>
-              <CancelButton onClick={closeModal}>취소</CancelButton>
-              {data.map((player, index) => (
-                <InputContainer key={player.id}>
-                  <InputLabel>player {player.player}</InputLabel>
-                  <InputField type="range" min="0" max="10" />
-                </InputContainer>
-              ))}
-              <Button>제출</Button>
-            </ModalContent>
-          </ModalBackground>
-        </div>
-      )}
+      <form onSubmit={handleSubmit(onSubmit)}>
+        {playerData &&
+          playerData.map((player, playerIndex) => (
+            <div key={playerIndex} className="scoreBox mb-3">
+              <span>{player.player}</span>
+              <div className="d-flex">
+                {scoreArr.map((score, scoreIndex) => (
+                  <div
+                    className="form-check form-check-inline"
+                    key={scoreIndex}
+                  >
+                    <input
+                      className="form-check-input"
+                      type="radio"
+                      {...register(player.player, {
+                        required: true,
+                      })}
+                      value={score}
+                    />
+                    <label className="form-check-label">{score}</label>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        <Button type="submit">제출</Button>
+      </form>
+      <p>
+        모든 선수의 점수를 체크해주세요. 중복으로 입력된 선수가 있을 수
+        있습니다.
+      </p>
     </div>
   );
 }
+
 const ModalBackground = styled.div`
   position: fixed;
   top: 0;
@@ -65,10 +96,25 @@ const ModalBackground = styled.div`
 const ModalContent = styled.div`
   height: 60vh;
   background-color: white;
-  padding: 60px;
+  padding: 40px;
   border-radius: 5px;
   position: relative;
   overflow-y: scroll;
+
+  h6 {
+    margin: 20px 0;
+    width: 100%;
+    text-align: center;
+    opacity: 0.3;
+  }
+
+  .scoreBox {
+    display: flex;
+    flex-direction: column;
+  }
+  .innerScoreBox {
+    background-color: aliceblue;
+  }
 `;
 
 const InputContainer = styled.div`
