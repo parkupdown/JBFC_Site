@@ -9,29 +9,19 @@ const insertSchedule = (req, res) => {
     return;
   }
 
-  let { month, day, ground, time, num_of_player, type_of_match, price } =
-    req.body;
+  let { month, day, ground, time, playType, playerOfNum, price } = req.body;
+
   const sql =
     "INSERT INTO schedule (month, day, ground,time, num_of_player, type_of_match, price) VALUE (?,?,?, ?,?,?,?)";
-  const value = [month, day, ground, time, num_of_player, type_of_match, price];
+  const value = [month, day, ground, time, playerOfNum, playType, price];
 
   conn.query(sql, value, function (err, result) {
     if (err) {
       res.status(StatusCodes.BAD_REQUEST).end();
       return;
     }
-    const newData = {
-      id: result.insertId,
-      month: month,
-      day: day,
-      ground: ground,
-      time: time,
-      num_of_player: num_of_player,
-      type_of_match: type_of_match,
-      price: price,
-    };
 
-    res.status(StatusCodes.CREATED).json(newData);
+    res.status(StatusCodes.CREATED).end();
     return;
   });
 };
@@ -40,11 +30,11 @@ const updateSchedule = (req, res) => {
     return;
   }
 
-  let { month, day, ground, time, num_of_player, type_of_match, price } =
-    req.body;
+  let { month, day, ground, time, playType, playerOfNum, price } = req.body;
+  req.body;
   const sql =
     "UPDATE schedule SET ground =? , time = ?, num_of_player=?,type_of_match= ?,price=? WHERE month=? AND day=?;";
-  const value = [ground, time, num_of_player, type_of_match, price, month, day];
+  const value = [ground, time, playerOfNum, playType, price, month, day];
 
   conn.query(sql, value, function (err, result) {
     if (err) {
@@ -104,10 +94,10 @@ const getScheduleDetail = (req, res) => {
     return;
   }
 
-  const { day, month } = req.query;
+  const { month, day } = req.query;
 
   const sql = "SELECT * FROM schedule WHERE month = ? AND day = ? ";
-  const value = [day, month];
+  const value = [month, day];
   conn.query(sql, value, function (err, result) {
     if (err) {
       res.status(StatusCodes.BAD_GATEWAY).end();
