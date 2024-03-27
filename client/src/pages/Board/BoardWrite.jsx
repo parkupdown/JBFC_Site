@@ -1,41 +1,15 @@
-import axios from "axios";
-import { useEffect } from "react";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
-import { useNavigate } from "react-router-dom";
 import { httpClient } from "../../api/http";
+import { getNickName } from "../../store/nickNameStore";
+import { goBoard } from "../../utils/pageMove";
+import { useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import styled from "styled-components";
 
 export default function BoardWrite() {
-  const [userId, setUserId] = useState(null);
-  const navigate = useNavigate();
-
-  const goLogin = () => {
-    navigate("/login");
-  };
-  const checkAuthorization = async () => {
-    try {
-      let { data } = await httpClient.get("http://localhost:3060/token", {
-        withCredentials: true,
-      });
-      data = data.userId;
-      setUserId(data);
-    } catch (error) {
-      throw new Error("세션이 만료되었습니다.");
-    }
-  };
-
-  useEffect(() => {
-    const checkUserSession = async () => {
-      try {
-        await checkAuthorization();
-      } catch (error) {
-        alert(error);
-        goLogin();
-      }
-    };
-    checkUserSession();
-  }, []);
-
+  const nickName = getNickName();
+  const navigator = useNavigate();
   let [imageFile, setImageFile] = useState(null);
   let [thumbnail, setThumbnail] = useState(null);
 
@@ -64,6 +38,7 @@ export default function BoardWrite() {
     const response = await httpClient.post("/board", formData, {
       headers: { "Content-Type": "multipart/form-data", charset: "utf-8" },
     });
+    console.log(response);
     return response.data;
   };
 
@@ -100,45 +75,123 @@ export default function BoardWrite() {
   });
   // 근데 이렇게 하면 제출하고 나서 캐싱 데이터가 완전히 수정됨
 
-  const handleApi = async (e) => {
-    e.preventDefault();
-    let [title, content] = e.target.parentElement;
-    title = title.value;
-    content = content.value;
-    let formData = new FormData();
-    formData.append("image", imageFile);
-    formData.append("userId", userId);
-    formData.append("title", title);
-    formData.append("content", content);
-    formData.append("time", getPublishedTime());
-
-    mutaion.mutate(formData);
-    navigate("/board");
-  };
-
   const deleteThumbnail = () => {
     setThumbnail(null);
     setImageFile(null);
   };
 
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  const onSubmit = (data) => {
+    const { title, content } = data;
+    let formData = new FormData();
+    formData.append("image", imageFile);
+    formData.append("nickname", nickName);
+    formData.append("title", title);
+    formData.append("content", content);
+    formData.append("time", getPublishedTime());
+    mutaion.mutate(formData);
+    navigator("/board");
+  };
+
   return (
-    <div>
-      <h3>작성페이지</h3>
-      <h3 onClick={() => navigate(-1)}>뒤로가기</h3>
-      <form>
-        <input type="text" placeholder="제목" />
-        <p>
-          <textarea cols="40" rows="10"></textarea>
-        </p>
-        {thumbnail === null ? null : (
-          <img style={{ width: "20%" }} src={thumbnail}></img>
-        )}
-        <input onChange={(e) => handleChange(e)} type="file" accept="image/*" />
-        <button type="button" onClick={deleteThumbnail}>
+    <Container>
+      <Form>
+        <Input
+          type="text"
+          placeholder="제목"
+          {...register("title", {
+            maxLength: { value: 10, message: "제목은 10글자까지 가능합니다." },
+            required: "제목을 입력해주세요.",
+          })}
+        />
+        <ErrorMessage>{errors.title && errors.title.message}</ErrorMessage>
+
+        <Textarea
+          cols="40"
+          rows="10"
+          {...register("content", {
+            maxLength: {
+              value: 200,
+              message: "최대 200글자 입력 가능합니다.",
+            },
+            required: "본문 내용을 입력해주세요.",
+          })}
+        ></Textarea>
+        <ErrorMessage>{errors.content && errors.content.message}</ErrorMessage>
+
+        {thumbnail === null ? null : <Image src={thumbnail} />}
+        <FileInput
+          onChange={(e) => handleChange(e)}
+          type="file"
+          accept="image/*"
+        />
+        <Button type="button" onClick={deleteThumbnail}>
           파일삭제
-        </button>
-        <button onClick={(e) => handleApi(e)}>제출</button>
-      </form>
-    </div>
+        </Button>
+        <Button className="upload" onClick={handleSubmit(onSubmit)}>
+          등록
+        </Button>
+      </Form>
+    </Container>
   );
 }
+
+const Container = styled.div`
+  padding: 20px;
+`;
+
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const Input = styled.input`
+  margin-bottom: 10px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 50%;
+  height: 7vh;
+  border-radius: 10px;
+`;
+
+const Textarea = styled.textarea`
+  margin-bottom: 10px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  width: 100%;
+  height: 40vh;
+`;
+
+const ErrorMessage = styled.p`
+  color: red;
+`;
+
+const Image = styled.img`
+  width: 30%;
+`;
+
+const FileInput = styled.input`
+  margin-bottom: 10px;
+`;
+
+const Button = styled.button`
+  padding: 10px 20px;
+  background-color: #0056b3;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 20px;
+  &:hover {
+    background-color: #0056b3;
+  }
+`;

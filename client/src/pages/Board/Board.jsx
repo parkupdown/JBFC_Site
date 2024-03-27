@@ -1,164 +1,95 @@
-import { useState } from "react";
 import { useRef } from "react";
 import { useEffect } from "react";
 import { useInfiniteQuery } from "react-query";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { CheckAuthorization } from "../../CheckAuthorization/CheckAuthorization";
 import { httpClient } from "../../api/http";
-
-const Container = styled.div`
-  width: 100vw;
-`;
-const BoardContainerWrrap = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  justify-content: space-evenly;
-`;
-
-const BoardContainer = styled.div`
-  width: 25vw;
-  height: 25vh;
-  background-color: aliceblue;
-  padding: 20px;
-  border: 1px dotted black;
-  border-radius: 20px;
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-  }
-  span {
-    font-size: 16px;
-  }
-`;
+import { Link } from "react-router-dom";
+import { Content } from "./BoardCase";
+import { useBoardInfinite } from "../../hooks/useBoardInfinite";
+import { fetchAllBoard } from "../../api/board.api";
 
 export default function Board() {
   const ref = useRef(null);
-  const [userId, setUserId] = useState(null);
-  //여기서 한번 불러와보자
-  const navigate = useNavigate();
-  const goLogin = () => {
-    navigate("/login");
-  };
-
-  const getBoardData = async ({ pageParam = 0 }) => {
-    const board = await httpClient.get(`/board?page=${pageParam}`);
-    if (board.data === false) {
-      return;
-    }
-    // 만약 서버에서 데이터가 없다면 False를 보내주기로 하였다.
-    // False인 경우에 더이상 Data를 update하지 않는다.
-
-    return board.data;
-  };
+  // id가 아닌 nickname으로 불러오자
 
   //const { isLoading, data } = useQuery("boardData", getBoardData);
-
-  let { data, isLoading, fetchNextPage, hasNextPage } = useInfiniteQuery({
-    queryKey: "boardData",
-    queryFn: getBoardData,
-    getNextPageParam: (lastPage, allpages) => {
-      //언제 undefined하느냐가 관건
-      const nextPage = allpages.length;
-
-      if (lastPage === undefined) {
-        return undefined; // 캐시된 데이터가 없을 때는 더 이상 요청하지 않음
-      }
-      //lastPage가 Undefined면 더이상 다음 페이지를 불러오지 않는다.
-      return nextPage;
-    },
-  });
-
-  useEffect(() => {
-    const observer = new IntersectionObserver((e) => {
-      if (e[0].isIntersecting) {
-        fetchNextPage();
-      }
-    });
-    if (ref.current) {
-      observer.observe(ref.current);
-    }
-    if (!hasNextPage) {
-      observer.disconnect();
-    } // 만약 다음 페이지가 없다면 옵저버 제거
-    return () => observer.disconnect();
-  }, [hasNextPage]);
-
-  useEffect(() => {
-    const checkUserSession = async () => {
-      try {
-        const userId = await CheckAuthorization();
-        setUserId(userId);
-      } catch (error) {
-        alert(error);
-        goLogin();
-      }
-    };
-    checkUserSession();
-  }, []);
+  const { data, isLoading } = useBoardInfinite(ref, "boardData", fetchAllBoard);
 
   return (
     <Container>
-      <h1>게시판</h1>
-      <h2 onClick={() => navigate("/")}>뒤로가기</h2>
-      <h2 onClick={() => navigate(`/board/write`, { state: { userId } })}>
-        게시글 작성
-      </h2>
-      {userId === null ? null : (
-        <h2
-          onClick={() => navigate(`/board/mine`, { state: { userId: userId } })}
-        >
-          내가 작성한 게시글
-        </h2>
-      )}
+      <div className="navigation">
+        <Link to={`/board/write`}>
+          <span>게시글 작성</span>
+        </Link>
+        <Link to={`/board/mine`}>
+          <span>내가 작성한 게시글</span>
+        </Link>
+      </div>
 
-      <BoardContainerWrrap>
-        {isLoading ? (
-          <div>로딩중</div>
-        ) : (
-          data.pages.map((page) => {
-            return page === undefined
-              ? null
-              : page.map((data, key) => (
-                  <BoardContainer
-                    onClick={() => navigate(`/board/detail/${data.id}`)}
-                    id={data.id}
-                    key={key}
-                  >
-                    {data.thumbnail !== null ? (
-                      <img
-                        src={`http://localhost:3060/image/${data.thumbnail}`}
-                      />
-                    ) : (
-                      <img src="http://localhost:3060/image/thumbnail.jpeg" />
-                    )}
-                    <span>{data.title}</span>
-                  </BoardContainer>
-                ));
-          })
-        )}
-      </BoardContainerWrrap>
+      <BoardContainer>
+        {!isLoading &&
+          data.pages &&
+          data.pages.map(
+            (page) =>
+              page &&
+              page.map((boardData) => (
+                <Content boardData={boardData} key={boardData.id} />
+              ))
+          )}
+      </BoardContainer>
       <div ref={ref}></div>
     </Container>
   );
 }
+const Container = styled.div`
+  width: 100vw;
+  a {
+    text-decoration: none;
+    text-decoration-line: none;
+    color: black;
+    padding: 10px;
+    background-color: #f8f8f8;
+    border-radius: 20px;
+    font-size: 14px;
+    border: 0.5px solid white;
+  }
+  .navigation {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+  }
+`;
+const BoardContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+`;
+/**
+ * 
+ *    <BoardContainerWrrap>
+        {!isLoading &&
+          data.pages &&
+          data.pages.map((page) =>
+            page.map((boardData) => (
+              <Content boardData={boardData} key={boardData.id} />
+            ))
+          )}
+      </BoardContainerWrrap>
+ */
+
 /*
-     {isLoading ? (
-          <div>로딩중</div>
-        ) : (
-          data.map((data_, key) => (
-            <Link key={key} to={"/board/detail"} state={{ boardId: data_.id }}>
-              <BoardContainer id={data_.id}>
-                {data_.thumbnail !== null ? (
-                  <img src={`http://localhost:3060/image/${data_.thumbnail}`} />
-                ) : (
-                  <img src="http://localhost:3060/image/thumbnail.jpeg"></img>
-                )}
-                <span>{data_.title}</span>
-              </BoardContainer>
-            </Link>
-          ))
-        )} */
+      `/board?page=${pageParam}`(전체)
+      `/board/detail/${boardId}`(디테일)
+      `/board/mine/${nickName}?page=${pageParam}`(내꺼)
+      `/board/lastest(가장 최근)
+      
+   // 각각에 따라 다른 Fetch값을 Return 하는 Fetch 함수만 만들어도 간단해질듯
+
+       /board?page
+       /board?detailId
+       /board?mine
+       /board?lastest
+
+      */

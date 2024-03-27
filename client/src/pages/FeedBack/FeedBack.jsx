@@ -1,10 +1,9 @@
-import axios from "axios";
 import { useState } from "react";
 import { useQuery } from "react-query";
-import { useNavigate } from "react-router-dom";
-import FormModal from "./FormModal";
-import VoteModal from "./VoteModal";
+
 import { httpClient } from "../../api/http";
+import FeedBackModal from "./FeedBackModal";
+import { useEffect } from "react";
 
 export default function FeedBack() {
   // 여기서 이번달 경기일정을 받아와서
@@ -13,10 +12,6 @@ export default function FeedBack() {
   const [month, setMonth] = useState(new Date().getMonth() + 1);
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [scheduleData, setScheduleData] = useState([]);
-  const navigator = useNavigate();
-  const goBack = () => {
-    navigator(-1);
-  };
 
   const goNextMonth = () => {
     setMonth((current) => {
@@ -44,15 +39,11 @@ export default function FeedBack() {
   };
 
   const { isLoading, data } = useQuery(`${month}월`, getScheduleData);
-  // 만약 클릭했는데 해당 Day에 대한 feed back이 없다면 ?바로 만들기로
-  // feedBack이 있으면 해당 FeedBack modal로
-  // 참여인원만큼 Input을 넣어주면되겠다.
-  // 참여인원에 대한 DB를 따로?
-  // 날짜에 대한 참여인원을 데이터를 따로  => 피드백 폼을 만들 때
 
   const closeModal = () => {
     setIsOpenModal(false);
   };
+
   const openModal = () => {
     setIsOpenModal(true);
   };
@@ -64,26 +55,25 @@ export default function FeedBack() {
     } else {
       getScheduleId = parseInt(e.target.parentElement.id);
     }
-
     setScheduleData(data[getScheduleId]);
-    // id를 가져와서 해당 index로 접근가능하지않나?
     openModal();
   };
   // 여기서 캐싱해와야함 ?
+
   return (
     <>
       {isLoading ? (
         <h3>로딩중</h3>
       ) : (
         <div>
-          <h1>피드백</h1>
-          <h2 onClick={goBack}>뒤로가기</h2>
           {isOpenModal ? (
             <div>
-              <VoteModal
+              <FeedBackModal
                 closeModal={closeModal}
-                scheduleData={scheduleData}
-              ></VoteModal>
+                scheduleId={scheduleData.id}
+                playerNum={scheduleData.num_of_player}
+                isOpenModal={isOpenModal}
+              ></FeedBackModal>
             </div>
           ) : null}
           <div>

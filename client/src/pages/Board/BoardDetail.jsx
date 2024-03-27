@@ -1,56 +1,13 @@
-import axios from "axios";
 import { useState } from "react";
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import Comment from "../Comment/Comment";
 import { httpClient } from "../../api/http";
 
-const Container = styled.div`
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;
-
-const BoardDetailContainer = styled.div`
-  width: 50vw;
-  height: 30vh;
-  padding: 20px;
-  border-radius: 10px;
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-  }
-`;
-
 export default function BoardDetail() {
   const { boardId } = useParams();
   const [boardDetailData, setBoardDetailData] = useState([]);
-  const [userId, setUserId] = useState(null);
-  const navigate = useNavigate();
-  const goLogin = () => {
-    navigate("/login");
-  };
-  const goBack = () => {
-    navigate(-1);
-  };
-  const checkAuthorization = async () => {
-    try {
-      const userInfo = await httpClient.get("/token", {
-        withCredentials: true,
-      });
-      const getUserId = userInfo.data.userId;
-      setUserId(getUserId);
-    } catch (error) {
-      throw new Error("세션이 만료되었습니다.");
-    }
-  };
-
   const getBoardDetailData = async () => {
     const data = await httpClient.get(`/board/detail/${boardId}`);
     const boardData = data.data[0];
@@ -58,15 +15,6 @@ export default function BoardDetail() {
   };
 
   useEffect(() => {
-    const checkUserSession = async () => {
-      try {
-        await checkAuthorization();
-      } catch (error) {
-        alert(error);
-        goLogin();
-      }
-    };
-    checkUserSession();
     getBoardDetailData();
   }, []);
 
@@ -78,7 +26,7 @@ export default function BoardDetail() {
   return (
     <Container>
       <BoardDetailContainer>
-        {boardDetailData.thumbnail === null ? null : (
+        {boardDetailData.thumbnail && (
           <img
             src={`http://localhost:3060/image/${boardDetailData.thumbnail}`}
           />
@@ -88,10 +36,37 @@ export default function BoardDetail() {
       <p>{boardDetailData.content}</p>
 
       <span>
-        작성자{boardDetailData.user_id} -{boardDetailData.time}
+        작성자{boardDetailData.nickname} -{boardDetailData.time}
       </span>
-      <Comment boardId={boardId} writer={userId} />
-      <button onClick={goBack}>뒤로가기</button>
+      <Comment boardId={boardId} writer={boardDetailData.nickname} />
     </Container>
   );
 }
+
+const Container = styled.div`
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const BoardDetailContainer = styled.div`
+  width: 30vw;
+
+  @media (max-width: 860px) {
+    width: 50vw;
+  }
+  height: 30vh;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+`;

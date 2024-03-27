@@ -6,8 +6,10 @@ const insertPlayerData = (req, res) => {
   if (!isAuthorization(req, res)) {
     return;
   }
-  const { playerNames, schedule_id } = req.body;
+  let { playerNames, schedule_id } = req.body;
   // playerName만큼 query날리면됨
+
+  playerNames = Object.values(playerNames);
   playerNames.forEach((player) => {
     let sql = "INSERT INTO player (schedule_id, player, score) VALUE (?,?,?) ;";
     let value = [schedule_id, player, 0];
@@ -19,6 +21,62 @@ const insertPlayerData = (req, res) => {
     });
   });
   res.status(StatusCodes.OK).end();
+};
+
+const updatePlayerScore = (req, res) => {
+  //schedule_id, player
+
+  // 아근데 내가 투표한 정보에서 가져와야지
+  let { schedule_id, voteResult } = req.body;
+
+  let playerArr = Object.keys(voteResult);
+  let scoreArr = Object.values(voteResult);
+  let sql =
+    "UPDATE player SET score = score + ?  WHERE schedule_id = ? AND player = ?";
+
+  playerArr.forEach((player, i) => {
+    let value = [Number(scoreArr[i]), schedule_id, player];
+    conn.query(sql, value, function (err, result) {
+      if (err) {
+        res.status(StatusCodes.BAD_REQUEST).end();
+        return;
+      }
+      res.status(StatusCodes.CREATED).end();
+    });
+  });
+};
+// 등록됨
+
+const deletePlayerScore = (req, res) => {
+  // 일단 점수들을 가지고 있는 result를 가져옴
+  let { schedule_id, voter } = req.body;
+
+  let sql = "SELECT voted FROM vote WHERE voter = ? AND schedule_id = ?";
+  let value = [voter, schedule_id];
+
+  conn.query(sql, value, function (err, result) {
+    if (err) {
+      res.status(StatusCodes.BAD_REQUEST).end();
+      return;
+    }
+    let voteResult = JSON.parse(result[0].voted);
+
+    let playerArr = Object.keys(voteResult);
+    let scoreArr = Object.values(voteResult);
+    sql =
+      "UPDATE player SET score = score - ? WHERE schedule_id = ? AND player = ?";
+
+    playerArr.forEach((player, i) => {
+      let value = [Number(scoreArr[i]), schedule_id, player];
+      conn.query(sql, value, function (err, result) {
+        if (err) {
+          res.status(StatusCodes.BAD_REQUEST).end();
+          return;
+        }
+        res.status(StatusCodes.CREATED).end();
+      });
+    });
+  });
 };
 
 const getPlayerData = (req, res) => {
@@ -38,4 +96,9 @@ const getPlayerData = (req, res) => {
   });
 };
 
-module.exports = { insertPlayerData, getPlayerData };
+module.exports = {
+  insertPlayerData,
+  getPlayerData,
+  updatePlayerScore,
+  deletePlayerScore,
+};
