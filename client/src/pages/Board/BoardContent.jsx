@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { formatContent } from "../../utils/format";
+import { formatContent } from "@/utils/format";
 
 export function Content({ boardData }) {
   const navigator = useNavigate();

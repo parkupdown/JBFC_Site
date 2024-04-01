@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import Comment from "../Comment/Comment";
-import { httpClient } from "../../api/http";
+import { httpClient } from "@/api/http";
 
 export default function BoardDetail() {
   const { boardId } = useParams();

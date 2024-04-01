@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
-import { httpClient } from "../../api/http";
-import { getNickName } from "../../store/nickNameStore";
-import { goBoard } from "../../utils/pageMove";
+import { httpClient } from "@/api/http";
+import { getNickName } from "@/store/nickNameStore";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import styled from "styled-components";
+import { queryClient } from "@/App";
 
 export default function BoardWrite() {
   const nickName = getNickName();
@@ -38,7 +38,6 @@ export default function BoardWrite() {
     const response = await httpClient.post("/board", formData, {
       headers: { "Content-Type": "multipart/form-data", charset: "utf-8" },
     });
-    console.log(response);
     return response.data;
   };
 
@@ -49,7 +48,6 @@ export default function BoardWrite() {
     return false;
   };
 
-  const queryClient = useQueryClient();
   const mutaion = useMutation((formData) => insertBoardData(formData), {
     onSuccess: (data) => {
       queryClient.invalidateQueries("lastestBoardData");
@@ -148,7 +146,6 @@ const Container = styled.div`
 const Form = styled.form`
   display: flex;
   flex-direction: column;
-  align-items: center;
 `;
 
 const Input = styled.input`

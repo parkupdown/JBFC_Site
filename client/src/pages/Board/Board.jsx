@@ -1,13 +1,9 @@
 import { useRef } from "react";
-import { useEffect } from "react";
-import { useInfiniteQuery } from "react-query";
-import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { httpClient } from "../../api/http";
 import { Link } from "react-router-dom";
-import { Content } from "./BoardCase";
-import { useBoardInfinite } from "../../hooks/useBoardInfinite";
-import { fetchAllBoard } from "../../api/board.api";
+import { Content } from "./BoardContent";
+import { useBoardInfinite } from "@/hooks/useBoardInfinite";
+import { fetchAllBoard } from "@/api/board.api";
 
 export default function Board() {
   const ref = useRef(null);
@@ -34,7 +30,11 @@ export default function Board() {
             (page) =>
               page &&
               page.map((boardData) => (
-                <Content boardData={boardData} key={boardData.id} />
+                <Content
+                  boardData={boardData}
+                  key={boardData.id}
+                  deleteMode={false}
+                />
               ))
           )}
       </BoardContainer>
