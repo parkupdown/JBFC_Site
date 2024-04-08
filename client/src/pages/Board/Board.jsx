@@ -47,12 +47,12 @@ const Container = styled.div`
   a {
     text-decoration: none;
     text-decoration-line: none;
-    color: black;
+    color: #516fd4;
     padding: 10px;
-    background-color: #f8f8f8;
-    border-radius: 20px;
+    background-color: #ffffff;
+    border-radius: 10px;
     font-size: 14px;
-    border: 0.5px solid white;
+    border: 0.5px solid #eeeeee;
   }
   .navigation {
     display: flex;

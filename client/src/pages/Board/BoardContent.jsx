@@ -17,11 +17,11 @@ export function Content({ boardData }) {
           )}
         </div>
         <div className="description">
-          <span className="title">{boardData.title}</span>
+          <span className="title">제목: {boardData.title}</span>
           <span className="content">
             {boardData.content && formatContent(boardData.content)}
           </span>
-          <span className="nickname">{boardData.nickname}</span>
+          <span className="nickname">by {boardData.nickname}</span>
         </div>
       </ContentBox>
     </div>
@@ -37,20 +37,18 @@ const ContentBox = styled.div`
   &:hover {
     transform: translateY(-10px);
   }
-
   width: 340px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 24px;
-  border-radius: 20px;
   .imgBox {
     width: 100%;
     height: 100%;
-    border-radius: 20px;
     img {
       width: 100%;
+      border-radius: 20px;
     }
   }
 
@@ -58,23 +56,27 @@ const ContentBox = styled.div`
     width: 100%;
     display: flex;
     flex-direction: column;
-    background-color: #f8f8f8;
+    background-color: #fbfcff;
     padding: 10px;
     border-radius: 10px;
 
     .title {
       font-size: 20px;
-      margin-bottom: 10px;
+      margin-bottom: 5px;
+      background-color: #ffffff;
     }
 
     .content {
       font-size: 15px;
-      margin-bottom: 10px;
+      margin-bottom: 5px;
+      background-color: #ffffff;
+      color: #666;
     }
 
     .nickname {
       font-size: 12px;
       color: #666;
+      background-color: #ffffff;
     }
   }
 `;

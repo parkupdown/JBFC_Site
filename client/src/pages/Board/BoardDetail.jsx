@@ -32,23 +32,50 @@ export default function BoardDetail() {
           />
         )}
       </BoardDetailContainer>
-      <h2>{boardDetailData.title}</h2>
-      <p>{boardDetailData.content}</p>
+      <div className="contents">
+        <span className="title">{boardDetailData.title}</span>
+        <span className="content">{boardDetailData.content}</span>
+        <span className="by">
+          {boardDetailData.nickname} | {boardDetailData.time}
+        </span>
+      </div>
 
-      <span>
-        작성자{boardDetailData.nickname} -{boardDetailData.time}
-      </span>
-      <Comment boardId={boardId} writer={boardDetailData.nickname} />
+      <Comment boardId={boardId} />
     </Container>
   );
 }
 
 const Container = styled.div`
   width: 100vw;
-  height: 100vh;
+
   display: flex;
   flex-direction: column;
   align-items: center;
+  .contents {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    background-color: #fbfcff;
+    padding: 40px;
+    border-radius: 15px;
+    .title {
+      font-size: 24px;
+      font-weight: 600;
+    }
+    .content {
+      margin: 10px 0;
+      font-size: 12px;
+    }
+    .by {
+      font-size: 9px;
+      background-color: #ffffff;
+      color: #516fd4;
+      width: max-content;
+      padding: 0 20px;
+      border-radius: 5px;
+      opacity: 0.7;
+    }
+  }
 `;
 
 const BoardDetailContainer = styled.div`
@@ -60,7 +87,6 @@ const BoardDetailContainer = styled.div`
   height: 30vh;
   padding: 20px;
   border-radius: 10px;
-  margin-bottom: 20px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   overflow: hidden;
 

@@ -1,8 +1,9 @@
 import styled from "styled-components";
-import { ground, time } from "../../constants/scheduleForm.contants";
+import { ground, time } from "@/constants/scheduleForm.contants";
 import { useForm } from "react-hook-form";
-import { postScheduleData, updateScheduleData } from "../../api/schedule.api";
+import { postScheduleData, updateScheduleData } from "@/api/schedule.api";
 import { useQueryClient } from "react-query";
+import { queryClient } from "@/App";
 
 export default function FormModal({ month, day, closeModal, isUpdate }) {
   // 여기서 제출하면 이제 구자 정보 등록
@@ -20,7 +21,6 @@ export default function FormModal({ month, day, closeModal, isUpdate }) {
       price: 120000,
     },
   });
-  const queryClient = useQueryClient();
 
   const onSubmit = async (data) => {
     const scheduleData = { month: month, day: day, ...data };

@@ -1,11 +1,11 @@
 import styled from "styled-components";
-import { formatNumber } from "../../utils/format";
+import { formatNumber } from "@/utils/format";
 import { useState } from "react";
-import Alert from "../../components/common/Alert";
-import { deleteScheduleData } from "../../api/schedule.api";
+import Alert from "@/components/common/Alert";
+import { deleteScheduleData } from "@/api/schedule.api";
 import FormModal from "./FormModal";
 import { useQueryClient } from "react-query";
-import { getDate } from "../../utils/getDate";
+import { getDate } from "@/utils/getDate";
 
 export default function ResultModal({ scheduleDetailData, closeModal }) {
   const [isAlert, setIsAlert] = useState(false);
@@ -14,6 +14,7 @@ export default function ResultModal({ scheduleDetailData, closeModal }) {
   const { nowYear, nowMonth, nowDay, nowDayOfWeek } = getDate();
 
   const refetchCacheDataOfSchedule = (month, day) => {
+    month = Number(month);
     if (month === nowMonth && day === nowDay) {
       queryClient.invalidateQueries("todaySchedule");
     }

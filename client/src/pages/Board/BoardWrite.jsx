@@ -122,15 +122,25 @@ export default function BoardWrite() {
         ></Textarea>
         <ErrorMessage>{errors.content && errors.content.message}</ErrorMessage>
 
-        {thumbnail === null ? null : <Image src={thumbnail} />}
-        <FileInput
-          onChange={(e) => handleChange(e)}
+        {thumbnail === null ? null : (
+          <ImageBox>
+            <Image src={thumbnail} />
+          </ImageBox>
+        )}
+        <label htmlFor="file">
+          <div className="btn-upload">파일 업로드하기</div>
+        </label>
+        <input
+          className="noneView"
           type="file"
+          name="file"
+          id="file"
+          onChange={(e) => handleChange(e)}
           accept="image/*"
         />
-        <Button type="button" onClick={deleteThumbnail}>
+        <DeleteButton type="button" onClick={deleteThumbnail}>
           파일삭제
-        </Button>
+        </DeleteButton>
         <Button className="upload" onClick={handleSubmit(onSubmit)}>
           등록
         </Button>
@@ -141,6 +151,17 @@ export default function BoardWrite() {
 
 const Container = styled.div`
   padding: 20px;
+  .noneView {
+    display: none;
+  }
+  .btn-upload {
+    background-color: #fbfcff;
+    width: max-content;
+    padding: 20px;
+    border-radius: 16px;
+    border: 0.5px solid #eeeeee;
+    color: #516fd4;
+  }
 `;
 
 const Form = styled.form`
@@ -151,18 +172,20 @@ const Form = styled.form`
 const Input = styled.input`
   margin-bottom: 10px;
   padding: 8px;
-  border: 1px solid #ccc;
+  border: 0.5px solid #eeeeee;
   border-radius: 4px;
   width: 50%;
   height: 7vh;
   border-radius: 10px;
+  background-color: #fbfcff;
 `;
 
 const Textarea = styled.textarea`
   margin-bottom: 10px;
   padding: 8px;
-  border: 1px solid #ccc;
+  border: 0.5px solid #eeeeee;
   border-radius: 10px;
+  background-color: #fbfcff;
   width: 100%;
   height: 40vh;
 `;
@@ -171,24 +194,25 @@ const ErrorMessage = styled.p`
   color: red;
 `;
 
-const Image = styled.img`
-  width: 30%;
+const ImageBox = styled.div`
+  text-align: center;
+  margin-bottom: 10px;
 `;
 
-const FileInput = styled.input`
-  margin-bottom: 10px;
+const Image = styled.img`
+  width: 40%;
 `;
 
 const Button = styled.button`
   padding: 10px 20px;
-  background-color: #0056b3;
-  color: white;
-  border: none;
+  border: 0.7px solid #eeeeee;
+  background-color: #fbfcff;
+  color: #516fd4;
+  border: 0.5px solid #eeeeee;
   border-radius: 10px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
   margin-top: 20px;
-  &:hover {
-    background-color: #0056b3;
-  }
+`;
+
+const DeleteButton = styled(Button)`
+  color: #d49751;
 `;
