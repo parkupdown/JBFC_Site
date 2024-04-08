@@ -1,18 +1,27 @@
 import { useQuery } from "react-query";
-import { useQueryClient } from "react-query";
-import { httpClient } from "../../api/http";
 
-export default function Comment({ boardId, writer }) {
+import { httpClient } from "@/api/http";
+import { queryClient } from "@/App";
+import styled from "styled-components";
+import { BsSendFill } from "react-icons/bs";
+import { getTime } from "@/utils/getDate";
+import { getNickName } from "@/store/nickNameStore";
+import { useForm } from "react-hook-form";
+import { useComment } from "@/hooks/useComment";
+import { fetchDeleteComment, fetchPostComment } from "../../api/comment.api";
+
+export default function Comment({ boardId }) {
   //여기서 writer는 게시글의 작성자
-  const getTime = () => {
-    const date = new Date();
-    return `${date.getMonth()}월 ${date.getDay()}일 ${date.getHours()}시 ${date.getMinutes()}분`;
-  };
+  const { comments, setComments } = useComment(boardId);
+  const writer = getNickName();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
 
-  const queryClient = useQueryClient();
-  const insertCommentData = async (e) => {
-    e.preventDefault();
-    const content = e.target[0].value;
+  const onSubmit = async (data) => {
+    const { content } = data;
     const time = getTime();
     const commentData = {
       board_id: boardId,
@@ -20,48 +29,25 @@ export default function Comment({ boardId, writer }) {
       writer: writer,
       time: time,
     };
-    const getData = await httpClient.post(`/comment`, commentData);
-    //작성하면 캐싱데이터를 다시 불러올수있게?
-    const newCommentData = getData.data;
+    const newComment = await fetchPostComment(commentData);
+    //여기서는 현재 comment_id가 들어있지 않다.
 
-    queryClient.setQueryData(`comment${boardId}`, () => {
-      return newCommentData;
-    });
-    // 캐싱 데이터 업데이트
-    alert("작성완료");
-    e.target[0].value = ``;
-    //input 초기화
+    setComments(newComment);
   };
-
-  const getCommentData = async () => {
-    const getdata = await httpClient.get(`/comment/${boardId}`);
-    const commentData = getdata.data;
-    return commentData;
-  };
-
-  const { isLoading, data } = useQuery(`comment${boardId}`, getCommentData);
 
   const removeCommentData = async (commentId) => {
-    await httpClient.delete(`/comment/${commentId}`);
-    queryClient.setQueryData(`comment${boardId}`, (prev) => {
-      const newData = prev.filter((data) => data.id !== commentId);
-      return newData;
-    });
+    await fetchDeleteComment(commentId);
+    setComments((current) => current.filter((data) => data.id !== commentId));
   };
 
   // 기본적으로 댓글 데이터 가져오기
   return (
-    <div>
-      {isLoading ? (
-        <div>로딩중</div>
-      ) : (
+    <Container>
+      {!comments && <div>로딩중</div>}
+      {comments && (
         <div>
-          <form onSubmit={(e) => insertCommentData(e)}>
-            <input placeholder="...comment" />
-            <button>send</button>
-          </form>
           <div>
-            {data.map((comment) => (
+            {comments.map((comment) => (
               <div key={comment.id}>
                 <p>{comment.writer}</p>
                 <p>{comment.content}</p>
@@ -74,8 +60,41 @@ export default function Comment({ boardId, writer }) {
               </div>
             ))}
           </div>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <input
+              placeholder="Type your message here"
+              {...register("content", {
+                required: "최소 1글자는 입력해주세요",
+              })}
+            />
+
+            <button>
+              <BsSendFill />
+            </button>
+          </form>
+          {errors && errors.content && <span> {errors.content.message}</span>}
         </div>
       )}
-    </div>
+    </Container>
   );
 }
+const Container = styled.div`
+  margin-top: 30px;
+  text-align: center;
+
+  form {
+    input {
+      padding: 20px;
+      background-color: #eeeeee;
+      border: none;
+      border-radius: 10px;
+    }
+    button {
+      border: none;
+      font-size: 24px;
+      color: #516fd4;
+      background-color: white;
+      margin-left: 10px;
+    }
+  }
+`;
