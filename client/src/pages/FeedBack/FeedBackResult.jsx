@@ -1,12 +1,14 @@
 import { formatMvpPlayer, formatOrderByScore } from "../../utils/format";
-import { getNickName } from "../../store/nickNameStore";
-import { httpClient } from "../../api/http";
+import { getNickName } from "@/store/nickNameStore";
+import { httpClient } from "@/api/http";
+import { queryClient } from "../../App";
 
 export default function FeedBackResult({
   closeModal,
   scheduleId,
   playerData,
   voteData,
+  month,
 }) {
   const nickName = getNickName();
 
@@ -26,6 +28,9 @@ export default function FeedBackResult({
   const handleDelete = async () => {
     await deleteScore();
     await deleteVote();
+    queryClient.invalidateQueries(`${month}players`);
+    queryClient.invalidateQueries(`${month}votes`);
+
     closeModal();
   };
 
@@ -37,23 +42,10 @@ export default function FeedBackResult({
   return (
     <>
       <h6>{voteData.length}명이 투표에 참여해주셨습니다.</h6>
-      {mvpPlayer.length > 1 && (
-        <>
-          <h4>경기의 mvp</h4>
-          <span>평점: {maxScore}</span>
-          {mvpPlayer.map((player, index) => (
-            <div key={index}>
-              <span>{player}</span>
-            </div>
-          ))}
-        </>
-      )}
-      {mvpPlayer.length === 1 && (
-        <>
-          <h4>경기의 mvp {mvpPlayer[0]}</h4>
-          <span>평점: {maxScore}</span>
-        </>
-      )}
+      <>
+        <span>평점: {maxScore}</span>
+        <span>mvp: {mvpPlayer}</span>
+      </>
       {playerData.map((player, index) => (
         <div key={index}>
           <span>{player.player}</span>

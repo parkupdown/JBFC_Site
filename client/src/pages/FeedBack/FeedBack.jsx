@@ -1,9 +1,13 @@
 import { useState } from "react";
 import { useQuery } from "react-query";
-
-import { httpClient } from "../../api/http";
+import { httpClient } from "@/api/http";
 import FeedBackModal from "./FeedBackModal";
-import { useEffect } from "react";
+import styled from "styled-components";
+
+import { fetchGetPlayers } from "@/api/vote.api";
+import { fetchGetVotes } from "@/api/vote.api";
+import { getScheduleData } from "@/api/schedule.api";
+import { formatMvpPlayer } from "../../utils/format";
 
 export default function FeedBack() {
   // 여기서 이번달 경기일정을 받아와서
@@ -12,6 +16,28 @@ export default function FeedBack() {
   const [month, setMonth] = useState(new Date().getMonth() + 1);
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [scheduleData, setScheduleData] = useState([]);
+
+  const {
+    isLoading: thisMonthScheduleDataLoading,
+    data: thisMonthScheduleData,
+  } = useQuery(`${month}월`, () => getScheduleData(month));
+
+  const { isLoading: playersLoading, data: playersData } = useQuery(
+    `${month}players`,
+    () => fetchGetPlayers(thisMonthScheduleData), // ID를 추출하여 전달
+    {
+      enabled: !!thisMonthScheduleData && thisMonthScheduleData.length > 0,
+    }
+  );
+
+  const { isLoading: votesLoading, data: votesData } = useQuery(
+    `${month}votes`,
+    () => fetchGetVotes(thisMonthScheduleData), // ID를 추출하여 전달
+    {
+      enabled: !!thisMonthScheduleData && thisMonthScheduleData.length > 0,
+    }
+  );
+  // enabled를 통해 언제 해결할지를 생각하자
 
   const goNextMonth = () => {
     setMonth((current) => {
@@ -32,14 +58,6 @@ export default function FeedBack() {
     });
   };
 
-  const getScheduleData = async () => {
-    const getSchedule = await httpClient.get(`/schedule?month=${month}`);
-    const scheduleData = getSchedule.data;
-    return scheduleData;
-  };
-
-  const { isLoading, data } = useQuery(`${month}월`, getScheduleData);
-
   const closeModal = () => {
     setIsOpenModal(false);
   };
@@ -55,68 +73,153 @@ export default function FeedBack() {
     } else {
       getScheduleId = parseInt(e.target.parentElement.id);
     }
-    setScheduleData(data[getScheduleId]);
+    setScheduleData(thisMonthScheduleData[getScheduleId]);
     openModal();
   };
-  // 여기서 캐싱해와야함 ?
+
+  if (thisMonthScheduleDataLoading || votesLoading || playersLoading) {
+    return (
+      <div>
+        <h4>로딩중</h4>
+      </div>
+    );
+  }
 
   return (
     <>
-      {isLoading ? (
-        <h3>로딩중</h3>
-      ) : (
-        <div>
-          {isOpenModal ? (
-            <div>
-              <FeedBackModal
-                closeModal={closeModal}
-                scheduleId={scheduleData.id}
-                playerNum={scheduleData.num_of_player}
-                isOpenModal={isOpenModal}
-              ></FeedBackModal>
-            </div>
-          ) : null}
+      <Container>
+        {isOpenModal ? (
           <div>
-            <button type="button" onClick={goBeforeMonth}>
-              이전 달
-            </button>
-            <button type="button" onClick={goNextMonth}>
-              다음 달
-            </button>
+            <FeedBackModal
+              closeModal={closeModal}
+              scheduleId={scheduleData.id}
+              playerNum={scheduleData.num_of_player}
+              isOpenModal={isOpenModal}
+              month={month}
+            ></FeedBackModal>
           </div>
-          <h2>{month}월 경기 목록</h2>
-          {data.length === 0 ? (
-            <h2>경기 데이터가 없습니다!</h2>
-          ) : (
-            data.map((item, index) => (
-              <div
-                style={{
-                  backgroundColor: "tomato",
-                  padding: "20px",
-                  width: "70vw",
-                }}
-                key={item.id}
-                onClick={clickSchedule}
-                id={index}
-              >
-                <h4>
-                  {item.month}월 {item.day}일 {item.time} 경기
-                </h4>
-                <h4>경기장: {item.ground}</h4>
-
-                <p>{item.type_of_match}전</p>
-              </div>
-            ))
-          )}
+        ) : null}
+        <div className="headerBox">
+          <span className="header">{month}월 경기 목록</span>
         </div>
-      )}
+        <div className="navBox">
+          <button type="button" onClick={goBeforeMonth}>
+            이전 달
+          </button>
+          <button type="button" onClick={goNextMonth}>
+            다음 달
+          </button>
+        </div>
+
+        {thisMonthScheduleData.length === 0 ? (
+          <h2>경기 데이터가 없습니다!</h2>
+        ) : (
+          thisMonthScheduleData.map((item, index) => (
+            <div
+              className="contentsBox"
+              key={item.id}
+              onClick={clickSchedule}
+              id={index}
+            >
+              <span className="date">
+                {item.month}월 {item.day}일 {item.time} 경기
+              </span>
+              <span className="ground">경기장: {item.ground}</span>
+              <span className="type">{item.type_of_match}전</span>
+              {playersData[index].length === 0 && (
+                <span className="nonVotingFormat">플레이어 등록</span>
+              )}
+              {votesData[index].length === 0 && (
+                <span className="noVote">투표 안함</span>
+              )}
+              {playersData[index].length !== 0 && (
+                <span className="mvp">
+                  {
+                    formatMvpPlayer(playersData[index], votesData[index].length)
+                      .mvpPlayer
+                  }
+                </span>
+              )}
+              {playersData[index].length !== 0 && (
+                <span className="mvp">
+                  점수:
+                  {
+                    formatMvpPlayer(playersData[index], votesData[index].length)
+                      .maxScore
+                  }
+                </span>
+              )}
+            </div>
+          ))
+        )}
+      </Container>
     </>
   );
 }
-/**
- *      {isOpenModal ? (
-            <div>
-              <FormModal closeModal={closeModal} ></FormModal>
-            </div>
-          ) : null}
- */
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  background-color: #fbfcff;
+  padding: 30px 0;
+  .navBox {
+    text-align: center;
+    margin: 20px 0;
+    button {
+      background-color: white;
+      border: 0.7px solid #eeeeee;
+      padding: 4px 12px;
+      border-radius: 2px;
+      font-size: 14px;
+      margin: 0 8px;
+      color: black;
+    }
+  }
+  .headerBox {
+    text-align: center;
+    color: #516fd4;
+    font-size: 20px;
+  }
+
+  .contentsBox {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 20px;
+    border: 0.7px solid #eeeeee;
+    background-color: white;
+    .date {
+      font-weight: 600;
+      font-size: 20px;
+    }
+    .ground {
+      font-weight: 250;
+      opacity: 0.7;
+    }
+    .type {
+      font-weight: 250;
+      opacity: 0.7;
+    }
+    .mvp {
+      padding: 5px 10px;
+      background-color: #fbfcff;
+      border-radius: 10px;
+      color: #516fd4;
+      font-size: 10px;
+    }
+    .nonVotingFormat {
+      padding: 5px 10px;
+      background-color: #fbfcff;
+      border-radius: 10px;
+      color: #edb87b;
+      font-size: 10px;
+    }
+    .noVote {
+      padding: 5px 10px;
+      background-color: #fbfcff;
+      border-radius: 10px;
+      color: #edb87b;
+      font-size: 10px;
+    }
+  }
+`;

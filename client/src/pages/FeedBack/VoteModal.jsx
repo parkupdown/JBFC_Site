@@ -1,12 +1,16 @@
 import { useForm } from "react-hook-form";
 import styled from "styled-components";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { getNickName } from "../../store/nickNameStore";
-import { httpClient } from "../../api/http";
-import { QueryClient, useQueryClient } from "react-query";
-import { useNavigate } from "react-router-dom";
+import { getNickName } from "@/store/nickNameStore";
+import { httpClient } from "@/api/http";
+import { queryClient } from "../../App";
 
-export default function VoteModal({ closeModal, playerData, scheduleId }) {
+export default function VoteModal({
+  closeModal,
+  playerData,
+  scheduleId,
+  month,
+}) {
   const nickName = getNickName();
 
   const {
@@ -35,9 +39,11 @@ export default function VoteModal({ closeModal, playerData, scheduleId }) {
   };
 
   const onSubmit = async (voteResult) => {
-    console.log(voteResult);
     await insertVoteData(voteResult);
     await updateVoteScore(voteResult);
+    queryClient.invalidateQueries(`${month}votes`);
+    queryClient.invalidateQueries(`${month}players`);
+
     closeModal();
   };
 

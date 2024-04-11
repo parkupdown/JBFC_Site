@@ -2,10 +2,16 @@ import axios from "axios";
 import { useState } from "react";
 import { useQueryClient } from "react-query";
 import styled from "styled-components";
-import { httpClient } from "../../api/http";
+import { httpClient } from "@/api/http";
 import { useForm } from "react-hook-form";
+import { queryClient } from "../../App";
 
-export default function FormModal({ closeModal, scheduleId, playerNum }) {
+export default function FormModal({
+  closeModal,
+  scheduleId,
+  playerNum,
+  month,
+}) {
   const playerArr = Array.from({ length: playerNum });
 
   const insertPlayerData = async (playerNames) => {
@@ -13,6 +19,7 @@ export default function FormModal({ closeModal, scheduleId, playerNum }) {
       playerNames: playerNames,
       schedule_id: scheduleId,
     });
+    queryClient.invalidateQueries(`${month}players`);
   };
 
   const onSubmit = async (data) => {
