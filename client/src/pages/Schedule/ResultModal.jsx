@@ -6,11 +6,12 @@ import { deleteScheduleData } from "@/api/schedule.api";
 import FormModal from "./FormModal";
 import { useQueryClient } from "react-query";
 import { getDate } from "@/utils/getDate";
+import { queryClient } from "@/App";
 
 export default function ResultModal({ scheduleDetailData, closeModal }) {
   const [isAlert, setIsAlert] = useState(false);
   const [isUpdate, setIsUpdate] = useState(false);
-  const queryClient = useQueryClient();
+
   const { nowYear, nowMonth, nowDay, nowDayOfWeek } = getDate();
 
   const refetchCacheDataOfSchedule = (month, day) => {
@@ -20,6 +21,8 @@ export default function ResultModal({ scheduleDetailData, closeModal }) {
     }
     if (month === nowMonth) {
       queryClient.invalidateQueries(`${month}월`);
+      queryClient.invalidateQueries(`${month}players`);
+      queryClient.invalidateQueries(`${month}votes`);
     }
   };
 

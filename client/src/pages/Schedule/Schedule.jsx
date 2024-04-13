@@ -12,13 +12,14 @@ export default function Schedule() {
   const [month, setMonth] = useState(nowMonth);
   const [clickedDay, setClickedDay] = useState(nowDay);
   const weeks = ["일", "월", "화", "수", "목", "금", "토"];
+
   const { isLoading, data } = useSchedule(month);
   let bookedDate;
-  console.log(data);
+
   if (!isLoading) {
     bookedDate = data.map((item) => item.day);
   }
-  console.log(bookedDate);
+
   const handleClickDay = (day) => {
     setClickedDay(day);
     openModal();
@@ -43,7 +44,7 @@ export default function Schedule() {
   };
 
   const calendarArr = getCalendarArr(nowYear, month);
-  console.log(calendarArr);
+
   return (
     <Container>
       {isOpen && (
@@ -56,8 +57,8 @@ export default function Schedule() {
               {nowYear}년 {month}월 경기 일정
             </h6>
             <div className="navButton">
-              <button onClick={handleNextMonth}>다음</button>
               <button onClick={handlePrevMonth}>이전</button>
+              <button onClick={handleNextMonth}>다음</button>
             </div>
           </div>
           <div className="contents">

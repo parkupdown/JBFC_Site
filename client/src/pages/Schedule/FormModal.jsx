@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { ground, time } from "@/constants/scheduleForm.contants";
 import { useForm } from "react-hook-form";
 import { postScheduleData, updateScheduleData } from "@/api/schedule.api";
-import { useQueryClient } from "react-query";
+
 import { queryClient } from "@/App";
 
 export default function FormModal({ month, day, closeModal, isUpdate }) {
@@ -27,6 +27,8 @@ export default function FormModal({ month, day, closeModal, isUpdate }) {
     !isUpdate && (await postScheduleData(scheduleData));
     isUpdate && (await updateScheduleData(scheduleData));
     queryClient.invalidateQueries(`${month}월`);
+    queryClient.invalidateQueries(`${month}players`);
+    queryClient.invalidateQueries(`${month}votes`);
     queryClient.invalidateQueries(`todaySchedule`);
     closeModal();
   };

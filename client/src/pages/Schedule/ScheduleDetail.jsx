@@ -20,6 +20,8 @@ function ModalDetail({
       `/schedule?month=${month}&day=${day}`
     );
     queryClient.setQueryData(`${month}월`, (prev) => deletedData.data);
+    queryClient.invalidateQueries(`${month}players`);
+    queryClient.invalidateQueries(`${month}votes`);
     queryClient.invalidateQueries("todaySchedule");
     closeModal();
   };

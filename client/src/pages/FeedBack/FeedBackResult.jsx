@@ -1,7 +1,12 @@
-import { formatMvpPlayer, formatOrderByScore } from "../../utils/format";
+import {
+  formatAverageScore,
+  formatMvpPlayer,
+  formatOrderByScore,
+} from "../../utils/format";
 import { getNickName } from "@/store/nickNameStore";
 import { httpClient } from "@/api/http";
 import { queryClient } from "../../App";
+import styled from "styled-components";
 
 export default function FeedBackResult({
   closeModal,
@@ -38,21 +43,129 @@ export default function FeedBackResult({
   playerData = formatOrderByScore(playerData);
   let voteCount = voteData.length;
   let { maxScore, mvpPlayer } = formatMvpPlayer(playerData, voteCount);
+  let averageScore = formatAverageScore(playerData);
 
   return (
-    <>
-      <h6>{voteData.length}명이 투표에 참여해주셨습니다.</h6>
-      <>
-        <span>평점: {maxScore}</span>
-        <span>mvp: {mvpPlayer}</span>
-      </>
-      {playerData.map((player, index) => (
-        <div key={index}>
-          <span>{player.player}</span>
-          <span>평점: {Math.ceil(player.score / voteCount)}</span>
+    <Container>
+      <div className="mvpBox">
+        <span className="mvp">MVP: </span>
+        <span className="mvpP">{mvpPlayer}</span>
+      </div>
+      <div className="header">
+        <div className="summaryResultBox">
+          <span>Max rating:</span>
+          <span className="score">{maxScore}</span>
         </div>
-      ))}
+        <div className="summaryResultBox">
+          <span>Average rating:</span>
+          <span className="score">{averageScore}</span>
+        </div>
+        <div className="summaryResultBox">
+          <span>Total votes:</span>
+          <span className="score">{voteCount}</span>
+        </div>
+      </div>
+      <div className="standard">
+        <span className="player">선수</span>
+        <span className="score">점수</span>
+      </div>
+      <div className="contents">
+        {playerData.map((player, index) => (
+          <div className="playerScoreBox" key={index}>
+            <span className="player">{player.player}</span>
+            <span className="score">{Math.ceil(player.score / voteCount)}</span>
+          </div>
+        ))}
+      </div>
+
       <button onClick={handleDelete}>다시 투표</button>
-    </>
+    </Container>
   );
 }
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
+  .mvpBox {
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+    background-color: #fbfcff;
+    border: 0.5px solid #eeeeee;
+    border-radius: 10px;
+  }
+  .mvp {
+    font-size: 11px;
+    opacity: 0.7;
+  }
+  .mvpP {
+    font-size: 20px;
+    font-weight: 600;
+  }
+  .header {
+    display: flex;
+    font-size: 11px;
+    opacity: 0.7;
+    align-items: center;
+    justify-content: center;
+    margin: 20px 0;
+    .summaryResultBox {
+      margin: 0 2px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 16px;
+      background-color: #fbfcff;
+      border: 0.5px solid #eeeeee;
+      border-radius: 10px;
+      .score {
+        font-size: 20px;
+        font-weight: 600;
+      }
+    }
+  }
+  .standard {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+    span {
+      background-color: #ffffff;
+      padding: 5px 10px;
+      color: #516fd4;
+      border: 0.5px solid #eeeeee;
+      border-radius: 10px;
+      opacity: 0.7;
+    }
+  }
+  .contents {
+    width: 100%;
+    background-color: #eeeeee;
+    padding: 20px;
+    border-radius: 20px;
+    .playerScoreBox {
+      display: flex;
+      justify-content: space-around;
+      .player {
+        font-size: 12px;
+        opacity: 0.7;
+      }
+      .score {
+        font-size: 16px;
+        font-weight: 500;
+      }
+    }
+  }
+  button {
+    margin-top: 20px;
+    background-color: #ffffff;
+    border: 0.5px solid #eeeeee;
+    border-radius: 10px;
+    padding: 5px;
+    color: #edb87b;
+    font-size: 16px;
+    font-weight: 200;
+  }
+`;

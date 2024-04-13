@@ -6,8 +6,8 @@ import styled from "styled-components";
 
 import { fetchGetPlayers } from "@/api/vote.api";
 import { fetchGetVotes } from "@/api/vote.api";
-import { getScheduleData } from "@/api/schedule.api";
 import { formatMvpPlayer } from "../../utils/format";
+import { useSchedule } from "@/hooks/useSchedule";
 
 export default function FeedBack() {
   // 여기서 이번달 경기일정을 받아와서
@@ -17,28 +17,34 @@ export default function FeedBack() {
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [scheduleData, setScheduleData] = useState([]);
 
-  const {
-    isLoading: thisMonthScheduleDataLoading,
-    data: thisMonthScheduleData,
-  } = useQuery(`${month}월`, () => getScheduleData(month));
+  // 여기서 이걸 호출하지 않잖아.
+  // 호출안해버리니까 위 This monTh ScheduleDAta는 없는거지
+  const { isLoading: thisMonthScheduleLoading, data: thisMonthScheduleData } =
+    useSchedule(month);
+
+  // 캐싱이 안되어있다면?
+
+  // 만약 캐싱이 안되어있다면 어떡할텐가.
+  // 여기서 캐싱을 해야겠지
 
   const { isLoading: playersLoading, data: playersData } = useQuery(
     `${month}players`,
-    () => fetchGetPlayers(thisMonthScheduleData), // ID를 추출하여 전달
+    () => fetchGetPlayers(thisMonthScheduleData),
     {
-      enabled: !!thisMonthScheduleData && thisMonthScheduleData.length > 0,
-    }
+      enabled: !thisMonthScheduleLoading,
+    } // ID를 추출하여 전달
   );
 
   const { isLoading: votesLoading, data: votesData } = useQuery(
     `${month}votes`,
-    () => fetchGetVotes(thisMonthScheduleData), // ID를 추출하여 전달
+    () => fetchGetVotes(thisMonthScheduleData),
     {
-      enabled: !!thisMonthScheduleData && thisMonthScheduleData.length > 0,
-    }
+      enabled: !thisMonthScheduleLoading,
+    } // ID를 추출하여 전달
   );
   // enabled를 통해 언제 해결할지를 생각하자
 
+  console.log(thisMonthScheduleData, playersData, votesData);
   const goNextMonth = () => {
     setMonth((current) => {
       const nextMonth = (current + 1) % 12;
@@ -77,82 +83,82 @@ export default function FeedBack() {
     openModal();
   };
 
-  if (thisMonthScheduleDataLoading || votesLoading || playersLoading) {
-    return (
-      <div>
-        <h4>로딩중</h4>
-      </div>
-    );
-  }
-
   return (
     <>
-      <Container>
-        {isOpenModal ? (
-          <div>
-            <FeedBackModal
-              closeModal={closeModal}
-              scheduleId={scheduleData.id}
-              playerNum={scheduleData.num_of_player}
-              isOpenModal={isOpenModal}
-              month={month}
-            ></FeedBackModal>
-          </div>
-        ) : null}
-        <div className="headerBox">
-          <span className="header">{month}월 경기 목록</span>
-        </div>
-        <div className="navBox">
-          <button type="button" onClick={goBeforeMonth}>
-            이전 달
-          </button>
-          <button type="button" onClick={goNextMonth}>
-            다음 달
-          </button>
-        </div>
-
-        {thisMonthScheduleData.length === 0 ? (
-          <h2>경기 데이터가 없습니다!</h2>
-        ) : (
-          thisMonthScheduleData.map((item, index) => (
-            <div
-              className="contentsBox"
-              key={item.id}
-              onClick={clickSchedule}
-              id={index}
-            >
-              <span className="date">
-                {item.month}월 {item.day}일 {item.time} 경기
-              </span>
-              <span className="ground">경기장: {item.ground}</span>
-              <span className="type">{item.type_of_match}전</span>
-              {playersData[index].length === 0 && (
-                <span className="nonVotingFormat">플레이어 등록</span>
-              )}
-              {votesData[index].length === 0 && (
-                <span className="noVote">투표 안함</span>
-              )}
-              {playersData[index].length !== 0 && (
-                <span className="mvp">
-                  {
-                    formatMvpPlayer(playersData[index], votesData[index].length)
-                      .mvpPlayer
-                  }
-                </span>
-              )}
-              {playersData[index].length !== 0 && (
-                <span className="mvp">
-                  점수:
-                  {
-                    formatMvpPlayer(playersData[index], votesData[index].length)
-                      .maxScore
-                  }
-                </span>
-              )}
+      {thisMonthScheduleLoading || votesLoading || playersLoading ? (
+        <h4>로딩중</h4>
+      ) : (
+        <Container>
+          {isOpenModal ? (
+            <div>
+              <FeedBackModal
+                closeModal={closeModal}
+                scheduleId={scheduleData.id}
+                playerNum={scheduleData.num_of_player}
+                isOpenModal={isOpenModal}
+                month={month}
+              ></FeedBackModal>
             </div>
-          ))
-        )}
-      </Container>
+          ) : null}
+          <div className="headerBox">
+            <span className="header">{month}월 경기 목록</span>
+          </div>
+          <div className="navBox">
+            <button type="button" onClick={goBeforeMonth}>
+              이전 달
+            </button>
+            <button type="button" onClick={goNextMonth}>
+              다음 달
+            </button>
+          </div>
+
+          {thisMonthScheduleData.length === 0 ? (
+            <h2>경기 데이터가 없습니다!</h2>
+          ) : (
+            thisMonthScheduleData.map((item, index) => (
+              <div
+                className="contentsBox"
+                key={item.id}
+                onClick={clickSchedule}
+                id={index}
+              >
+                <span className="date">
+                  {item.month}월 {item.day}일 {item.time} 경기
+                </span>
+                <span className="ground">경기장: {item.ground}</span>
+                <span className="type">{item.type_of_match}전</span>
+                {playersData[index].length === 0 && (
+                  <span className="nonVotingFormat">플레이어 등록</span>
+                )}
+                {votesData[index].length === 0 && (
+                  <span className="noVote">투표 안함</span>
+                )}
+                {playersData[index].length !== 0 && (
+                  <span className="mvp">
+                    {
+                      formatMvpPlayer(
+                        playersData[index],
+                        votesData[index].length
+                      ).mvpPlayer
+                    }
+                  </span>
+                )}
+                {playersData[index].length !== 0 && (
+                  <span className="mvp">
+                    점수:
+                    {
+                      formatMvpPlayer(
+                        playersData[index],
+                        votesData[index].length
+                      ).maxScore
+                    }
+                  </span>
+                )}
+              </div>
+            ))
+          )}
+        </Container>
+      )}
     </>
   );
 }
