@@ -26,7 +26,7 @@ const ModalBackground = styled.div`
 
 const ModalContent = styled.div`
   height: 60vh;
-  background-color: white;
+  background-color: ${({ theme }) => theme.backgroundColor.main};
   padding: 60px;
   border-radius: 5px;
   position: relative;
@@ -34,22 +34,22 @@ const ModalContent = styled.div`
 `;
 const Button = styled.button`
   padding: 8px 16px;
-  background-color: #007bff;
-  color: white;
+  background-color: ${({ theme }) => theme.color.positive};
+  color: ${({ theme }) => theme.backgroundColor.main};
   border: none;
   border-radius: 3px;
   cursor: pointer;
 
   &:hover {
-    background-color: #0056b3;
+    background-color: ${({ theme }) => theme.color.positiveClicked};
   }
 `;
 const CancelButton = styled(Button)`
-  background-color: red;
+  background-color: ${({ theme }) => theme.color.negative};
   position: absolute;
   top: 5px;
   left: 5px;
   &:hover {
-    background-color: #a50303;
+    background-color: ${({ theme }) => theme.color.negativeClicked};
   }
 `;

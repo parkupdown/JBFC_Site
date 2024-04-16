@@ -11,13 +11,13 @@ const customAxios = (config) => {
     timeout: DEFAULT_TIMEOUT,
     headers: {
       "Content-Type": "application/json",
+      // 여기서 http 요청할 때 마다 JWT를 담아 보낼것임
+      // 오류발생
       Authorization: getToken() ? getToken() : "",
-      //여기서 http 요청할 때 마다 JWT를 담아 보낼것임
     },
     withCredentials: true,
     ...config,
   });
-
   axiosInstance.interceptors.response.use(
     (response) => {
       return response;
@@ -32,6 +32,19 @@ const customAxios = (config) => {
       return Promise.reject(error);
     }
   );
+
+  // config는 요청을 만드는데 필요한 옵션
+  axiosInstance.interceptors.request.use(
+    (config) => {
+      const token = getToken();
+      config.headers.Authorization = token;
+      return config;
+    },
+    (error) => {
+      return Promise.reject(error);
+    }
+  );
+
   return axiosInstance;
 };
 

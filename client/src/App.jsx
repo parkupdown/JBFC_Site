@@ -3,18 +3,18 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
 import ThemeContextProvider from "./context/themeContext.jsx";
 
-function App() {
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        staleTime: 1000 * 60 * 60 * 2,
-        //2시간
-        cacheTime: 1000 * 60 * 60 * 2,
-        //2시간
-      },
+export const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 60 * 2,
+      //2시간
+      cacheTime: 1000 * 60 * 60 * 2,
+      //2시간
     },
-  });
+  },
+});
 
+function App() {
   return (
     <>
       <QueryClientProvider client={queryClient}>

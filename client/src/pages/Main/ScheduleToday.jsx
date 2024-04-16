@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { formatNumber } from "../../utils/format";
+import { formatNumber } from "@/utils/format";
 import { GiPunch } from "react-icons/gi";
 import { MdPersonAddAlt } from "react-icons/md";
 import { IoPricetagOutline } from "react-icons/io5";
@@ -14,8 +14,6 @@ export function ScheduleToday({ scheduleData }) {
       {scheduleData.length === 0 ? (
         <>
           <div className="noschedule">
-            <h4>오늘은 경기가 없습니다</h4>
-            <span>오늘 풋살 안한다고?</span>
             <button onClick={() => navigator(`/schedule`)}>
               오늘 경기 등록하러가기
             </button>
@@ -23,12 +21,14 @@ export function ScheduleToday({ scheduleData }) {
         </>
       ) : (
         <>
-          <h4>오늘 경기</h4>
+          <div className="title">
+            <span>오늘 경기</span>
+          </div>
           <div className="container">
             <div className="imgBox">
               <img src={`/Ground/${scheduleData[0].ground}.png`} />
             </div>
-            <h5>매치 정보</h5>
+            <span className="type">매치 정보</span>
             <div className="contentBox">
               <div className="mainInfo">
                 <span>
@@ -47,7 +47,7 @@ export function ScheduleToday({ scheduleData }) {
                 </span>
                 <span>
                   <IoPricetagOutline /> {formatNumber(scheduleData[0].price)}
-                  원/2시간{" "}
+                  원/2시간
                 </span>
               </div>
             </div>
@@ -67,6 +67,10 @@ const ScheduleContainer = styled.div`
     margin-left: 50px;
   }
 
+  h5 {
+    color: ${({ theme }) => theme.color.positive};
+  }
+
   .noschedule {
     display: flex;
     flex-direction: column;
@@ -74,15 +78,14 @@ const ScheduleContainer = styled.div`
     h4 {
       margin-left: 0;
     }
-    span {
-      font-size: 14px;
-    }
 
     button {
       padding: 7px;
       margin-top: 5px;
-      border-radius: 4px;
-      border: 1px solid black;
+      border-radius: 10px;
+      border: ${({ theme }) => theme.border.main};
+      color: ${({ theme }) => theme.color.positive};
+      background-color: ${({ theme }) => theme.backgroundColor.box};
     }
   }
 
@@ -92,9 +95,18 @@ const ScheduleContainer = styled.div`
     flex-direction: column;
     align-items: center;
 
+    .type {
+      margin: 10px;
+      background-color: ${({ theme }) => theme.backgroundColor.box};
+      padding: 10px;
+      color: ${({ theme }) => theme.color.positive};
+      border: ${({ theme }) => theme.border.main};
+      border-radius: 6px;
+    }
     .mention {
       width: 100vw;
-
+      margin-top: 20px;
+      text-align: center;
       span {
         text-align: center;
         font-weight: 400;
@@ -105,7 +117,6 @@ const ScheduleContainer = styled.div`
   .contentBox {
     width: 100vw;
     font-size: 14px;
-
     span {
       margin: 5px 0;
     }
@@ -115,15 +126,13 @@ const ScheduleContainer = styled.div`
 
     div {
       width: 100vw;
-      height: 16vh;
+      height: 20vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      background-color: white;
-      * {
-        background-color: white;
-      }
+      background-color: ${({ theme }) => theme.backgroundColor.box};
+
       span {
         font-weight: 300;
       }
@@ -131,6 +140,18 @@ const ScheduleContainer = styled.div`
     .mainInfo {
       span {
         font-weight: 600;
+        background-color: ${({ theme }) => theme.backgroundColor.main};
+        padding: 6px;
+        border-radius: 3px;
+        border: ${({ theme }) => theme.border.main};
+      }
+    }
+    .subInfo {
+      span {
+        background-color: ${({ theme }) => theme.backgroundColor.main};
+        padding: 6px;
+        border-radius: 3px;
+        border: ${({ theme }) => theme.border.main};
       }
     }
   }
@@ -147,6 +168,18 @@ const ScheduleContainer = styled.div`
       height: 100%;
       object-fit: contain;
       border-radius: 14px;
+    }
+  }
+
+  .title {
+    text-align: center;
+    margin-bottom: 20px;
+    span {
+      background-color: ${({ theme }) => theme.backgroundColor.box};
+      padding: 10px;
+      color: ${({ theme }) => theme.color.positive};
+      border: ${({ theme }) => theme.border.main};
+      border-radius: 6px;
     }
   }
 `;

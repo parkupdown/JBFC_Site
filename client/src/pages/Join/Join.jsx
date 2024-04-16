@@ -1,9 +1,10 @@
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { httpClient } from "../../api/http";
 import { useForm } from "react-hook-form";
-import { inputProps } from "../../constants/input.contant";
-import { checkDuplication } from "../../Validation/joinValidation";
+import { inputProps } from "@/constants/input.contant";
+import { checkDuplication } from "@/Validation/joinValidation";
+import axios from "axios";
+import { Error } from "../../components/common/Error";
 
 export default function Join() {
   const navigate = useNavigate();
@@ -19,7 +20,7 @@ export default function Join() {
 
   const postApi = async (userId, userPassword, userNickname) => {
     try {
-      await httpClient.post("/join", {
+      await axios.post("http://localhost:3060/join", {
         userId: userId,
         userPassword: userPassword,
         userNickname: userNickname,
@@ -63,8 +64,11 @@ export default function Join() {
             <InputWrapper>
               <p>{item.name}</p>
               <input
-                type="text"
-                placeholder={`${item.name}`}
+                type={
+                  item.id === "password" || item.id === "passwordRe"
+                    ? "password"
+                    : "text"
+                }
                 {...register(item.id, {
                   required: {
                     value: true,
@@ -81,17 +85,17 @@ export default function Join() {
                 })}
               />
             </InputWrapper>
-            {item.error && <p>{item.error.message}</p>}
+            {item.error && <Error message={item.error.message} />}
           </>
         ))}
-
-        <button type="submit">제출</button>
       </form>
+      <button type="submit">제출</button>
+      <button onClick={goLogin}>로그인</button>
     </Container>
   );
 }
 const Container = styled.div`
-  height: 100vh;
+  height: 130vh;
   width: 100vw;
   display: flex;
   flex-direction: column;
@@ -104,11 +108,12 @@ const Container = styled.div`
     border: 1px solid black;
     border-radius: 6px;
     margin-top: 10px;
-    background-color: #1778f7;
-    border: none;
-    margin-left: 30px;
+    text-align: center;
+    background-color: #516fd4;
+    border: 1px solid #eeeeee;
     color: white;
-    font-size: 14px;
+    font-size: 16px;
+    margin-left: 10px;
   }
 `;
 
@@ -129,8 +134,10 @@ const InputWrapper = styled.div`
     border: 1px solid black;
     border-radius: 6px;
     margin-top: 5px;
-    background-color: #f0efef;
-    border: none;
+    background-color: #fbfcff;
+    border: 0.5px solid #eeeeee;
     font-size: 15px;
+    ::placeholder {
+    }
   }
 `;

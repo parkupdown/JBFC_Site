@@ -24,7 +24,6 @@ const newsArr = [
 export function SportsNews() {
   return (
     <>
-      <CategoryTitle>News</CategoryTitle>
       <SwipterContainer>
         <Swiper
           spaceBetween={50}
@@ -45,10 +44,6 @@ export function SportsNews() {
     </>
   );
 }
-
-const CategoryTitle = styled.h4`
-  margin-left: 20px;
-`;
 
 const SwipterContainer = styled.div`
   width: 100%;

@@ -44,3 +44,9 @@ export const getCalendarArr = (year, month) => {
 
   return calendarArr;
 };
+export const getTime = () => {
+  const date = new Date();
+  return `${
+    date.getMonth() + 1
+  }월 ${date.getDate()}일 ${date.getHours()}시 ${date.getMinutes()}분`;
+};

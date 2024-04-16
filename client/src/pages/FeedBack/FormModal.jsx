@@ -2,10 +2,16 @@ import axios from "axios";
 import { useState } from "react";
 import { useQueryClient } from "react-query";
 import styled from "styled-components";
-import { httpClient } from "../../api/http";
+import { httpClient } from "@/api/http";
 import { useForm } from "react-hook-form";
+import { queryClient } from "../../App";
 
-export default function FormModal({ closeModal, scheduleId, playerNum }) {
+export default function FormModal({
+  closeModal,
+  scheduleId,
+  playerNum,
+  month,
+}) {
   const playerArr = Array.from({ length: playerNum });
 
   const insertPlayerData = async (playerNames) => {
@@ -13,6 +19,7 @@ export default function FormModal({ closeModal, scheduleId, playerNum }) {
       playerNames: playerNames,
       schedule_id: scheduleId,
     });
+    queryClient.invalidateQueries(`${month}players`);
   };
 
   const onSubmit = async (data) => {
@@ -64,19 +71,19 @@ const InputLabel = styled.label`
 const InputField = styled.input`
   width: 100%;
   padding: 8px;
-  border: 1px solid #ccc;
+  border: ${({ theme }) => theme.border.main};
   border-radius: 3px;
 `;
 
 const Button = styled.button`
   padding: 8px 16px;
-  background-color: #007bff;
-  color: white;
+  background-color: ${({ theme }) => theme.color.positive};
+  color: ${({ theme }) => theme.backgroundColor.main};
   border: none;
   border-radius: 3px;
   cursor: pointer;
 
   &:hover {
-    background-color: #0056b3;
+    background-color: ${({ theme }) => theme.color.negativeClicked};
   }
 `;

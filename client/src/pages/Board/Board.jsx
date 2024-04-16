@@ -1,13 +1,9 @@
 import { useRef } from "react";
-import { useEffect } from "react";
-import { useInfiniteQuery } from "react-query";
-import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { httpClient } from "../../api/http";
 import { Link } from "react-router-dom";
-import { Content } from "./BoardCase";
-import { useBoardInfinite } from "../../hooks/useBoardInfinite";
-import { fetchAllBoard } from "../../api/board.api";
+import { Content } from "./BoardContent";
+import { useBoardInfinite } from "@/hooks/useBoardInfinite";
+import { fetchAllBoard } from "@/api/board.api";
 
 export default function Board() {
   const ref = useRef(null);
@@ -34,7 +30,11 @@ export default function Board() {
             (page) =>
               page &&
               page.map((boardData) => (
-                <Content boardData={boardData} key={boardData.id} />
+                <Content
+                  boardData={boardData}
+                  key={boardData.id}
+                  deleteMode={false}
+                />
               ))
           )}
       </BoardContainer>
@@ -47,12 +47,16 @@ const Container = styled.div`
   a {
     text-decoration: none;
     text-decoration-line: none;
-    color: black;
+    color: ${({ theme }) => theme.color.positive};
     padding: 10px;
-    background-color: #f8f8f8;
-    border-radius: 20px;
+    background-color: ${({ theme }) => theme.backgroundColor.main};
+    border-radius: 10px;
     font-size: 14px;
-    border: 0.5px solid white;
+    border: ${({ theme }) => theme.border.main};
+
+    &:hover {
+      color: ${({ theme }) => theme.color.positiveClicked};
+    }
   }
   .navigation {
     display: flex;

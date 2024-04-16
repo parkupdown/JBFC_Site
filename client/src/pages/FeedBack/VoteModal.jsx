@@ -1,18 +1,23 @@
 import { useForm } from "react-hook-form";
 import styled from "styled-components";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { getNickName } from "../../store/nickNameStore";
-import { httpClient } from "../../api/http";
-import { QueryClient, useQueryClient } from "react-query";
-import { useNavigate } from "react-router-dom";
+import { getNickName } from "@/store/nickNameStore";
+import { httpClient } from "@/api/http";
+import { queryClient } from "@/App";
 
-export default function VoteModal({ closeModal, playerData, scheduleId }) {
+export default function VoteModal({
+  closeModal,
+  playerData,
+  scheduleId,
+  month,
+}) {
   const nickName = getNickName();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
+    watch,
   } = useForm();
 
   const scoreArr = Array.from({ length: 6 }, (_, i) => i * 2);
@@ -35,9 +40,11 @@ export default function VoteModal({ closeModal, playerData, scheduleId }) {
   };
 
   const onSubmit = async (voteResult) => {
-    console.log(voteResult);
     await insertVoteData(voteResult);
     await updateVoteScore(voteResult);
+    queryClient.invalidateQueries(`${month}votes`);
+    queryClient.invalidateQueries(`${month}players`);
+
     closeModal();
   };
 
@@ -45,92 +52,112 @@ export default function VoteModal({ closeModal, playerData, scheduleId }) {
   // vote에 투표했음을 표시
 
   return (
-    <div>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        {playerData &&
-          playerData.map((player, playerIndex) => (
-            <div key={playerIndex} className="scoreBox mb-3">
-              <span>{player.player}</span>
-              <div className="d-flex">
-                {scoreArr.map((score, scoreIndex) => (
-                  <div
-                    className="form-check form-check-inline"
-                    key={scoreIndex}
-                  >
-                    <input
-                      className="form-check-input"
-                      type="radio"
-                      {...register(player.player, {
-                        required: true,
-                      })}
-                      value={score}
-                    />
-                    <label className="form-check-label">{score}</label>
-                  </div>
-                ))}
+    <Container>
+      <span className="header">Praise makes the whale dance</span>
+      <div className="formBox">
+        <form onSubmit={handleSubmit(onSubmit)}>
+          {playerData &&
+            playerData.map((player, playerIndex) => (
+              <div key={playerIndex} className="voteBox">
+                <span>{player.player}</span>
+                <div className="radioBox">
+                  {scoreArr.map((score, scoreIndex) => (
+                    <div key={scoreIndex}>
+                      <label
+                        htmlFor={`player${player.player}${scoreIndex}`}
+                        value={score}
+                        className="radioButton"
+                        style={{
+                          backgroundColor:
+                            watch(player.player) == score
+                              ? "#516fd4"
+                              : "#edb87b",
+                        }}
+                      >
+                        {score}
+                        <input
+                          className="radioButtonHidden"
+                          id={`player${player.player}${scoreIndex}`}
+                          type="radio"
+                          {...register(player.player, {
+                            required: true,
+                          })}
+                          value={score}
+                          name={player.player}
+                        />
+                      </label>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
-          ))}
-        <Button type="submit">제출</Button>
-      </form>
-      <p>
-        모든 선수의 점수를 체크해주세요. 중복으로 입력된 선수가 있을 수
-        있습니다.
-      </p>
-    </div>
+            ))}
+          <Button type="submit">제출</Button>
+        </form>
+        {errors && <span>투표하지 않은 선수가 존재합니다.</span>}
+      </div>
+    </Container>
   );
 }
 
-const ModalBackground = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  background-color: rgba(0, 0, 0, 0.5);
+const Container = styled.div`
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  height: 100vh;
-`;
+  justify-content: center;
 
-const ModalContent = styled.div`
-  height: 60vh;
-  background-color: white;
-  padding: 40px;
-  border-radius: 5px;
-  position: relative;
-  overflow-y: scroll;
-
-  h6 {
-    margin: 20px 0;
-    width: 100%;
-    text-align: center;
-    opacity: 0.3;
+  .header {
+    padding: 5px 14px;
+    background-color: ${({ theme }) => theme.backgroundColor.box};
+    border-radius: 10px;
+    border: ${({ theme }) => theme.border.main};
+    font-size: 15px;
+    opacity: 0.7;
+    font-weight: 300;
   }
 
-  .scoreBox {
+  .formBox {
+    width: 50vw;
+    @media (max-width: 800px) {
+      width: 100vw;
+    }
+    margin-top: 20px;
+    border-radius: 20px;
+    background-color: ${({ theme }) => theme.backgroundColor.box};
+  }
+
+  .voteBox {
     display: flex;
-    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    margin-bottom: 30px;
+
+    span {
+      font-size: 16px;
+      font-weight: 500;
+      opacity: 0.7;
+      background-color: ${({ theme }) => theme.backgroundColor.main};
+      padding: 0px 20px;
+      border-radius: 10px;
+      border: ${({ theme }) => theme.border.main};
+    }
+    .radioBox {
+      display: flex;
+    }
   }
-  .innerScoreBox {
-    background-color: aliceblue;
+
+  .radioButtonHidden {
+    display: none;
   }
-`;
 
-const InputContainer = styled.div`
-  margin-bottom: 15px;
-`;
-
-const InputLabel = styled.label`
-  display: block;
-  margin-bottom: 5px;
-`;
-
-const InputField = styled.input`
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 3px;
+  .radioButton {
+    font-size: 12px;
+    padding: 3px 10px;
+    color: white;
+    margin: 0 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
 `;
 
 const Button = styled.button`

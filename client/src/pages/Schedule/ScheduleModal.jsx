@@ -1,6 +1,6 @@
 import { useState } from "react";
-import Modal from "../../components/common/Modal";
-import { useScheduleDetail } from "../../hooks/useScheduleDetail";
+import Modal from "@/components/common/Modal";
+import { useScheduleDetail } from "@/hooks/useScheduleDetail";
 import FormModal from "./FormModal";
 import ResultModal from "./ResultModal";
 

@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
-import { httpClient } from "../../api/http";
-import { getNickName } from "../../store/nickNameStore";
-import { goBoard } from "../../utils/pageMove";
+import { httpClient } from "@/api/http";
+import { getNickName } from "@/store/nickNameStore";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import styled from "styled-components";
+import { queryClient } from "../../App";
 
 export default function BoardWrite() {
   const nickName = getNickName();
@@ -38,7 +38,6 @@ export default function BoardWrite() {
     const response = await httpClient.post("/board", formData, {
       headers: { "Content-Type": "multipart/form-data", charset: "utf-8" },
     });
-    console.log(response);
     return response.data;
   };
 
@@ -49,11 +48,11 @@ export default function BoardWrite() {
     return false;
   };
 
-  const queryClient = useQueryClient();
   const mutaion = useMutation((formData) => insertBoardData(formData), {
     onSuccess: (data) => {
       queryClient.invalidateQueries("lastestBoardData");
       queryClient.invalidateQueries("myBoardData");
+
       queryClient.setQueryData("boardData", (prev) => {
         // 가장 마지막 Page에 load된 prev의 data의 마지막 id가 1차이가 난다면? 추가해주기
         let prevBoardData = prev.pages;
@@ -124,25 +123,59 @@ export default function BoardWrite() {
         ></Textarea>
         <ErrorMessage>{errors.content && errors.content.message}</ErrorMessage>
 
-        {thumbnail === null ? null : <Image src={thumbnail} />}
-        <FileInput
-          onChange={(e) => handleChange(e)}
+        {thumbnail === null ? null : (
+          <ImageBox>
+            <Image src={thumbnail} />
+          </ImageBox>
+        )}
+        <label htmlFor="file">
+          <div className="btn-upload">파일 업로드하기</div>
+        </label>
+        <input
+          className="noneView"
           type="file"
+          name="file"
+          id="file"
+          onChange={(e) => handleChange(e)}
           accept="image/*"
         />
-        <Button type="button" onClick={deleteThumbnail}>
+      </Form>
+      <div className="buttonBox">
+        <DeleteButton type="button" onClick={deleteThumbnail}>
           파일삭제
-        </Button>
-        <Button className="upload" onClick={handleSubmit(onSubmit)}>
+        </DeleteButton>
+        <Button
+          className="upload"
+          type="submit"
+          onClick={handleSubmit(onSubmit)}
+        >
           등록
         </Button>
-      </Form>
+      </div>
     </Container>
   );
 }
 
 const Container = styled.div`
   padding: 20px;
+  .noneView {
+    display: none;
+  }
+  .btn-upload {
+    background-color: #fbfcff;
+    width: max-content;
+    border-radius: 10px;
+    border: 0.5px solid #eeeeee;
+    color: #516fd4;
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+
+  .buttonBox {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
 `;
 
 const Form = styled.form`
@@ -154,18 +187,20 @@ const Form = styled.form`
 const Input = styled.input`
   margin-bottom: 10px;
   padding: 8px;
-  border: 1px solid #ccc;
+  border: ${({ theme }) => theme.border.main};
   border-radius: 4px;
   width: 50%;
   height: 7vh;
   border-radius: 10px;
+  background-color: ${({ theme }) => theme.backgroundColor.box};
 `;
 
 const Textarea = styled.textarea`
   margin-bottom: 10px;
   padding: 8px;
-  border: 1px solid #ccc;
+  border: ${({ theme }) => theme.border.main};
   border-radius: 10px;
+  background-color: ${({ theme }) => theme.backgroundColor.box};
   width: 100%;
   height: 40vh;
 `;
@@ -174,24 +209,26 @@ const ErrorMessage = styled.p`
   color: red;
 `;
 
-const Image = styled.img`
-  width: 30%;
+const ImageBox = styled.div`
+  text-align: center;
+  margin-bottom: 10px;
 `;
 
-const FileInput = styled.input`
-  margin-bottom: 10px;
+const Image = styled.img`
+  width: 40%;
 `;
 
 const Button = styled.button`
   padding: 10px 20px;
-  background-color: #0056b3;
-  color: white;
-  border: none;
+  text-align: center;
+  width: 200px;
+  border: ${({ theme }) => theme.border.main};
+  background-color: ${({ theme }) => theme.backgroundColor.box};
+  color: ${({ theme }) => theme.color.positive};
   border-radius: 10px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
   margin-top: 20px;
-  &:hover {
-    background-color: #0056b3;
-  }
+`;
+
+const DeleteButton = styled(Button)`
+  color: ${({ theme }) => theme.color.negative};
 `;

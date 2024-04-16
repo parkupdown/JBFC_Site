@@ -36,3 +36,9 @@ export const deleteScheduleData = async (month, day) => {
 export const updateScheduleData = async (scheduleData) => {
   await httpClient.put(`/schedule`, scheduleData);
 };
+
+export const getScheduleData = async (month) => {
+  const getSchedule = await httpClient.get(`/schedule?month=${month}`);
+  const scheduleData = getSchedule.data;
+  return scheduleData;
+};

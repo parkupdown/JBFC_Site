@@ -1,11 +1,10 @@
-import { httpClient } from "../../api/http";
+import { httpClient } from "@/api/http";
 import { useState } from "react";
 import { useEffect } from "react";
 import FormModal from "./FormModal";
 import VoteModal from "./VoteModal";
 import FeedBackResult from "./FeedBackResult";
-import styled from "styled-components";
-import Modal from "../../components/common/Modal";
+import Modal from "@/components/common/Modal";
 
 // 일단 여기로 들어와서 만약 아직 생성된 투표가 없다면 ? 으로가는걸로
 // eslint-disable-next-line react/prop-types
@@ -14,6 +13,7 @@ export default function FeedBackModal({
   closeModal,
   playerNum,
   isOpenModal,
+  month,
 }) {
   const [playerData, setPlayerData] = useState([]);
   const [voteData, setVoteData] = useState([]);
@@ -39,31 +39,42 @@ export default function FeedBackModal({
 
     fetchData();
   }, [isOpenModal]);
+  // 전역으로?
+
+  if (loading) {
+    return (
+      <div>
+        <h4>로딩중</h4>
+      </div>
+    );
+  }
 
   return (
     <div>
-      {loading && <h4>로딩중</h4>}
       <Modal closeModal={closeModal}>
-        {!loading && playerData.length === 0 && (
+        {playerData.length === 0 && (
           <FormModal
             closeModal={closeModal}
             scheduleId={scheduleId}
             playerNum={playerNum}
+            month={month}
           />
         )}
-        {!loading && playerData.length !== 0 && voteData.length === 0 && (
+        {playerData.length !== 0 && voteData.length === 0 && (
           <VoteModal
             closeModal={closeModal}
             playerData={playerData}
             scheduleId={scheduleId}
+            month={month}
           />
         )}
-        {!loading && playerData.length !== 0 && voteData.length !== 0 && (
+        {playerData.length !== 0 && voteData.length !== 0 && (
           <FeedBackResult
             closeModal={closeModal}
             scheduleId={scheduleId}
             playerData={playerData}
             voteData={voteData}
+            month={month}
           />
         )}
       </Modal>

@@ -1,7 +1,6 @@
-import { useSearchParams } from "react-router-dom";
 import { httpClient } from "./http";
-import { useLocation } from "react-router-dom";
 import { getNickName } from "../store/nickNameStore";
+import { queryClient } from "../App";
 /*
 export const getLastestBoardData = async () => {
   const getData = await httpClient.get("/board/lastest");
@@ -19,6 +18,11 @@ export const fetchBoard = async (paramsData) => {
   const response = await httpClient.get(`/board`, {
     params: paramsData,
   });
+  return response.data;
+};
+
+export const fetchBoardLastest = async () => {
+  const response = await httpClient.get(`/board/lastest`);
   return response.data;
 };
 
@@ -41,5 +45,14 @@ export const fetchAllBoard = async ({ pageParam = 0 }) => {
   return board.data;
 };
 
+export const fetchDeleteBoard = async (deleteBoardIdArr) => {
+  await httpClient.delete(`board/mine/${deleteBoardIdArr}`);
+};
+
+export const resetBoardCacheData = async () => {
+  queryClient.invalidateQueries("myBoardData");
+  queryClient.invalidateQueries("boardData");
+  queryClient.invalidateQueries("lastestBoardData");
+};
 //query string을 사용한다면 한 페이지 안에서 데이터를 분기해서 페칭할때
 // 그런데 각 query string에 따라 컴포넌트가 다르다면 이러한 방법을 안쓰는게 더 낫겠네

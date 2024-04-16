@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import { FaInstagram } from "react-icons/fa6";
 import { GrBlog } from "react-icons/gr";
-import { Logo } from "../header/Logo";
 
 export default function Footer() {
   return (
@@ -23,7 +22,6 @@ export default function Footer() {
         <span>천안: 전민욱</span>
         <span>contact 010-3445-5177</span>
       </div>
-      <Logo />
     </FooterStyled>
   );
 }
@@ -38,9 +36,15 @@ const FooterStyled = styled.footer`
 
   .title {
     display: flex;
-    justify-content: space-around;
+    flex-direction: column;
     opacity: 0.7;
-    background-color: white;
+    background-color: ${({ theme }) => theme.backgroundColor.box};
+    padding: 0px 10px;
+    span {
+      svg {
+        margin-left: 3px;
+      }
+    }
   }
   .summury {
     margin: 20px 0;
@@ -51,5 +55,10 @@ const FooterStyled = styled.footer`
     margin-left: 10px;
     font-size: 13px;
     opacity: 0.7;
+    span {
+      background-color: ${({ theme }) => theme.backgroundColor.box};
+      padding: 5px;
+      border-radius: 5px;
+    }
   }
 `;

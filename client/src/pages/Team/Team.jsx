@@ -1,43 +1,90 @@
 import styled from "styled-components";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Navigation } from "swiper/modules";
-import { useNavigate } from "react-router-dom";
-const SwiperContainer = styled.div`
-  margin-top: 30px;
-  padding: 20px;
-  text-align: center;
-  img {
-    border-radius: 10px;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-`;
+import { players } from "../../constants/player.constant";
+
 export default function Team() {
-  const players = Array.from({ length: 5 });
-  const navigator = useNavigate();
-  const goBack = () => navigator(-1);
   return (
-    <div>
-      <span onClick={goBack}>뒤로가기</span>
-      <SwiperContainer>
-        <Swiper
-          spaceBetween={50}
-          slidesPerView={2}
-          loop={true}
-          modules={[Navigation, Autoplay]}
-          autoplay={{ delay: 2000 }}
-        >
-          {players.map((player, index) => (
-            <SwiperSlide key={index}>
-              <img src={`/Player/${index + 1}.png`} />
-              {/*  위 코드는 아마 배포 후 개선해야함 
-          해당 파일 위치를 찾기 어려우니 import.meta.env.~~를써야할듯
-          (북마크에 정보 있음)*/}
-            </SwiperSlide>
-          ))}
-        </Swiper>
-      </SwiperContainer>
-    </div>
+    <Container>
+      {players.map((player) => (
+        <div className="playerInfo">
+          <div className="imgBox">
+            <img src={player.imgSrc} />
+          </div>
+          <div className="textBox">
+            <span className="name">{player.name}</span>
+            <span className="position">{player.position}</span>
+            <div className="characterBox">
+              {player.character.map((character) => (
+                <span>{character}</span>
+              ))}
+            </div>
+          </div>
+        </div>
+      ))}
+    </Container>
   );
 }
+
+/**
+        <img src={`/Player/${index + 1}.png`} />
+ */
+const Container = styled.div`
+  height: auto;
+  width: 100vw;
+  display: grid;
+  place-items: center;
+  @media (max-width: 800px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  grid-template-columns: repeat(4, 1fr);
+
+  .playerInfo {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 20vw;
+    height: 20vh;
+    background-color: ${({ theme }) => theme.backgroundColor.box};
+    padding: 5px 10px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+
+    @media (max-width: 800px) {
+      width: 40vw;
+    }
+    .imgBox {
+      img {
+        width: 100px;
+        @media (max-width: 800px) {
+          width: 70px;
+        }
+      }
+    }
+    .textBox {
+      display: flex;
+      flex-direction: column;
+      .name {
+        font-weight: 500;
+        font-size: 20px;
+      }
+      .position {
+        font-size: 11px;
+        opacity: 0.7;
+        font-family: 200;
+      }
+    }
+    .characterBox {
+      span {
+        border: ${({ theme }) => theme.border.main};
+        padding: 1.5px;
+        border-radius: 2px;
+        font-size: 12px;
+        color: ${({ theme }) => theme.color.positive};
+        background-color: ${({ theme }) => theme.backgroundColor.main};
+        margin-right: 2px;
+        @media (max-width: 800px) {
+          font-size: 7px;
+        }
+      }
+    }
+  }
+`;
