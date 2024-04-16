@@ -21,8 +21,8 @@ router.route("/detail/:id").get(getBoardDetailData);
 
 router.route(`/lastest`).get(getLastestBoardData);
 
-router.route("/mine/:userId").get(getMyBoardData);
+router.route("/mine/:nickname").get(getMyBoardData);
 
-router.route("/mine").delete(deleteBoardData);
+router.route("/mine/:deleteBoardIdArr").delete(deleteBoardData);
 
 module.exports = router;

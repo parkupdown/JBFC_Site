@@ -16,6 +16,31 @@ const getVoteUserData = (req, res) => {
   });
 };
 
+const getVotesData = (req, res) => {
+  let { schedule_id } = req.query;
+  schedule_id = schedule_id.split(`,`);
+
+  let sql = "SELECT * FROM vote WHERE schedule_id IN (?)";
+
+  conn.query(sql, [schedule_id], (err, results) => {
+    if (err) {
+      res.status(StatusCodes.BAD_REQUEST).end();
+      return;
+    }
+
+    const groupedResults = schedule_id.map((id) => {
+      // 현재 schedule_id에 해당하는 결과만 필터링
+      const filteredResults = results.filter(
+        (result) => result.schedule_id == id
+      );
+      return filteredResults;
+    });
+
+    res.status(StatusCodes.OK).json(groupedResults);
+    return;
+  });
+};
+
 const insertVoteUserData = (req, res) => {
   let { schedule_id, nickName, voteResult } = req.body;
 
@@ -48,4 +73,9 @@ const deleteVoteUserData = (req, res) => {
   });
 };
 
-module.exports = { getVoteUserData, insertVoteUserData, deleteVoteUserData };
+module.exports = {
+  getVoteUserData,
+  insertVoteUserData,
+  deleteVoteUserData,
+  getVotesData,
+};
