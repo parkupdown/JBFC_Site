@@ -46,7 +46,6 @@ const getCommentData = (req, res) => {
       res.status(StatusCodes.BAD_REQUEST).end();
       return;
     }
-    console.log(result);
     res.status(StatusCodes.OK).json(result);
   });
 };
@@ -57,7 +56,7 @@ const deleteCommentData = (req, res) => {
   }
   const { commentId } = req.params;
   const sql = "DELETE  FROM comment WHERE id = ?";
-
+  console.log(commentId);
   conn.query(sql, commentId, function (err, result) {
     if (err) {
       res.status(StatusCodes.BAD_REQUEST).end();

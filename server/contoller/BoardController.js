@@ -12,7 +12,7 @@ const insertBoardData = (req, res) => {
     return;
   }
 
-  let { userId, title, content, time } = req.body;
+  let { nickname, title, content, time } = req.body;
   let image = req.file;
   let thumbnail;
   if (image !== undefined) {
@@ -24,8 +24,8 @@ const insertBoardData = (req, res) => {
   // 여기서 req.file의 name을 db에 저장하는거지
   // text, userId까지!
   const sql =
-    "INSERT INTO board (user_id,title,content,thumbnail,time) VALUE (?,?,?,?,?);";
-  const value = [userId, title, content, thumbnail, time];
+    "INSERT INTO board (nickname,title,content,thumbnail,time) VALUE (?,?,?,?,?);";
+  const value = [nickname, title, content, thumbnail, time];
   conn.query(sql, value, function (err, result) {
     if (err) {
       res.status(StatusCodes.BAD_REQUEST).end();
@@ -35,7 +35,7 @@ const insertBoardData = (req, res) => {
 
     const newData = {
       id: result.insertId,
-      user_id: userId,
+      nickname: nickname,
       title: title,
       content: content,
       thumbnail: thumbnail,
@@ -50,27 +50,38 @@ const getBoardData = (req, res) => {
   if (!isAuthorization(req, res)) {
     return;
   }
-
-  const sql = "SELECT * FROM board;";
-  let { page } = req.query;
-  page = parseInt(page);
-
-  conn.query(sql, function (err, result) {
+  let { mine, detail, page } = req.query;
+  let sql = "SELECT * FROM board ORDER BY id DESC LIMIT 1";
+  let value;
+  if (mine) {
+    sql = "SELECT * FROM board WHERE nickname = ?;";
+    value = mine;
+  } else if (detail) {
+    sql = "SELECT * FROM board WHERE id = ?;";
+    value = detail;
+  } else if (page) {
+    sql = "SELECT * FROM board;";
+  }
+  conn.query(sql, value, function (err, result) {
     if (err) {
       res.status(StatusCodes.BAD_REQUEST).end();
       return;
     }
-    page = page * 6;
-    if (page > result.length) {
-      res.status(StatusCodes.OK).json(false);
+    if (page) {
+      page = page * 6;
+      if (page > result.length) {
+        res.status(StatusCodes.OK).json(false);
+        return;
+      }
+      let boardData = result.slice(page, page + 6);
+      res.status(StatusCodes.OK).json(boardData);
       return;
     }
 
-    let boardData = result.slice(page, page + 6);
+    return res.status(StatusCodes.OK).json(result);
+
     // 이렇게하면 전체적으로 계속 불러와짐 그럼 ??
     // page에 맞게 가져오는거지
-
-    res.status(StatusCodes.OK).json(boardData);
   });
 };
 
@@ -78,7 +89,6 @@ const getLastestBoardData = (req, res) => {
   if (!isAuthorization(req, res)) {
     return;
   }
-  console.log(isAuthorization(req, res));
 
   const sql = "SELECT * FROM board ORDER BY id DESC LIMIT 1;";
   conn.query(sql, function (err, result) {
@@ -112,12 +122,12 @@ const getMyBoardData = (req, res) => {
     return;
   }
 
-  const { userId } = req.params;
+  const { nickname } = req.params;
   let { page } = req.query;
   page = parseInt(page);
 
-  const sql = "SELECT * FROM board WHERE user_id = ?;";
-  conn.query(sql, userId, function (err, result) {
+  const sql = "SELECT * FROM board WHERE nickname = ?;";
+  conn.query(sql, nickname, function (err, result) {
     if (err) {
       res.status(StatusCodes.BAD_REQUEST).end();
       return;
@@ -140,9 +150,10 @@ const deleteBoardData = (req, res) => {
     return;
   }
 
-  let { removeBoardIdArr } = req.body;
-  const deleteSql = removeBoardIdArr.map(
-    (boardId) => `DELETE FROM board WHERE id =${boardId};`
+  let { deleteBoardIdArr } = req.params;
+  deleteBoardIdArr = deleteBoardIdArr.split(`,`);
+  const deleteSql = deleteBoardIdArr.map(
+    (boardId) => `DELETE FROM board WHERE id =${Number(boardId)};`
   );
 
   deleteSql.forEach((sql) => {
