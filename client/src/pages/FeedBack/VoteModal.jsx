@@ -19,7 +19,7 @@ export default function VoteModal({
     formState: { errors },
     watch,
   } = useForm();
-  console.log(watch("6"));
+
   const scoreArr = Array.from({ length: 6 }, (_, i) => i * 2);
 
   const insertVoteData = async (voteResult) => {
@@ -107,35 +107,38 @@ const Container = styled.div`
 
   .header {
     padding: 5px 14px;
-    background-color: #fbfcff;
+    background-color: ${({ theme }) => theme.backgroundColor.box};
     border-radius: 10px;
-    border: 0.5px solid #eeeeee;
+    border: ${({ theme }) => theme.border.main};
     font-size: 15px;
     opacity: 0.7;
     font-weight: 300;
   }
 
   .formBox {
-    width: 100vw;
+    width: 50vw;
+    @media (max-width: 800px) {
+      width: 100vw;
+    }
     margin-top: 20px;
     border-radius: 20px;
-    background-color: #fbfcff;
+    background-color: ${({ theme }) => theme.backgroundColor.box};
   }
 
   .voteBox {
     display: flex;
     align-items: center;
-    justify-content: space-around;
+    justify-content: space-evenly;
     margin-bottom: 30px;
 
     span {
       font-size: 16px;
       font-weight: 500;
       opacity: 0.7;
-      background-color: white;
+      background-color: ${({ theme }) => theme.backgroundColor.main};
       padding: 0px 20px;
       border-radius: 10px;
-      border: 0.5px solid #eeeeee;
+      border: ${({ theme }) => theme.border.main};
     }
     .radioBox {
       display: flex;

@@ -97,33 +97,36 @@ export default function Schedule() {
 }
 
 const Container = styled.div`
-  height: 100vh;
   width: 100vw;
   padding: 20px 0;
-  background-color: #fbfcff;
-
+  background-color: ${({ theme }) => theme.backgroundColor.box};
+  height: 100vh;
   .header {
     display: flex;
     flex-direction: column;
     align-items: center;
-    color: #516fd4;
+    color: ${({ theme }) => theme.color.positive};
     font-size: 24px;
   }
 
   .navButton {
     button {
+      @media (max-width: 800px) {
+        padding: 10px 12px;
+        font-size: 14px;
+      }
       background-color: white;
-      border: 0.7px solid #eeeeee;
-      padding: 4px 12px;
-      border-radius: 2px;
+      border: ${({ theme }) => theme.border.main};
+      padding: 6px 14px;
+      border-radius: 6px;
       font-size: 14px;
       margin: 0 8px;
-      color: black;
+      color: ${({ theme }) => theme.color.text};
     }
   }
 
   .contents {
-    background-color: #fbfcff;
+    background-color: ${({ theme }) => theme.backgroundColor.box};
     text-align: center;
     margin-top: 20px;
 
@@ -133,16 +136,20 @@ const Container = styled.div`
       gap: 6px;
       span {
         padding: 10px;
-        border: 0.5px solid #eeeeee;
+        border: ${({ theme }) => theme.border.main};
       }
       .days {
-        padding: 10px;
+        @media (max-width: 800px) {
+          padding: 10px 0;
+          font-size: 14px;
+        }
+        padding: 13px 0;
         margin: 2px;
-        border: 0.5px solid #eeeeee;
+        border: ${({ theme }) => theme.border.main};
         border-radius: 5px;
-        color: white;
+        color: ${({ theme }) => theme.backgroundColor.main};
         font-weight: 200;
-        font-size: 14px;
+        font-size: 16px;
       }
     }
   }

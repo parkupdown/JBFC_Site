@@ -72,7 +72,7 @@ export default function ResultModal({ scheduleDetailData, closeModal }) {
           </SpanField>
           <SpanField>시간: {time}</SpanField>
           <SpanField>매칭/자체: {type_of_match}</SpanField>
-          <SpanField>총인원: {num_of_player}</SpanField>
+          <SpanField>총인원: {num_of_player}명</SpanField>
           <SpanField>구장비: {formatNumber(price)}원</SpanField>
           <SpanField>
             인당:
@@ -95,34 +95,41 @@ const TextContainer = styled.div`
 const SpanField = styled.span`
   display: block;
   width: 100%;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 3px;
+  padding: 12px;
+  background-color: ${({ theme }) => theme.backgroundColor.box};
+  border: ${({ theme }) => theme.border.main};
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 400;
+  margin-top: 10px;
+  opacity: 0.8;
+  color: ${({ theme }) => theme.color.positive};
 `;
 const ButtonBox = styled.div`
   display: flex;
+  margin-top: 10px;
 `;
 
 const Button = styled.button`
   padding: 8px 16px;
-  background-color: #007bff;
-  color: white;
+  background-color: ${({ theme }) => theme.color.positive};
+  color: ${({ theme }) => theme.backgroundColor.main};
   border: none;
   border-radius: 3px;
   cursor: pointer;
-
+  margin: 0 5px;
   &:hover {
-    background-color: #0056b3;
+    background-color: ${({ theme }) => theme.color.positiveClicked};
   }
 `;
 
 const CancelButton = styled(Button)`
-  background-color: red;
+  background-color: ${({ theme }) => theme.color.negative};
   position: absolute;
   top: 5px;
   left: 5px;
   &:hover {
-    background-color: #a50303;
+    background-color: ${({ theme }) => theme.color.negativeClicked};
   }
 `;
 const DeleteButton = styled(CancelButton)`

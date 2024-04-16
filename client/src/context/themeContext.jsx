@@ -1,7 +1,7 @@
 import { createContext } from "react";
-import { GlobalStyle } from "../styles/global";
+import { GlobalStyle } from "@/styles/global";
 import { ThemeProvider } from "styled-components";
-import { getTheme } from "../styles/theme";
+import { getTheme } from "@/styles/theme";
 import { useState } from "react";
 
 export const ThemeContext = createContext();

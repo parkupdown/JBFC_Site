@@ -3,7 +3,7 @@ import styled from "styled-components";
 import "swiper/css";
 import "swiper/css/navigation";
 import { useQuery } from "react-query";
-import { getTodayScheduleData } from "../../api/schedule.api";
+import { getTodayScheduleData } from "@/api/schedule.api";
 import { BoardLastest } from "./BoardLastest";
 import { ScheduleToday } from "./ScheduleToday";
 import { SportsNews } from "./SportsNews";
@@ -11,8 +11,8 @@ import { FaRegUser } from "react-icons/fa";
 import { FaRegCalendarAlt } from "react-icons/fa";
 import { IoChatbubblesOutline } from "react-icons/io5";
 import { FiCoffee } from "react-icons/fi";
-import { useBoards } from "../../hooks/useBoards";
-import { fetchBoard } from "../../api/board.api";
+
+import { fetchBoardLastest } from "@/api/board.api";
 
 export default function Main() {
   // 여기서 jwt여부 체크해서 없으면 바로 그냥 로그인으로
@@ -30,7 +30,10 @@ export default function Main() {
     navigate("/board");
   };
 
-  const { boardLoading, boardData } = useBoards("lastestBoardData");
+  const { isLoading: boardLoading, data: boardData } = useQuery(
+    "lastestBoardData",
+    fetchBoardLastest
+  );
   const { isLoading: scheduleLoading, data: scheduleData } = useQuery(
     "todaySchedule",
     getTodayScheduleData
@@ -38,22 +41,25 @@ export default function Main() {
 
   return (
     <Container>
+      <div className="imgBox">
+        <img className="teamImg" src="/Team/jjack.jpg" />
+      </div>
       <NavContainer>
         <div className="category" onClick={goTeam}>
           <FaRegUser />
-          <span>팀</span>
+          <span className="nav">팀</span>
         </div>
         <div className="category" onClick={goBoard}>
           <IoChatbubblesOutline />
-          <span>게시판</span>
+          <span className="nav">게시판</span>
         </div>
         <div className="category" onClick={goSchedule}>
           <FaRegCalendarAlt />
-          <span>경기일정</span>
+          <span className="nav">경기일정</span>
         </div>
         <div className="category" onClick={goFeedBack}>
           <FiCoffee />
-          <span>피드백</span>
+          <span className="nav">피드백</span>
         </div>
       </NavContainer>
       <BoardScheduleContainer>
@@ -66,12 +72,32 @@ export default function Main() {
 }
 
 const Container = styled.div`
-  span {
-    font-weight: 300;
+  .imgBox {
+    text-align: center;
+    .teamImg {
+      width: 700px;
+      height: 350px;
+      object-fit: cover;
+      border-radius: 20px;
+      @media (max-width: 800px) {
+        width: 300px;
+        height: 150px;
+      }
+    }
+  }
+
+  .nav {
+    font-weight: 400;
     text-align: left;
+    font-size: 12px;
     margin-left: 5px;
     display: block;
     margin-top: 20px;
+    background-color: ${({ theme }) => theme.backgroundColor.main};
+    padding: 3px 6px;
+    border: ${({ theme }) => theme.border.main};
+    border-radius: 5px;
+    color: ${({ theme }) => theme.color.positive};
   }
 `;
 const NavContainer = styled.div`
@@ -85,7 +111,18 @@ const NavContainer = styled.div`
     align-items: center;
 
     svg {
-      margin-left: 12px;
+      margin-left: 10px;
+      font-size: 22px;
+      color: ${({ theme }) => theme.color.text};
+      @media (max-width: 800px) {
+        font-size: 18px;
+      }
+      &:hover {
+        color: ${({ theme }) => theme.color.positive};
+      }
+    }
+    span {
+      font-size: 13px;
     }
     //background-color: ${({ theme }) => theme.color.background};
   }

@@ -43,7 +43,7 @@ const Container = styled.div`
     align-items: center;
     width: 20vw;
     height: 20vh;
-    background-color: #fbfcff;
+    background-color: ${({ theme }) => theme.backgroundColor.box};
     padding: 5px 10px;
     margin-bottom: 10px;
     border-radius: 10px;
@@ -53,7 +53,10 @@ const Container = styled.div`
     }
     .imgBox {
       img {
-        width: 70px;
+        width: 100px;
+        @media (max-width: 800px) {
+          width: 70px;
+        }
       }
     }
     .textBox {
@@ -64,20 +67,23 @@ const Container = styled.div`
         font-size: 20px;
       }
       .position {
-        font-size: 12px;
+        font-size: 11px;
         opacity: 0.7;
         font-family: 200;
       }
     }
     .characterBox {
       span {
-        border: 0.5px solid #eeeeee;
+        border: ${({ theme }) => theme.border.main};
         padding: 1px;
         border-radius: 2px;
-        font-size: 7px;
-        color: #516fd4;
-        background-color: #ffffff;
+        font-size: 12px;
+        color: ${({ theme }) => theme.color.positive};
+        background-color: ${({ theme }) => theme.backgroundColor.main};
         margin-right: 2px;
+        @media (max-width: 800px) {
+          font-size: 7px;
+        }
       }
     }
   }

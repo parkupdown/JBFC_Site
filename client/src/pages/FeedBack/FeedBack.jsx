@@ -44,7 +44,6 @@ export default function FeedBack() {
   );
   // enabled를 통해 언제 해결할지를 생각하자
 
-  console.log(thisMonthScheduleData, playersData, votesData);
   const goNextMonth = () => {
     setMonth((current) => {
       const nextMonth = (current + 1) % 12;
@@ -104,12 +103,8 @@ export default function FeedBack() {
             <span className="header">{month}월 경기 목록</span>
           </div>
           <div className="navBox">
-            <button type="button" onClick={goBeforeMonth}>
-              이전 달
-            </button>
-            <button type="button" onClick={goNextMonth}>
-              다음 달
-            </button>
+            <span onClick={goBeforeMonth}>이전 달</span>
+            <span onClick={goNextMonth}>다음 달</span>
           </div>
 
           {thisMonthScheduleData.length === 0 ? (
@@ -135,17 +130,18 @@ export default function FeedBack() {
                 )}
                 {playersData[index].length !== 0 && (
                   <span className="mvp">
-                    {
+                    {`mvp ${
                       formatMvpPlayer(
                         playersData[index],
                         votesData[index].length
                       ).mvpPlayer
                     }
+                    `}
                   </span>
                 )}
                 {playersData[index].length !== 0 && (
                   <span className="mvp">
-                    점수:
+                    최고점수
                     {
                       formatMvpPlayer(
                         playersData[index],
@@ -166,25 +162,32 @@ export default function FeedBack() {
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  background-color: #fbfcff;
+  background-color: ${({ theme }) => theme.backgroundColor.box};
   padding: 30px 0;
   .navBox {
     text-align: center;
     margin: 20px 0;
-    button {
-      background-color: white;
-      border: 0.7px solid #eeeeee;
+
+    span {
+      background-color: ${({ theme }) => theme.backgroundColor.main};
+      border: ${({ theme }) => theme.border.main};
       padding: 4px 12px;
-      border-radius: 2px;
-      font-size: 14px;
+      border-radius: 10px;
+      font-size: 16px;
       margin: 0 8px;
-      color: black;
+      color: ${({ theme }) => theme.color.text};
+      @media (max-width: 800px) {
+        font-size: 14px;
+      }
     }
   }
   .headerBox {
     text-align: center;
-    color: #516fd4;
-    font-size: 20px;
+    color: ${({ theme }) => theme.color.positive};
+    font-size: 22px;
+    @media (max-width: 800px) {
+      font-size: 20px;
+    }
   }
 
   .contentsBox {
@@ -192,11 +195,19 @@ const Container = styled.div`
     flex-direction: column;
     align-items: flex-start;
     padding: 20px;
-    border: 0.7px solid #eeeeee;
-    background-color: white;
+    border: ${({ theme }) => theme.border.main};
+    background-color: ${({ theme }) => theme.backgroundColor.main};
+    font-size: 13px;
+    @media (max-width: 800px) {
+      font-size: 10px;
+    }
+
     .date {
       font-weight: 600;
-      font-size: 20px;
+      font-size: 22px;
+      @media (max-width: 800px) {
+        font-size: 20px;
+      }
     }
     .ground {
       font-weight: 250;
@@ -208,24 +219,21 @@ const Container = styled.div`
     }
     .mvp {
       padding: 5px 10px;
-      background-color: #fbfcff;
+      background-color: ${({ theme }) => theme.backgroundColor.box};
       border-radius: 10px;
-      color: #516fd4;
-      font-size: 10px;
+      color: ${({ theme }) => theme.color.positive};
     }
     .nonVotingFormat {
       padding: 5px 10px;
-      background-color: #fbfcff;
+      background-color: ${({ theme }) => theme.backgroundColor.box};
       border-radius: 10px;
-      color: #edb87b;
-      font-size: 10px;
+      color: ${({ theme }) => theme.color.negativeClicked};
     }
     .noVote {
       padding: 5px 10px;
-      background-color: #fbfcff;
+      background-color: ${({ theme }) => theme.backgroundColor.box};
       border-radius: 10px;
-      color: #edb87b;
-      font-size: 10px;
+      color: ${({ theme }) => theme.color.negativeClicked};
     }
   }
 `;

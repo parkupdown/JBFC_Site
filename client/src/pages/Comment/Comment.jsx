@@ -1,14 +1,11 @@
-import { useQuery } from "react-query";
-
-import { httpClient } from "@/api/http";
-import { queryClient } from "@/App";
 import styled from "styled-components";
 import { BsSendFill } from "react-icons/bs";
 import { getTime } from "@/utils/getDate";
 import { getNickName } from "@/store/nickNameStore";
 import { useForm } from "react-hook-form";
 import { useComment } from "@/hooks/useComment";
-import { fetchDeleteComment, fetchPostComment } from "../../api/comment.api";
+import { fetchDeleteComment, fetchPostComment } from "@/api/comment.api";
+import { Error } from "../../components/common/Error";
 
 export default function Comment({ boardId }) {
   //여기서 writer는 게시글의 작성자
@@ -48,14 +45,19 @@ export default function Comment({ boardId }) {
         <div>
           <div>
             {comments.map((comment) => (
-              <div key={comment.id}>
-                <p>{comment.writer}</p>
-                <p>{comment.content}</p>
-                <p>- {comment.time}</p>
+              <div className="comment" key={comment.id}>
+                <div className="whoMake">
+                  <span className="writer">{comment.writer}</span>
+                  <span className="time"> {comment.time}</span>
+                </div>
+                <span className="content">{comment.content}</span>
                 {comment.writer === writer ? (
-                  <button onClick={() => removeCommentData(comment.id)}>
+                  <span
+                    className="deleteButton"
+                    onClick={() => removeCommentData(comment.id)}
+                  >
                     댓글삭제
-                  </button>
+                  </span>
                 ) : null}
               </div>
             ))}
@@ -72,7 +74,9 @@ export default function Comment({ boardId }) {
               <BsSendFill />
             </button>
           </form>
-          {errors && errors.content && <span> {errors.content.message}</span>}
+          {errors && errors.content && (
+            <Error message={errors.content.message}></Error>
+          )}
         </div>
       )}
     </Container>
@@ -85,16 +89,45 @@ const Container = styled.div`
   form {
     input {
       padding: 20px;
-      background-color: #eeeeee;
+      background-color: ${({ theme }) => theme.backgroundColor.input};
       border: none;
       border-radius: 10px;
+      margin-top: 30px;
     }
     button {
       border: none;
       font-size: 24px;
-      color: #516fd4;
-      background-color: white;
+      color: ${({ theme }) => theme.color.positive};
+      background-color: ${({ theme }) => theme.backgroundColor.main};
       margin-left: 10px;
+    }
+  }
+  .comment {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+
+    margin-bottom: 10px;
+    .whoMake {
+      font-size: 12px;
+      .writer {
+        font-weight: 600;
+      }
+      .time {
+        font-weight: 250;
+        opacity: 0.7;
+      }
+    }
+    .content {
+      font-weight: 250;
+      opacity: 0.7;
+    }
+    .deleteButton {
+      border: ${({ theme }) => theme.border.main};
+      border-radius: 7px;
+      color: ${({ theme }) => theme.color.negative};
+      padding: 5px;
+      font-size: 12px;
     }
   }
 `;

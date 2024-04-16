@@ -1,60 +1,40 @@
 const light = {
   name: "light",
   color: {
-    background: "lightgrey",
-    border: "grey",
-    text: "black",
+    positive: "#516fd4", // color: ${({theme})=>theme.color.positive};
+    negative: "#edb87b", // ${({theme})=>theme.color.negative}
+    positiveClicked: "#0056b3", // ${({theme})=>theme.color.positiveClicked}
+    negativeClicked: "#e58a22", // ${({theme})=>theme.color.negativeClicked}
+    text: "black", // ${({theme})=>theme.color.text}
   },
-  button: {
-    large: {
-      fontSize: "1.5rem",
-      padding: "1rem 2rem",
-    },
-    medium: {
-      fontSize: "1rem",
-      padding: "0.5rem 1rem",
-    },
-    small: {
-      fontSize: "0.5rem",
-      padding: "0.25rem 0.5rem",
-    },
+  backgroundColor: {
+    main: "white", // background-color: ${({theme})=>theme.backgroundColor.main}
+    box: " #fbfcff", // ${({theme})=>theme.backgroundColor.box}
+    button: "white", // ${({theme})=>theme.backgroundColor.button}
+    input: "#eeeeee", //background-color: ${({theme})=>theme.backgroundColor.input};
   },
-  buttonSchema: {
-    background: "#1778f7",
-    color: "white",
-  },
-  input: {
-    background: "#f0efef",
+  border: {
+    main: "1px solid #eeeeee", // ${({theme})=>theme.border.main}
   },
 };
 
 const dark = {
   name: "dark",
   color: {
-    background: "#202b38",
-    border: "white",
-    text: "#fff",
+    positive: "#D95585", // 밝은 청색
+    negative: "#ff7043", // 밝은 주황색
+    positiveClicked: "#1565c0", // 더 진한 청색 클릭될 때
+    negativeClicked: "#dd2c00", // 더 진한 주황색 클릭될 때
+    text: "white", // 텍스트 색상은 흰색
   },
-  button: {
-    large: {
-      fontSize: "1.5rem",
-      padding: "1rem 2rem",
-    },
-    medium: {
-      fontSize: "1rem",
-      padding: "0.5rem 1rem",
-    },
-    small: {
-      fontSize: "0.5rem",
-      padding: "0.25rem 0.5rem",
-    },
+  backgroundColor: {
+    main: "#121212", // 매우 어두운 회색으로 거의 검정색
+    box: "#333333", // 박스 배경은 진한 회색
+    button: "#424242", // 버튼 배경은 약간 밝은 회색
+    input: "#616161", // 입력 필드 배경은 어두운 회색
   },
-  buttonSchema: {
-    color: "#ffbe85",
-    background: "#161f27",
-  },
-  input: {
-    background: "#dbdbdb",
+  border: {
+    main: "1px solid #474747", // 경계선은 어두운 회색
   },
 };
 

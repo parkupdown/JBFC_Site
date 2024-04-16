@@ -5,7 +5,7 @@ import { getNickName } from "@/store/nickNameStore";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import styled from "styled-components";
-import { queryClient } from "@/App";
+import { queryClient } from "../../App";
 
 export default function BoardWrite() {
   const nickName = getNickName();
@@ -52,6 +52,7 @@ export default function BoardWrite() {
     onSuccess: (data) => {
       queryClient.invalidateQueries("lastestBoardData");
       queryClient.invalidateQueries("myBoardData");
+
       queryClient.setQueryData("boardData", (prev) => {
         // 가장 마지막 Page에 load된 prev의 data의 마지막 id가 1차이가 난다면? 추가해주기
         let prevBoardData = prev.pages;
@@ -138,13 +139,19 @@ export default function BoardWrite() {
           onChange={(e) => handleChange(e)}
           accept="image/*"
         />
+      </Form>
+      <div className="buttonBox">
         <DeleteButton type="button" onClick={deleteThumbnail}>
           파일삭제
         </DeleteButton>
-        <Button className="upload" onClick={handleSubmit(onSubmit)}>
+        <Button
+          className="upload"
+          type="submit"
+          onClick={handleSubmit(onSubmit)}
+        >
           등록
         </Button>
-      </Form>
+      </div>
     </Container>
   );
 }
@@ -157,35 +164,43 @@ const Container = styled.div`
   .btn-upload {
     background-color: #fbfcff;
     width: max-content;
-    padding: 20px;
-    border-radius: 16px;
+    border-radius: 10px;
     border: 0.5px solid #eeeeee;
     color: #516fd4;
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+
+  .buttonBox {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 `;
 
 const Form = styled.form`
   display: flex;
   flex-direction: column;
+  align-items: center;
 `;
 
 const Input = styled.input`
   margin-bottom: 10px;
   padding: 8px;
-  border: 0.5px solid #eeeeee;
+  border: ${({ theme }) => theme.border.main};
   border-radius: 4px;
   width: 50%;
   height: 7vh;
   border-radius: 10px;
-  background-color: #fbfcff;
+  background-color: ${({ theme }) => theme.backgroundColor.box};
 `;
 
 const Textarea = styled.textarea`
   margin-bottom: 10px;
   padding: 8px;
-  border: 0.5px solid #eeeeee;
+  border: ${({ theme }) => theme.border.main};
   border-radius: 10px;
-  background-color: #fbfcff;
+  background-color: ${({ theme }) => theme.backgroundColor.box};
   width: 100%;
   height: 40vh;
 `;
@@ -205,14 +220,15 @@ const Image = styled.img`
 
 const Button = styled.button`
   padding: 10px 20px;
-  border: 0.7px solid #eeeeee;
-  background-color: #fbfcff;
-  color: #516fd4;
-  border: 0.5px solid #eeeeee;
+  text-align: center;
+  width: 200px;
+  border: ${({ theme }) => theme.border.main};
+  background-color: ${({ theme }) => theme.backgroundColor.box};
+  color: ${({ theme }) => theme.color.positive};
   border-radius: 10px;
   margin-top: 20px;
 `;
 
 const DeleteButton = styled(Button)`
-  color: #d49751;
+  color: ${({ theme }) => theme.color.negative};
 `;

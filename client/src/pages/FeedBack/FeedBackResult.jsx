@@ -92,8 +92,8 @@ const Container = styled.div`
     display: flex;
     flex-direction: column;
     padding: 16px;
-    background-color: #fbfcff;
-    border: 0.5px solid #eeeeee;
+    background-color: ${({ theme }) => theme.backgroundColor.box};
+    border: ${({ theme }) => theme.border.main};
     border-radius: 10px;
   }
   .mvp {
@@ -117,8 +117,8 @@ const Container = styled.div`
       flex-direction: column;
       align-items: flex-start;
       padding: 16px;
-      background-color: #fbfcff;
-      border: 0.5px solid #eeeeee;
+      background-color: ${({ theme }) => theme.backgroundColor.box};
+      border: ${({ theme }) => theme.border.main};
       border-radius: 10px;
       .score {
         font-size: 20px;
@@ -132,17 +132,17 @@ const Container = styled.div`
     justify-content: space-around;
     margin-bottom: 20px;
     span {
-      background-color: #ffffff;
+      background-color: ${({ theme }) => theme.backgroundColor.main};
       padding: 5px 10px;
-      color: #516fd4;
-      border: 0.5px solid #eeeeee;
+      color: ${({ theme }) => theme.color.positive};
+      border: ${({ theme }) => theme.border.main};
       border-radius: 10px;
       opacity: 0.7;
     }
   }
   .contents {
     width: 100%;
-    background-color: #eeeeee;
+    background-color: ${({ theme }) => theme.backgroundColor.input};
     padding: 20px;
     border-radius: 20px;
     .playerScoreBox {
@@ -160,11 +160,11 @@ const Container = styled.div`
   }
   button {
     margin-top: 20px;
-    background-color: #ffffff;
-    border: 0.5px solid #eeeeee;
+    background-color: ${({ theme }) => theme.backgroundColor.main};
+    border: ${({ theme }) => theme.border.main};
     border-radius: 10px;
     padding: 5px;
-    color: #edb87b;
+    color: ${({ theme }) => theme.color.negative};
     font-size: 16px;
     font-weight: 200;
   }

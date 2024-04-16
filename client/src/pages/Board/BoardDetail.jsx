@@ -55,7 +55,7 @@ const Container = styled.div`
     margin-top: 20px;
     display: flex;
     flex-direction: column;
-    background-color: #fbfcff;
+    background-color: ${({ theme }) => theme.backgroundColor.box};
     padding: 40px;
     border-radius: 15px;
     .title {
@@ -68,8 +68,8 @@ const Container = styled.div`
     }
     .by {
       font-size: 9px;
-      background-color: #ffffff;
-      color: #516fd4;
+      background-color: ${({ theme }) => theme.backgroundColor.button};
+      color: ${({ theme }) => theme.color.positive};
       width: max-content;
       padding: 0 20px;
       border-radius: 5px;
@@ -88,7 +88,6 @@ const BoardDetailContainer = styled.div`
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
 
   img {
     width: 100%;

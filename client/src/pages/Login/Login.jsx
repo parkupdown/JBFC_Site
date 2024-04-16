@@ -71,24 +71,17 @@ export default function Login() {
             {...register("password", { required: true })}
           />
           <button type="submit">로그인</button>
+          <button type="button" onClick={goJoin}>
+            회원가입
+          </button>
         </form>
       </LoginBox>
-      <JoinBox>
-        <h5 onClick={goJoin}>회원가입</h5>
-      </JoinBox>
     </Container>
   );
 }
 const Container = styled.div`
-  margin-top: 70px;
   width: 100vw;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-`;
-
-const ContainerInnerBox = styled.div`
+  height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -99,15 +92,23 @@ const LoginBox = styled.div`
   text-align: center;
   color: #516fd4;
   .titleBox {
+    @media (max-width: 800px) {
+      padding: 10px 40px;
+    }
     background-color: #fbfcff;
-    padding: 10px 40px;
+    padding: 30px 80px;
     border-radius: 20px;
     width: 100%;
   }
   h1 {
-    font-size: 28px;
-    font-weight: 300;
-    opacity: 0.9;
+    font-size: 42px;
+    font-weight: 500;
+
+    @media (max-width: 800px) {
+      font-size: 28px;
+      font-weight: 300;
+      opacity: 0.9;
+    }
   }
 
   form {
@@ -117,21 +118,29 @@ const LoginBox = styled.div`
   }
 
   input {
-    margin-top: 5px;
-    padding: 9px;
-    font-size: 15px;
+    margin-top: 20px;
+    padding: 12px;
+    font-size: 20px;
     border-radius: 5px;
     background-color: #fbfcff;
     border: 0.5px solid #eeeeee;
     color: #516fd4;
+    @media (max-width: 800px) {
+      font-size: 15px;
+      margin-top: 5px;
+    }
   }
   button {
-    margin-top: 5px;
+    margin-top: 20px;
     padding: 5px;
-    font-size: 15px;
+    font-size: 20px;
     border: 0.5px solid #eeeeee;
     color: #516fd4;
     border-radius: 5px;
+    @media (max-width: 800px) {
+      font-size: 15px;
+      margin-top: 5px;
+    }
   }
 `;
 const JoinBox = styled.div`
@@ -141,13 +150,17 @@ const JoinBox = styled.div`
   @media (max-width: 768px) {
     color: white;
   }
-  h5 {
-    font-size: 15px;
+  button {
+    font-size: 20px;
     font-weight: 300;
     background-color: #fbfcff;
     color: #516fd4;
     border: 0.8px solid #eeeeee;
-    padding: 5px 60px;
+    padding: 5px;
     border-radius: 10px;
+    @media (max-width: 800px) {
+      font-size: 15px;
+      margin-top: 5px;
+    }
   }
 `;

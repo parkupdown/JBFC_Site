@@ -16,12 +16,12 @@ export function Content({ boardData }) {
             <img src={`http://localhost:3060/image/${boardData.thumbnail}`} />
           )}
         </div>
-        <div className="description">
-          <span className="title">제목: {boardData.title}</span>
+        <div className="contents">
+          <span className="title">{boardData.title}</span>
           <span className="content">
             {boardData.content && formatContent(boardData.content)}
           </span>
-          <span className="nickname">by {boardData.nickname}</span>
+          <span className="by">by {boardData.nickname}</span>
         </div>
       </ContentBox>
     </div>
@@ -29,7 +29,7 @@ export function Content({ boardData }) {
 }
 
 const ContentBox = styled.div`
-  background-color: white;
+  background-color: ${({ theme }) => theme.backgroundColor.box};
   @media (max-width: 860px) {
     width: 70vw;
   }
@@ -37,12 +37,16 @@ const ContentBox = styled.div`
   &:hover {
     transform: translateY(-10px);
   }
+
   width: 340px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
   padding: 24px;
+  margin-top: 20px;
   .imgBox {
     width: 100%;
     height: 100%;
@@ -52,31 +56,29 @@ const ContentBox = styled.div`
     }
   }
 
-  .description {
-    width: 100%;
+  .contents {
+    margin-top: 30px;
     display: flex;
     flex-direction: column;
-    background-color: #fbfcff;
-    padding: 10px;
-    border-radius: 10px;
-
+    background-color: ${({ theme }) => theme.backgroundColor.box};
+    padding: 40px;
+    border-radius: 15px;
     .title {
-      font-size: 20px;
-      margin-bottom: 5px;
-      background-color: #ffffff;
+      font-size: 24px;
+      font-weight: 600;
     }
-
     .content {
-      font-size: 15px;
-      margin-bottom: 5px;
-      background-color: #ffffff;
-      color: #666;
-    }
-
-    .nickname {
+      margin: 10px 0;
       font-size: 12px;
-      color: #666;
-      background-color: #ffffff;
+    }
+    .by {
+      font-size: 9px;
+      background-color: ${({ theme }) => theme.backgroundColor.button};
+      color: ${({ theme }) => theme.color.positive};
+      width: max-content;
+      padding: 0 20px;
+      border-radius: 5px;
+      opacity: 0.7;
     }
   }
 `;

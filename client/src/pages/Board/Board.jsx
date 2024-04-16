@@ -47,12 +47,16 @@ const Container = styled.div`
   a {
     text-decoration: none;
     text-decoration-line: none;
-    color: #516fd4;
+    color: ${({ theme }) => theme.color.positive};
     padding: 10px;
-    background-color: #ffffff;
+    background-color: ${({ theme }) => theme.backgroundColor.main};
     border-radius: 10px;
     font-size: 14px;
-    border: 0.5px solid #eeeeee;
+    border: ${({ theme }) => theme.border.main};
+
+    &:hover {
+      color: ${({ theme }) => theme.color.positiveClicked};
+    }
   }
   .navigation {
     display: flex;

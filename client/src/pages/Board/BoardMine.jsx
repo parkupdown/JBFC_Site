@@ -18,7 +18,7 @@ export default function BoardMine() {
   const [deleteMode, setDeleteMode] = useState(false);
   const onDeleteMode = () => setDeleteMode(true);
   const offDeleteMode = () => setDeleteMode(false);
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, watch } = useForm();
 
   const onSubmit = async (data) => {
     const deleteBoardIdArr = Object.keys(data).filter(
@@ -40,32 +40,57 @@ export default function BoardMine() {
 
   return (
     <Container>
-      <BoardContainer>
+      <div className="deleteMode">
         {deleteMode && (
           <>
-            <button onClick={offDeleteMode}>읽기모드</button>
+            <button className="read" onClick={offDeleteMode}>
+              읽기모드
+            </button>
             <button onClick={handleSubmit(onSubmit)}>제출</button>
           </>
         )}
-        {!deleteMode && <button onClick={onDeleteMode}>삭제모드</button>}
+        {!deleteMode && (
+          <button className="delete" onClick={onDeleteMode}>
+            삭제모드
+          </button>
+        )}
+      </div>
+
+      <BoardContainer>
         {data.pages[0].length === 0 && <h4>내가 작성한 게시글이 없습니다.</h4>}
         {data.pages.map(
           (page) =>
             page &&
-            page.map((boardData) => (
-              <>
+            page.map((boardData, index) => (
+              <div className="deleteContentBox">
                 <div className="deleteBox">
                   {deleteMode && (
-                    <input type="checkbox" {...register(`${boardData.id}`)} />
+                    <label
+                      htmlFor={index}
+                      style={{
+                        backgroundColor:
+                          watch(String(boardData.id)) === true
+                            ? "#516fd4"
+                            : "#edb87b",
+                      }}
+                    >
+                      {watch(String(boardData.id)) === true
+                        ? "선택됨"
+                        : "삭제가능"}
+                      <input
+                        id={index}
+                        type="checkbox"
+                        {...register(`${boardData.id}`)}
+                      />
+                    </label>
                   )}
                 </div>
-
                 <Content
                   boardData={boardData}
                   key={boardData.id}
                   deleteMode={deleteMode}
                 />
-              </>
+              </div>
             ))
         )}
       </BoardContainer>
@@ -76,23 +101,53 @@ export default function BoardMine() {
 
 const Container = styled.div`
   width: 100vw;
+  .deleteMode {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 50px;
+    @media (max-width: 800px) {
+      margin-bottom: 20px;
+    }
+    button {
+      background-color: ${({ theme }) => theme.backgroundColor.box};
+      border: ${({ theme }) => theme.border.main};
+      padding: 5px 20px;
+      border-radius: 7px;
+      color: ${({ theme }) => theme.color.positive};
+      font-size: 16px;
+      @media (max-width: 800px) {
+        font-size: 12px;
+      }
+    }
+
+    .delete {
+      color: ${({ theme }) => theme.color.negative};
+    }
+  }
 `;
+
 const BoardContainer = styled.div`
   display: flex;
-  flex-direction: column;
   flex-wrap: wrap;
-  gap: 5px;
+  gap: 10px;
   justify-content: center;
-  align-items: center;
+  .deleteContentBox {
+    display: flex;
+    flex-direction: column;
+  }
+
   .deleteBox {
-    @media (max-width: 860px) {
-      width: 70vw;
-    }
-    width: 340px;
-    text-align: end;
     input {
-      width: 20px;
-      height: 20px;
+      display: none;
+    }
+    label {
+      font-size: 12px;
+      padding: 3px 10px;
+      color: white;
+      margin: 0 10px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
     }
   }
 `;
