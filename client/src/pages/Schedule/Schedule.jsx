@@ -71,18 +71,14 @@ export default function Schedule() {
               <div className="weeks">
                 {weeks.map((day, i) =>
                   day ? (
-                    <div
+                    <Days
                       className="days"
                       key={i}
                       onClick={() => handleClickDay(day)}
-                      style={{
-                        backgroundColor: bookedDate.includes(day)
-                          ? "#edb87b"
-                          : "#516fd4",
-                      }}
+                      isActive={bookedDate.includes(day)}
                     >
                       {day}
-                    </div>
+                    </Days>
                   ) : (
                     <div key={i}></div>
                   )
@@ -115,7 +111,7 @@ const Container = styled.div`
         padding: 10px 12px;
         font-size: 14px;
       }
-      background-color: white;
+      background-color: ${({ theme }) => theme.backgroundColor.main};
       border: ${({ theme }) => theme.border.main};
       padding: 6px 14px;
       border-radius: 6px;
@@ -153,4 +149,8 @@ const Container = styled.div`
       }
     }
   }
+`;
+const Days = styled.div`
+  background-color: ${(props) =>
+    props.isActive ? props.theme.color.positive : props.theme.color.negative};
 `;

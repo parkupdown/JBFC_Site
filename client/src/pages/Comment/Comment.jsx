@@ -100,6 +100,8 @@ const Container = styled.div`
       color: ${({ theme }) => theme.color.positive};
       background-color: ${({ theme }) => theme.backgroundColor.main};
       margin-left: 10px;
+      padding: 8px;
+      border-radius: 10px;
     }
   }
   .comment {

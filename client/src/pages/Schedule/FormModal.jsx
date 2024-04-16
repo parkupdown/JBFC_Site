@@ -112,7 +112,7 @@ const InputField = styled.input`
   background-color: ${({ theme }) => theme.backgroundColor.box};
   border: ${({ theme }) => theme.border.main};
   border-radius: 10px;
-  color: ${({ theme }) => theme.color.positiveClicked};
+  color: ${({ theme }) => theme.color.positive};
 `;
 const SelectField = styled.select`
   width: 100%;
@@ -121,7 +121,7 @@ const SelectField = styled.select`
   background-color: ${({ theme }) => theme.backgroundColor.box};
   border: ${({ theme }) => theme.border.main};
   border-radius: 10px;
-  color: ${({ theme }) => theme.color.positiveClicked};
+  color: ${({ theme }) => theme.color.positive};
 `;
 
 const Button = styled.button`

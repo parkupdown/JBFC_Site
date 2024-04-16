@@ -75,7 +75,7 @@ const Container = styled.div`
     .characterBox {
       span {
         border: ${({ theme }) => theme.border.main};
-        padding: 1px;
+        padding: 1.5px;
         border-radius: 2px;
         font-size: 12px;
         color: ${({ theme }) => theme.color.positive};

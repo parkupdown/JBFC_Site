@@ -23,8 +23,8 @@ const dark = {
   color: {
     positive: "#D95585", // 밝은 청색
     negative: "#ff7043", // 밝은 주황색
-    positiveClicked: "#1565c0", // 더 진한 청색 클릭될 때
-    negativeClicked: "#dd2c00", // 더 진한 주황색 클릭될 때
+    positiveClicked: "#d12e6a", // 더 진한 청색 클릭될 때
+    negativeClicked: "##f54c19", // 더 진한 주황색 클릭될 때
     text: "white", // 텍스트 색상은 흰색
   },
   backgroundColor: {
