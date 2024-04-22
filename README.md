@@ -26,14 +26,13 @@
 
 ## Version1 대비 개선점 🆙
 
-- 로그인: JWT 사용 보안을 높임 
-- data fetching: react-query를 사용해 API 호출 감소 <a href="https://velog.io/@tkdgk1996/%EC%A7%9D%EB%B0%9C%EB%9E%80%EC%8A%A4-%EA%B3%A0%EB%8F%84%E" target="_blank" >link!</a>
-- 무한스크롤 (useInfiniteQuery 사용)을 통해 게시판 페이지 초기 로딩 속도를 개선 <a href="https://velog.io/@tkdgk1996/%EC%A7%9D%EB%B0%9C%EB%9E%80%EC%8A%A4-%EA%B3%A0%EB%8F%84%ED%99%94-%EB%AC%B4%ED%95%9C%EC%8A%A4%ED%81%AC%EB%A1%A4-useInfiniteQuery" target="_blank" ></a> 
-- code splitting: Lazy-loading을 사용해 초기 로딩 속도를 개선 <a href="https://velog.io/@tkdgk1996/Lieto-Lazy-Loading-React.Lazy-Suspense" target="_blank">link!</a>  
+- 로그인: JWT 사용 보안을 높임
+- data fetching: react-query를 사용해 API 호출 감소 [link](https://velog.io/@tkdgk1996/%EC%A7%9D%EB%B0%9C%EB%9E%80%EC%8A%A4-%EA%B3%A0%EB%8F%84%E)
+ 무한스크롤 (useInfiniteQuery 사용)을 통해 게시판 페이지 초기 로딩 속도를 개선 [link](https://velog.io/@tkdgk1996/%EC%A7%9D%EB%B0%9C%EB%9E%80%EC%8A%A4-%EA%B3%A0%EB%8F%84%ED%99%94-%EB%AC%B4%ED%95%9C%EC%8A%A4%ED%81%AC%EB%A1%A4-useInfiniteQuery)
+- code splitting: Lazy-loading을 사용해 초기 로딩 속도를 개선 [link](https://velog.io/@tkdgk1996/Lieto-Lazy-Loading-React.Lazy-Suspense)
 - 기존 Recoil을 통해 theme를 변경했던 코드를 Context API로 변경
-- 디렉토리 구조를 변경(공통컴포넌트, custom Hook, api등)하여 반복되는 코드를 모듈화 <a href="https://velog.io/@tkdgk1996/%EC%A7%9D%EB%B0%9C%EB%9E%80%EC%8A%A4-%EA%B3%A0%EB%8F%84%ED%99%94-%EC%A4%91%EA%B0%84-%EB%A6%AC%ED%8E%99%ED%86%A0%EB%A7%81-%EB%94%94%EB%A0%89%ED%86%A0%EB%A6%AC-%EA%B5%AC%EC%A1%B0-%EB%B3%80%EA%B2%BD" target="_blank" >link!</a>
-- react-hook-form을 사용하여 join 코드 40% 감소 <a href="https://velog.io/@tkdgk1996/%EC%A7%9D%EB%B0%9C%EB%9E%80%EC%8A%A4-%EA%B3%A0%EB%8F%84%ED%99%94-react-hook-form" target="_blank" >link!</a>
-
+- 디렉토리 구조를 변경(공통컴포넌트, custom Hook, api등)하여 반복되는 코드를 모듈화[link](https://velog.io/@tkdgk1996/%EC%A7%9D%EB%B0%9C%EB%9E%80%EC%8A%A4-%EA%B3%A0%EB%8F%84%ED%99%94-%EC%A4%91%EA%B0%84-%EB%A6%AC%ED%8E%99%ED%86%A0%EB%A7%81-%EB%94%94%EB%A0%89%ED%86%A0%EB%A6%AC-%EA%B5%AC%EC%A1%B0-%EB%B3%80%EA%B2%BD)
+- react-hook-form을 사용하여 join 코드 40% 감소 [link](https://velog.io/@tkdgk1996/%EC%A7%9D%EB%B0%9C%EB%9E%80%EC%8A%A4-%EA%B3%A0%EB%8F%84%ED%99%94-react-hook-form)
 - [짝발란스 개발 과정](https://velog.io/@tkdgk1996/series/%ED%92%8B%EC%82%B4-%EB%8F%99%ED%98%B8%ED%9A%8C-SNS-%ED%94%8C%EB%9E%AB%ED%8F%BC-%EA%B0%9C%EB%B0%9C%EA%B8%B0)
 - [짝발란스 고도화](https://velog.io/@tkdgk1996/posts?tag=%EA%B3%A0%EB%8F%84%ED%99%94)
 
