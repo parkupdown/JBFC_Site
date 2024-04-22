@@ -11,7 +11,9 @@
 <p align="left">
 <img src="https://img.shields.io/badge/React-61DAFB?style=flat&logo=React&logoColor=white"/>
   <img src="https://img.shields.io/badge/React Query-FF4154?style=flat&logo=React Query&logoColor=white"/>
-<img src="https://img.shields.io/badge/styled-components-DB7093?style=flat&logo=styled-components&logoColor=white"/>
+</p>
+<p align="left">
+  <img src="https://img.shields.io/badge/styled-components-DB7093?style=flat&logo=styled-components&logoColor=white"/>
 </p>
 <p align="left">
 <img src="https://img.shields.io/badge/Express-000000?style=flat&logo=Express&logoColor=white"/> 
