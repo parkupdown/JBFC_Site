@@ -27,7 +27,7 @@
 ## Version1 대비 개선점 🆙
 
 - 로그인: JWT 사용 보안을 높임
-- data fetching: react-query를 사용해 API 호출 감소 [link](https://velog.io/@tkdgk1996/%EC%A7%9D%EB%B0%9C%EB%9E%80%EC%8A%A4-%EA%B3%A0%EB%8F%84%E)
+- data fetching: react-query를 사용해 API 호출 감소 [link](https://velog.io/@tkdgk1996/%EC%A7%9D%EB%B0%9C%EB%9E%80%EC%8A%A4-%EA%B3%A0%EB%8F%84%ED%99%94-Caching)
 - 무한스크롤 (useInfiniteQuery 사용)을 통해 게시판 페이지 초기 로딩 속도를 개선 [link](https://velog.io/@tkdgk1996/%EC%A7%9D%EB%B0%9C%EB%9E%80%EC%8A%A4-%EA%B3%A0%EB%8F%84%ED%99%94-%EB%AC%B4%ED%95%9C%EC%8A%A4%ED%81%AC%EB%A1%A4-useInfiniteQuery)
 - code splitting: Lazy-loading을 사용해 초기 로딩 속도를 개선 [link](https://velog.io/@tkdgk1996/Lieto-Lazy-Loading-React.Lazy-Suspense)
 - 기존 Recoil을 통해 theme를 변경했던 코드를 Context API로 변경
